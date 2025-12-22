@@ -252,90 +252,73 @@ const WineDetail = () => {
                   </p>
                 </div>
 
-                {/* Quick Info Grid */}
-                <div className="grid grid-cols-2 gap-3 mb-8">
-                  <div
-                    className={`flex items-start gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors ${
-                      wine.grapes.split(",").length > 2 ? "col-span-2" : ""
-                    }`}
-                  >
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <WineIcon className="w-5 h-5 text-primary/70" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">
-                        Giống Nho
-                      </p>
-                      {wine.grapes.split(",").length > 2 ? (
-                        <div className="flex flex-wrap gap-1.5">
-                          {wine.grapes.split(",").map((grape, index) => (
-                            <span
-                              key={index}
-                              className="inline-block px-2.5 py-1 text-xs font-medium bg-primary/5 border border-primary/10 rounded-full text-foreground/90"
-                            >
-                              {grape.trim()}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-sm font-medium">{wine.grapes}</p>
-                      )}
-                    </div>
+                {/* Grapes Section */}
+                <div className="mb-6 pb-6 border-b border-border/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <WineIcon className="w-4 h-4 text-primary/60" />
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                      Giống Nho
+                    </p>
                   </div>
+                  <p className="text-sm leading-relaxed text-foreground/90">
+                    {wine.grapes.split(",").map((grape, index, arr) => (
+                      <span key={index}>
+                        {grape.trim()}
+                        {index < arr.length - 1 && (
+                          <span className="mx-2 text-muted-foreground/40">·</span>
+                        )}
+                      </span>
+                    ))}
+                  </p>
+                </div>
 
+                {/* Quick Info Grid - Compact */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
                   {wine.temperature && (
-                    <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Thermometer className="w-5 h-5 text-primary/70" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                        <Thermometer className="w-3.5 h-3.5 text-primary/50" />
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
                           Nhiệt Độ
                         </p>
-                        <p className="text-sm font-medium">{wine.temperature}</p>
                       </div>
+                      <p className="text-sm font-medium text-foreground">{wine.temperature}</p>
                     </div>
                   )}
 
                   {wine.alcohol && (
-                    <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Percent className="w-5 h-5 text-primary/70" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                          Nồng Độ Cồn
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                        <Percent className="w-3.5 h-3.5 text-primary/50" />
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
+                          Nồng Độ
                         </p>
-                        <p className="text-sm font-medium">{wine.alcohol}</p>
                       </div>
-                    </div>
-                  )}
-
-                  {wine.region && (
-                    <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <MapPin className="w-6 h-6 text-primary/70" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                          Vùng
-                        </p>
-                        <p className="text-sm font-medium">{wine.region}</p>
-                      </div>
+                      <p className="text-sm font-medium text-foreground">{wine.alcohol}</p>
                     </div>
                   )}
 
                   {wine.vintage && (
-                    <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Calendar className="w-5 h-5 text-primary/70" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-primary/50" />
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
                           Niên Vụ
                         </p>
-                        <p className="text-sm font-medium">{wine.vintage}</p>
                       </div>
+                      <p className="text-sm font-medium text-foreground">{wine.vintage}</p>
+                    </div>
+                  )}
+
+                  {wine.region && (
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                        <MapPin className="w-4 h-4 text-primary/50" />
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
+                          Vùng
+                        </p>
+                      </div>
+                      <p className="text-sm font-medium text-foreground">{wine.region}</p>
                     </div>
                   )}
                 </div>
