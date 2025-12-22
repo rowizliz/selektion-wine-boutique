@@ -116,6 +116,11 @@ const Collection = () => {
                       <div className="space-y-2">
                         <h3 className="text-base font-serif group-hover:text-muted-foreground transition-colors duration-300 leading-tight">
                           {wine.name}
+                          {wine.vintage && (
+                            <span className="text-muted-foreground font-normal ml-1">
+                              ({wine.vintage})
+                            </span>
+                          )}
                         </h3>
                         <p className="text-[10px] tracking-widest text-muted-foreground uppercase">
                           {wine.origin}
