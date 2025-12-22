@@ -4,9 +4,17 @@ import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { wines, WINES_DATA_TIMESTAMP } from "@/data/wines";
 
+const parsePrice = (price: string): number => {
+  // Remove currency symbol and commas, parse as number
+  return parseInt(price.replace(/[^\d]/g, ""), 10) || 0;
+};
+
 const Collection = () => {
   const withImgCacheBust = (url: string) =>
     `${url}${url.includes("?") ? "&" : "?"}v=${WINES_DATA_TIMESTAMP}`;
+
+  // Sort wines by price from high to low
+  const sortedWines = [...wines].sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
 
   return (
     <>
@@ -39,7 +47,7 @@ const Collection = () => {
         <section className="py-12 md:py-16 bg-background">
           <div className="container">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
-              {wines.map((wine, index) => (
+              {sortedWines.map((wine, index) => (
                 <Link
                   key={wine.id}
                   to={`/collection/${wine.id}`}
