@@ -1,3 +1,7 @@
+// Cache-busting version - update this when data changes
+export const WINES_DATA_VERSION = "2024.12.22.1";
+export const WINES_DATA_TIMESTAMP = Date.now();
+
 // Wine images - using -fixed.jpg versions (original PDF extracts)
 import terresRaresImg from "@/assets/wines/terres-rares-fixed.jpg";
 import vigneLouracImg from "@/assets/wines/vigne-lourac-fixed.jpg";
