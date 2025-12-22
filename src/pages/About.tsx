@@ -6,10 +6,10 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>About | SÉLECTION</title>
+        <title>Về Chúng Tôi | SÉLECTION</title>
         <meta 
           name="description" 
-          content="Learn about SÉLECTION - our passion for curating exceptional wines from France and Italy." 
+          content="Tìm hiểu về SÉLECTION - niềm đam mê tuyển chọn những chai rượu vang đặc biệt từ Pháp và Ý." 
         />
       </Helmet>
 
@@ -20,11 +20,11 @@ const About = () => {
           <div className="container">
             <div className="max-w-4xl mx-auto">
               <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground mb-6">
-                Our Story
+                Câu Chuyện Của Chúng Tôi
               </p>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-light leading-tight mb-12">
-                A passion for<br />
-                <span className="italic">exceptional wines</span>
+                Niềm đam mê về<br />
+                <span className="italic">rượu vang đặc biệt</span>
               </h1>
             </div>
           </div>
@@ -36,35 +36,37 @@ const About = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
               <div className="space-y-8">
                 <h2 className="text-2xl md:text-3xl font-serif font-light">
-                  The Beginning
+                  Khởi Đầu
                 </h2>
                 <div className="space-y-6 text-muted-foreground leading-relaxed">
                   <p>
-                    Sélection was founded with a simple yet profound belief: that every 
-                    wine bottle holds within it a story of its land, its maker, and the 
-                    traditions that shaped it.
+                    Sélection được thành lập với một niềm tin đơn giản nhưng sâu sắc: 
+                    mỗi chai rượu vang đều chứa đựng trong đó một câu chuyện về vùng đất, 
+                    về người làm rượu và những truyền thống đã định hình nên nó.
                   </p>
                   <p>
-                    We travel through the renowned wine regions of France and Italy, 
-                    from the sun-drenched hills of Bordeaux to the ancient vineyards 
-                    of Sardinia, seeking out producers who share our dedication to 
-                    authenticity and excellence.
+                    Chúng tôi đi qua những vùng rượu nổi tiếng của Pháp và Ý, 
+                    từ những ngọn đồi đầy nắng của Bordeaux đến những vườn nho 
+                    cổ kính của Sardinia, tìm kiếm những nhà sản xuất chia sẻ 
+                    sự cống hiến của chúng tôi cho sự chân thực và xuất sắc.
                   </p>
                 </div>
               </div>
               <div className="space-y-8">
                 <h2 className="text-2xl md:text-3xl font-serif font-light">
-                  Our Philosophy
+                  Triết Lý Của Chúng Tôi
                 </h2>
                 <div className="space-y-6 text-muted-foreground leading-relaxed">
                   <p>
-                    We believe that great wine should be accessible. Our collection 
-                    spans from everyday table wines to special occasion bottles, 
-                    each carefully selected for its character and value.
+                    Chúng tôi tin rằng rượu vang tuyệt vời nên dễ tiếp cận. 
+                    Bộ sưu tập của chúng tôi trải dài từ rượu bàn hàng ngày 
+                    đến những chai đặc biệt cho các dịp quan trọng, mỗi chai 
+                    được chọn lọc cẩn thận vì tính cách và giá trị của nó.
                   </p>
                   <p>
-                    Whether you're a seasoned connoisseur or just beginning your 
-                    wine journey, we're here to guide you to your next favorite bottle.
+                    Dù bạn là người sành rượu hay mới bắt đầu hành trình 
+                    khám phá rượu vang, chúng tôi ở đây để hướng dẫn bạn 
+                    tìm đến chai rượu yêu thích tiếp theo.
                   </p>
                 </div>
               </div>
@@ -77,25 +79,25 @@ const About = () => {
           <div className="container">
             <div className="max-w-4xl mx-auto">
               <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground mb-6 text-center">
-                Our Values
+                Giá Trị Của Chúng Tôi
               </p>
               <h2 className="text-3xl md:text-4xl font-serif font-light text-center mb-16">
-                What We Stand For
+                Những Gì Chúng Tôi Đại Diện
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
                 {[
                   {
-                    title: "Quality",
-                    description: "Every wine is personally tasted and selected to meet our exacting standards.",
+                    title: "Chất Lượng",
+                    description: "Mỗi chai rượu đều được thử nếm và chọn lọc cá nhân để đáp ứng tiêu chuẩn khắt khe của chúng tôi.",
                   },
                   {
-                    title: "Authenticity",
-                    description: "We work directly with producers who honor traditional winemaking methods.",
+                    title: "Chân Thực",
+                    description: "Chúng tôi làm việc trực tiếp với các nhà sản xuất tôn vinh phương pháp làm rượu truyền thống.",
                   },
                   {
-                    title: "Service",
-                    description: "Personal guidance to help you discover wines that match your preferences.",
+                    title: "Dịch Vụ",
+                    description: "Hướng dẫn cá nhân để giúp bạn khám phá những chai rượu phù hợp với sở thích của bạn.",
                   },
                 ].map((value, index) => (
                   <div 

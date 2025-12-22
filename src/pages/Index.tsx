@@ -10,10 +10,10 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>SÉLECTION | Fine Wines from France & Italy</title>
+        <title>SÉLECTION | Rượu Vang Hảo Hạng Từ Pháp & Ý</title>
         <meta 
           name="description" 
-          content="Discover exceptional wines from the finest vineyards of France and Italy. Curated selection of premium wines in Ho Chi Minh City." 
+          content="Khám phá những chai rượu vang đặc biệt từ những vườn nho danh tiếng của Pháp và Ý. Bộ sưu tập rượu vang cao cấp tại TP. Hồ Chí Minh." 
         />
       </Helmet>
 

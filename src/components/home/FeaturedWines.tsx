@@ -17,10 +17,10 @@ const FeaturedWines = () => {
         {/* Section header */}
         <div className="text-center mb-16 md:mb-20">
           <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground mb-4">
-            Featured Selection
+            Tuyển Chọn Đặc Biệt
           </p>
           <h2 className="text-3xl md:text-5xl font-serif font-light">
-            Our Finest Wines
+            Rượu Vang Hảo Hạng
           </h2>
         </div>
 
@@ -43,7 +43,7 @@ const FeaturedWines = () => {
                   ) : (
                     <div className="text-center p-8">
                       <div className="w-16 h-48 border border-muted-foreground/30 mx-auto mb-4 rounded-t-full" />
-                      <p className="text-xs tracking-widest uppercase">Wine Bottle</p>
+                      <p className="text-xs tracking-widest uppercase">Chai Rượu</p>
                     </div>
                   )}
                 </div>
@@ -67,7 +67,7 @@ const FeaturedWines = () => {
         <div className="text-center mt-16">
           <Button asChild variant="outline" size="lg">
             <Link to="/collection">
-              View All Wines
+              Xem Tất Cả
             </Link>
           </Button>
         </div>

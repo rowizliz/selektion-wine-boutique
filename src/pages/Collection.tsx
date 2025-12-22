@@ -19,10 +19,10 @@ const Collection = () => {
   return (
     <>
       <Helmet>
-        <title>Wine Collection | SÉLECTION</title>
+        <title>Bộ Sưu Tập Rượu Vang | SÉLECTION</title>
         <meta 
           name="description" 
-          content="Browse our curated collection of 25+ fine wines from France, Italy, Chile, and USA. Premium reds, whites, and sparkling wines." 
+          content="Khám phá bộ sưu tập hơn 25 loại rượu vang hảo hạng từ Pháp, Ý, Chile và Mỹ. Rượu vang đỏ, trắng và sủi bọt cao cấp." 
         />
       </Helmet>
 
@@ -32,13 +32,13 @@ const Collection = () => {
         <section className="py-16 md:py-24 bg-background">
           <div className="container text-center">
             <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground mb-4">
-              Our Collection
+              Bộ Sưu Tập
             </p>
             <h1 className="text-4xl md:text-6xl font-serif font-light">
-              Fine Wines
+              Rượu Vang Hảo Hạng
             </h1>
             <p className="mt-6 text-muted-foreground text-sm">
-              {wines.length} exceptional wines from around the world
+              {wines.length} loại rượu vang đặc biệt từ khắp nơi trên thế giới
             </p>
           </div>
         </section>

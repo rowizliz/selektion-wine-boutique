@@ -18,8 +18,8 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Message sent",
-      description: "We'll get back to you as soon as possible.",
+      title: "Đã gửi tin nhắn",
+      description: "Chúng tôi sẽ phản hồi bạn sớm nhất có thể.",
     });
     setFormData({ name: "", email: "", message: "" });
   };
@@ -27,10 +27,10 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>Contact | SÉLECTION</title>
+        <title>Liên Hệ | SÉLECTION</title>
         <meta 
           name="description" 
-          content="Get in touch with SÉLECTION. Contact us for wine inquiries, orders, or to learn more about our collection." 
+          content="Liên hệ với SÉLECTION. Gửi câu hỏi về rượu vang, đặt hàng hoặc tìm hiểu thêm về bộ sưu tập của chúng tôi." 
         />
       </Helmet>
 
@@ -43,31 +43,31 @@ const Contact = () => {
                 {/* Contact Info */}
                 <div>
                   <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground mb-4">
-                    Get in Touch
+                    Liên Hệ Với Chúng Tôi
                   </p>
                   <h1 className="text-4xl md:text-5xl font-serif font-light mb-8">
-                    Contact Us
+                    Liên Hệ
                   </h1>
                   <p className="text-muted-foreground leading-relaxed mb-12">
-                    We'd love to hear from you. Whether you have questions about 
-                    our wines, want to place an order, or simply want to chat 
-                    about wine, we're here to help.
+                    Chúng tôi rất vui được nghe từ bạn. Dù bạn có câu hỏi về 
+                    rượu vang, muốn đặt hàng, hay chỉ muốn trò chuyện về rượu, 
+                    chúng tôi luôn sẵn sàng hỗ trợ.
                   </p>
 
                   <div className="space-y-8">
                     <div>
                       <h3 className="text-xs font-sans tracking-widest uppercase mb-3">
-                        Address
+                        Địa Chỉ
                       </h3>
                       <p className="text-muted-foreground">
-                        127/15 Hoang Dieu 2<br />
-                        Linh Xuan, Thu Duc<br />
-                        Ho Chi Minh City
+                        127/15 Hoàng Diệu 2<br />
+                        Linh Xuân, Thủ Đức<br />
+                        TP. Hồ Chí Minh
                       </p>
                     </div>
                     <div>
                       <h3 className="text-xs font-sans tracking-widest uppercase mb-3">
-                        Contact
+                        Liên Hệ
                       </h3>
                       <p className="text-muted-foreground">
                         <a 
@@ -82,11 +82,11 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="text-xs font-sans tracking-widest uppercase mb-3">
-                        Hours
+                        Giờ Làm Việc
                       </h3>
                       <p className="text-muted-foreground">
-                        Monday – Saturday: 9:00 – 21:00<br />
-                        Sunday: 10:00 – 18:00
+                        Thứ Hai – Thứ Bảy: 9:00 – 21:00<br />
+                        Chủ Nhật: 10:00 – 18:00
                       </p>
                     </div>
                   </div>
@@ -94,14 +94,14 @@ const Contact = () => {
 
                 {/* Contact Form */}
                 <div className="bg-secondary p-8 md:p-12">
-                  <h2 className="text-2xl font-serif mb-8">Send a Message</h2>
+                  <h2 className="text-2xl font-serif mb-8">Gửi Tin Nhắn</h2>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                       <label 
                         htmlFor="name" 
                         className="block text-xs tracking-widest uppercase mb-3"
                       >
-                        Name
+                        Họ Tên
                       </label>
                       <Input
                         id="name"
@@ -133,7 +133,7 @@ const Contact = () => {
                         htmlFor="message" 
                         className="block text-xs tracking-widest uppercase mb-3"
                       >
-                        Message
+                        Nội Dung
                       </label>
                       <Textarea
                         id="message"
@@ -144,7 +144,7 @@ const Contact = () => {
                       />
                     </div>
                     <Button type="submit" variant="luxury" className="w-full">
-                      Send Message
+                      Gửi Tin Nhắn
                     </Button>
                   </form>
                 </div>

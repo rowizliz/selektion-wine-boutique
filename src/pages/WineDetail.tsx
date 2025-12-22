@@ -19,10 +19,10 @@ const WineDetail = () => {
         <Header />
         <main className="pt-20 md:pt-24 min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-serif mb-4">Wine not found</h1>
+            <h1 className="text-2xl font-serif mb-4">Không tìm thấy rượu vang</h1>
             <Button variant="outline" onClick={() => navigate("/collection")}>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Collection
+              Quay Lại Bộ Sưu Tập
             </Button>
           </div>
         </main>
@@ -61,7 +61,7 @@ const WineDetail = () => {
               className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Collection
+              Quay Lại Bộ Sưu Tập
             </Link>
           </div>
         </section>
@@ -86,7 +86,7 @@ const WineDetail = () => {
                 {/* Category Badge */}
                 <div className="inline-flex self-start mb-4">
                   <span className="px-3 py-1 text-[10px] tracking-[0.25em] uppercase bg-primary/5 border border-primary/10 rounded-full text-primary/80">
-                    {wine.category === "red" ? "Red Wine" : wine.category === "white" ? "White Wine" : "Sparkling Wine"}
+                    {wine.category === "red" ? "Vang Đỏ" : wine.category === "white" ? "Vang Trắng" : "Vang Sủi Bọt"}
                   </span>
                 </div>
                 

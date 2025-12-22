@@ -6,6 +6,12 @@ export interface FooterProps extends React.HTMLAttributes<HTMLElement> {}
 
 const Footer = React.forwardRef<HTMLElement, FooterProps>(
   ({ className, ...props }, ref) => {
+    const navItems = [
+      { name: "Bộ Sưu Tập", href: "/collection" },
+      { name: "Về Chúng Tôi", href: "/about" },
+      { name: "Liên Hệ", href: "/contact" },
+    ];
+
     return (
       <footer
         ref={ref}
@@ -20,27 +26,27 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                 SÉLECTION
               </Link>
               <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-sm">
-                Curated wines from the finest vineyards of France and Italy.
-                Each bottle tells a story of heritage and craftsmanship.
+                Rượu vang hảo hạng được tuyển chọn từ những vườn nho danh tiếng của Pháp và Ý.
+                Mỗi chai rượu là một câu chuyện về di sản và nghệ thuật làm rượu.
               </p>
               <p className="mt-6 text-xs text-muted-foreground tracking-wider uppercase">
-                127/15 Hoang Dieu 2, Thu Duc, Ho Chi Minh City
+                127/15 Hoàng Diệu 2, Thủ Đức, TP. Hồ Chí Minh
               </p>
             </div>
 
             {/* Navigation */}
             <div>
               <h4 className="text-xs font-sans tracking-widest uppercase mb-6">
-                Navigation
+                Điều Hướng
               </h4>
               <ul className="space-y-3">
-                {["Collection", "About", "Contact"].map((item) => (
-                  <li key={item}>
+                {navItems.map((item) => (
+                  <li key={item.name}>
                     <Link
-                      to={`/${item.toLowerCase()}`}
+                      to={item.href}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-300"
                     >
-                      {item}
+                      {item.name}
                     </Link>
                   </li>
                 ))}
@@ -50,7 +56,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
             {/* Contact */}
             <div>
               <h4 className="text-xs font-sans tracking-widest uppercase mb-6">
-                Contact
+                Liên Hệ
               </h4>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li>
@@ -77,10 +83,10 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
 
           <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-muted-foreground tracking-wider">
-              © 2024 SÉLECTION. All rights reserved.
+              © 2024 SÉLECTION. Bảo lưu mọi quyền.
             </p>
             <p className="text-xs text-muted-foreground tracking-wider">
-              Fine wines imported from France & Italy
+              Rượu vang nhập khẩu từ Pháp & Ý
             </p>
           </div>
         </div>

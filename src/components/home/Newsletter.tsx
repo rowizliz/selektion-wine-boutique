@@ -11,8 +11,8 @@ const Newsletter = () => {
     e.preventDefault();
     if (email) {
       toast({
-        title: "Thank you for subscribing",
-        description: "You'll receive updates on our latest wines.",
+        title: "Cảm ơn bạn đã đăng ký",
+        description: "Bạn sẽ nhận được thông tin về các loại rượu mới nhất.",
       });
       setEmail("");
     }
@@ -23,20 +23,20 @@ const Newsletter = () => {
       <div className="container">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-xs font-sans tracking-[0.3em] uppercase text-background/60 mb-4">
-            Stay Updated
+            Cập Nhật Tin Tức
           </p>
           <h2 className="text-3xl md:text-4xl font-serif font-light mb-6">
-            Join Our Selection
+            Tham Gia Cộng Đồng
           </h2>
           <p className="text-background/70 mb-10 leading-relaxed">
-            Subscribe to receive exclusive updates on new arrivals, 
-            special offers, and wine recommendations.
+            Đăng ký để nhận thông tin độc quyền về sản phẩm mới, 
+            ưu đãi đặc biệt và gợi ý rượu vang.
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <Input
               type="email"
-              placeholder="Your email address"
+              placeholder="Địa chỉ email của bạn"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="flex-1 bg-transparent border-background/30 text-background placeholder:text-background/50 focus:border-background h-12 px-4"
@@ -47,7 +47,7 @@ const Newsletter = () => {
               variant="outline"
               className="bg-background text-foreground hover:bg-background/90 border-background h-12"
             >
-              Subscribe
+              Đăng Ký
             </Button>
           </form>
         </div>
