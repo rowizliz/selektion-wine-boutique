@@ -20,7 +20,7 @@ const Hero = () => {
 
           {/* Description */}
           <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed font-light">
-            Khám phá những chai rượu vang đặc biệt từ những vườn nho danh tiếng của Pháp và Ý. 
+            Khám phá những chai rượu vang đặc biệt từ những vườn nho danh tiếng của Pháp, Ý, Chilê, Mỹ, Úc Châu... 
             Mỗi chai được tuyển chọn kỹ lưỡng cho tính cách, di sản và sự xuất sắc.
           </p>
 
