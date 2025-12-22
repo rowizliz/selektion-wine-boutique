@@ -29,12 +29,26 @@ interface WineFormDialogProps {
 }
 
 const FLAVOR_OPTIONS = [
-  "cherry", "plum", "raspberry", "strawberry", "blackberry", "currant",
-  "vanilla", "chocolate", "cocoa", "mocha", "caramel", "honey",
-  "apple", "peach", "citrus", "orange", "grapefruit", "lemon",
-  "floral", "violet", "rose", "herb", "tobacco", "leather",
-  "cedar", "butter", "cream", "earthy", "mineral", "spice",
-  "berry", "raisin", "musk", "banana",
+  // Red Fruits
+  "cherry", "strawberry", "raspberry", "blackberry", "berry", "plum", "cranberry", "currant", "black currant", "black",
+  // Citrus
+  "citrus", "orange", "tangerine", "lemon", "grapefruit", "orange peel",
+  // Other Fruits
+  "apple", "pear", "peach", "tropical", "pineapple", "banana", "fig", "raisin",
+  // Floral
+  "floral", "rose", "violet", "jasmine", "elderflower", "potpourri",
+  // Herbal
+  "herb", "mint", "eucalyptus", "bell pepper", "sage",
+  // Spices
+  "spice", "pepper", "cinnamon", "ginger", "licorice",
+  // Wood & Smoke
+  "oak", "cedar", "tobacco", "leather", "smoke",
+  // Sweet & Rich
+  "vanilla", "chocolate", "cocoa", "mocha", "coffee", "honey", "butter", "cream", "caramel", "almond",
+  // Earthy & Mineral
+  "earthy", "mineral", "musk",
+  // Special
+  "cheese", "moscato",
 ];
 
 const WineFormDialog = ({ open, onOpenChange, wine }: WineFormDialogProps) => {
