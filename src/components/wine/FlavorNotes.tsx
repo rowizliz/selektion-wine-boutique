@@ -1,6 +1,11 @@
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
-import { Sparkles, type LucideIcon } from "lucide-react";
+import { useState } from "react";
+import { Sparkles } from "lucide-react";
+
+// Local fallback icons for flavors that failed to generate in storage
+import creamIcon from "@/assets/flavors/cream.png";
+import almondIcon from "@/assets/flavors/almond.png";
+import caramelIcon from "@/assets/flavors/caramel.png";
 
 interface FlavorNotesProps {
   notes: string[];
@@ -46,6 +51,13 @@ const flavorLabels: Record<string, string> = {
   caramel: "Caramel",
 };
 
+// Local fallback icons map
+const localFallbackIcons: Record<string, string> = {
+  cream: creamIcon,
+  almond: almondIcon,
+  caramel: caramelIcon,
+};
+
 // Supabase storage URL for flavor icons
 const STORAGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/flavor-icons`;
 
@@ -66,7 +78,8 @@ const FlavorNotes = ({ notes, className }: FlavorNotesProps) => {
       {notes.map((note) => {
         const noteKey = note.toLowerCase();
         const label = flavorLabels[noteKey] || note;
-        const iconUrl = `${STORAGE_URL}/${noteKey}.png`;
+        const localIcon = localFallbackIcons[noteKey];
+        const iconUrl = localIcon || `${STORAGE_URL}/${noteKey}.png`;
         const hasLoaded = loadedIcons[noteKey];
         const hasFailed = failedIcons[noteKey];
         
