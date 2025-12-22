@@ -97,7 +97,7 @@ const WineDetail = () => {
                 </p>
 
                 {/* Quick Info Grid */}
-                <div className="grid grid-cols-2 gap-4 mb-8 p-6 bg-secondary/30 rounded-lg">
+                <div className="grid grid-cols-2 gap-4 mb-6 p-6 bg-secondary/30 rounded-lg">
                   <div className="flex items-center gap-3">
                     <WineIcon className="w-5 h-5 text-primary/70" />
                     <div>
@@ -137,6 +137,48 @@ const WineDetail = () => {
                   )}
                 </div>
 
+                {/* Wine Characteristics - In Right Column */}
+                {wine.characteristics && (
+                  <div className="mb-6 p-6 bg-secondary/20 rounded-lg">
+                    <h3 className="text-sm font-serif mb-4 uppercase tracking-wider text-muted-foreground">Đặc Tính Rượu</h3>
+                    <div className="space-y-4">
+                      <WineCharacteristicsBar 
+                        label="Độ Ngọt / Dryness" 
+                        value={wine.characteristics.sweetness} 
+                      />
+                      <WineCharacteristicsBar 
+                        label="Độ Đậm / Body" 
+                        value={wine.characteristics.body} 
+                      />
+                      <WineCharacteristicsBar 
+                        label="Độ Chát / Tannin" 
+                        value={wine.characteristics.tannin} 
+                      />
+                      <WineCharacteristicsBar 
+                        label="Độ Chua / Acidity" 
+                        value={wine.characteristics.acidity} 
+                      />
+                      {isSparklingWine && wine.characteristics.fizzy !== undefined && (
+                        <WineCharacteristicsBar 
+                          label="Độ Sủi / Fizzy" 
+                          value={wine.characteristics.fizzy} 
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Flavor Notes - In Right Column */}
+                {wine.flavorNotes && wine.flavorNotes.length > 0 && (
+                  <div className="mb-8">
+                    <h3 className="text-sm font-serif mb-4 uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-primary/70" />
+                      Nốt Hương
+                    </h3>
+                    <FlavorNotes notes={wine.flavorNotes} />
+                  </div>
+                )}
+
                 {/* Contact CTA */}
                 <div className="flex flex-wrap gap-4">
                   <Button asChild size="lg">
@@ -152,52 +194,6 @@ const WineDetail = () => {
             </div>
           </div>
         </section>
-
-        {/* Flavor Notes Section */}
-        {wine.flavorNotes && wine.flavorNotes.length > 0 && (
-          <section className="py-12 bg-secondary/20 border-y border-border/30">
-            <div className="container">
-              <h2 className="text-xl font-serif mb-6 flex items-center gap-3">
-                <Sparkles className="w-5 h-5 text-primary/70" />
-                Nốt Hương
-              </h2>
-              <FlavorNotes notes={wine.flavorNotes} />
-            </div>
-          </section>
-        )}
-
-        {/* Wine Characteristics Section */}
-        {wine.characteristics && (
-          <section className="py-12 bg-background">
-            <div className="container">
-              <h2 className="text-xl font-serif mb-8">Đặc Tính Rượu</h2>
-              <div className="max-w-2xl space-y-6">
-                <WineCharacteristicsBar 
-                  label="Độ Ngọt / Dryness" 
-                  value={wine.characteristics.sweetness} 
-                />
-                <WineCharacteristicsBar 
-                  label="Độ Đậm / Body" 
-                  value={wine.characteristics.body} 
-                />
-                <WineCharacteristicsBar 
-                  label="Độ Chát / Tannin" 
-                  value={wine.characteristics.tannin} 
-                />
-                <WineCharacteristicsBar 
-                  label="Độ Chua / Acidity" 
-                  value={wine.characteristics.acidity} 
-                />
-                {isSparklingWine && wine.characteristics.fizzy !== undefined && (
-                  <WineCharacteristicsBar 
-                    label="Độ Sủi / Fizzy" 
-                    value={wine.characteristics.fizzy} 
-                  />
-                )}
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* Description & Story Section */}
         <section className="py-12 md:py-16 bg-secondary/10">
