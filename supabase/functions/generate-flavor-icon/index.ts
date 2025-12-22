@@ -45,6 +45,9 @@ const flavorPrompts: Record<string, { label: string; prompt: string }> = {
   caramel: { label: "Caramel", prompt: "Caramel sauce drizzle, golden amber, minimalist wine tasting icon style, soft watercolor, elegant, white background" },
 };
 
+// Valid flavor IDs for validation
+const validFlavorIds = Object.keys(flavorPrompts);
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -52,35 +55,144 @@ serve(async (req) => {
   }
 
   try {
-    const { flavorId, generateAll } = await req.json();
-    
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    // ===== AUTHENTICATION CHECK =====
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('Missing Authorization header');
+      return new Response(JSON.stringify({ error: 'Unauthorized: Missing authorization header' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-    
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+
+    if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('Missing Supabase configuration');
+      throw new Error('Server configuration error');
+    }
+
     if (!LOVABLE_API_KEY) {
+      console.error('Missing LOVABLE_API_KEY');
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+    // Create Supabase client with user's auth token
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      global: { headers: { Authorization: authHeader } }
+    });
 
-    // Generate single icon or all icons
-    const flavorsToGenerate = generateAll 
-      ? Object.keys(flavorPrompts) 
-      : flavorId ? [flavorId] : [];
-
-    if (flavorsToGenerate.length === 0) {
-      throw new Error('No flavor specified');
+    // Verify user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser(
+      authHeader.replace('Bearer ', '')
+    );
+    
+    if (authError || !user) {
+      console.error('Auth error:', authError?.message || 'No user found');
+      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid token' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
+
+    // Check if user has admin role
+    const { data: isAdmin, error: roleError } = await supabase.rpc('is_admin');
+    
+    if (roleError) {
+      console.error('Role check error:', roleError.message);
+      return new Response(JSON.stringify({ error: 'Authorization check failed' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!isAdmin) {
+      console.error('User is not admin:', user.id);
+      return new Response(JSON.stringify({ error: 'Forbidden: Admin access required' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('Admin user authenticated:', user.id);
+
+    // ===== INPUT VALIDATION =====
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (typeof body !== 'object' || body === null) {
+      return new Response(JSON.stringify({ error: 'Request body must be an object' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { flavorId, generateAll } = body as { flavorId?: unknown; generateAll?: unknown };
+
+    // Validate flavorId type and format
+    if (flavorId !== undefined) {
+      if (typeof flavorId !== 'string') {
+        return new Response(JSON.stringify({ error: 'flavorId must be a string' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (flavorId.length > 50) {
+        return new Response(JSON.stringify({ error: 'flavorId is too long' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (!/^[a-z-]+$/.test(flavorId)) {
+        return new Response(JSON.stringify({ error: 'flavorId must contain only lowercase letters and hyphens' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (!validFlavorIds.includes(flavorId)) {
+        return new Response(JSON.stringify({ error: `Invalid flavorId. Must be one of: ${validFlavorIds.join(', ')}` }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // Validate generateAll type
+    if (generateAll !== undefined && typeof generateAll !== 'boolean') {
+      return new Response(JSON.stringify({ error: 'generateAll must be a boolean' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Require at least one parameter
+    if (!flavorId && !generateAll) {
+      return new Response(JSON.stringify({ error: 'Either flavorId or generateAll must be provided' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ===== GENERATE ICONS =====
+    const flavorsToGenerate = generateAll 
+      ? validFlavorIds 
+      : [flavorId as string];
+
+    console.log(`Generating ${flavorsToGenerate.length} icon(s) for admin user ${user.id}`);
 
     const results: { flavorId: string; url: string; error?: string }[] = [];
 
     for (const id of flavorsToGenerate) {
       const flavor = flavorPrompts[id];
-      if (!flavor) {
-        results.push({ flavorId: id, url: '', error: 'Unknown flavor' });
-        continue;
-      }
 
       try {
         console.log(`Generating icon for ${id}: ${flavor.label}`);
@@ -128,7 +240,7 @@ serve(async (req) => {
 
         // Upload to Supabase Storage
         const fileName = `${id}.png`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('flavor-icons')
           .upload(fileName, imageBuffer, {
             contentType: 'image/png',
