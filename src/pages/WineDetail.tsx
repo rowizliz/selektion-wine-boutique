@@ -242,7 +242,7 @@ const WineDetail = () => {
                 </h1>
 
                 <p className="text-sm tracking-[0.2em] text-muted-foreground uppercase mb-6 flex items-center gap-2">
-                  <MapPin className="w-3.5 h-3.5" />
+                  <MapPin className="w-4 h-4" />
                   {wine.origin}
                 </p>
 
@@ -314,7 +314,7 @@ const WineDetail = () => {
                   {wine.region && (
                     <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <MapPin className="w-5 h-5 text-primary/70" />
+                        <MapPin className="w-6 h-6 text-primary/70" />
                       </div>
                       <div>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
