@@ -75,8 +75,8 @@ const Header = () => {
             SÉLECTION
           </Link>
 
-          {/* Right side icons */}
-          <div className="flex items-center space-x-4">
+          {/* Right side icons - desktop only */}
+          <div className="hidden md:flex items-center space-x-4">
             <Link to="/chat" aria-label="Trò chuyện">
               <MessageCircle className="h-5 w-5 text-foreground hover:text-muted-foreground transition-colors duration-300" />
             </Link>
@@ -123,26 +123,32 @@ const Header = () => {
                   {link.name}
                 </Link>
               ))}
-              {!user && (
-                <Link
-                  to="/auth"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block text-sm font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors"
-                >
-                  Đăng Nhập
-                </Link>
-              )}
-              {user && (
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}
-                  className="block text-sm font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors"
-                >
-                  Đăng Xuất
-                </button>
-              )}
+              
+              {/* Profile section in mobile menu */}
+              <div className="border-t border-border pt-6 mt-6">
+                {user ? (
+                  <>
+                    <p className="text-xs text-muted-foreground mb-4 truncate">{user.email}</p>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="block text-sm font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors"
+                    >
+                      Đăng Xuất
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/auth"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block text-sm font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors"
+                  >
+                    Đăng Nhập
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         )}
