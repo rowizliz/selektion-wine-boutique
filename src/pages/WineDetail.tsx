@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { getWineById, wines } from "@/data/wines";
+import { WINES_DATA_TIMESTAMP, getWineById, wines } from "@/data/wines";
 import { ArrowLeft, Thermometer, Wine as WineIcon, UtensilsCrossed, Sparkles, MapPin, Calendar, Percent } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import WineCharacteristicsBar from "@/components/wine/WineCharacteristicsBar";
@@ -38,6 +38,9 @@ const WineDetail = () => {
 
   const isSparklingWine = wine.category === "sparkling";
 
+  const withImgCacheBust = (url: string) =>
+    `${url}${url.includes("?") ? "&" : "?"}v=${WINES_DATA_TIMESTAMP}`;
+
   return (
     <>
       <Helmet>
@@ -71,7 +74,7 @@ const WineDetail = () => {
               <div className="lg:sticky lg:top-28">
                 <div className="flex items-center justify-center min-h-[500px] lg:min-h-[700px]">
                   <img 
-                    src={wine.image} 
+                    src={withImgCacheBust(wine.image)} 
                     alt={wine.name}
                     className="w-auto h-full max-h-[420px] lg:max-h-[600px] object-contain animate-fade-in"
                   />
@@ -290,7 +293,7 @@ const WineDetail = () => {
                   >
                     <div className="aspect-[3/4] bg-white mb-4 overflow-hidden flex items-center justify-center p-4 rounded-sm shadow-sm">
                       <img 
-                        src={relatedWine.image} 
+                        src={withImgCacheBust(relatedWine.image)} 
                         alt={relatedWine.name}
                         className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500"
                       />

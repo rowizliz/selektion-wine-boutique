@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { wines } from "@/data/wines";
+import { WINES_DATA_TIMESTAMP, wines } from "@/data/wines";
 
 const featuredWineIds = ["22", "16", "10", "26", "23"];
 const featuredWines = featuredWineIds
@@ -8,6 +8,9 @@ const featuredWines = featuredWineIds
   .filter((wine): wine is NonNullable<typeof wine> => wine !== undefined);
 
 const FeaturedWines = () => {
+  const withImgCacheBust = (url: string) =>
+    `${url}${url.includes("?") ? "&" : "?"}v=${WINES_DATA_TIMESTAMP}`;
+
   return (
     <section className="py-24 md:py-32 bg-background">
       <div className="container">
@@ -33,7 +36,7 @@ const FeaturedWines = () => {
                 <div className="w-full h-full flex items-center justify-center text-muted-foreground group-hover:scale-105 transition-transform duration-700 ease-luxury">
                   {wine.image ? (
                     <img 
-                      src={wine.image} 
+                      src={withImgCacheBust(wine.image)} 
                       alt={wine.name}
                       className="w-full h-full object-cover"
                     />

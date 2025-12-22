@@ -2,9 +2,12 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
-import { wines } from "@/data/wines";
+import { wines, WINES_DATA_TIMESTAMP } from "@/data/wines";
 
 const Collection = () => {
+  const withImgCacheBust = (url: string) =>
+    `${url}${url.includes("?") ? "&" : "?"}v=${WINES_DATA_TIMESTAMP}`;
+
   return (
     <>
       <Helmet>
@@ -45,7 +48,7 @@ const Collection = () => {
                 >
                   <div className="aspect-[3/4] bg-white mb-5 overflow-hidden flex items-end justify-center p-6 rounded-sm">
                     <img 
-                      src={wine.image} 
+                      src={withImgCacheBust(wine.image)} 
                       alt={wine.name}
                       className="w-auto h-[280px] object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out"
                     />
