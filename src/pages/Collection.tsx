@@ -75,7 +75,7 @@ const Collection = () => {
               Bộ Sưu Tập
             </p>
             <h1 className="text-4xl md:text-6xl font-serif font-light">
-              Rượu Vang Hảo Hạng
+              Rượu Vang Tuyển Lựa
             </h1>
             <p className="mt-6 text-muted-foreground text-sm">
               {isLoading
