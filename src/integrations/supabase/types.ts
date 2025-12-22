@@ -35,6 +35,84 @@ export type Database = {
         }
         Relationships: []
       }
+      wines: {
+        Row: {
+          acidity: number | null
+          alcohol: string | null
+          body: number | null
+          category: string
+          created_at: string
+          description: string
+          fizzy: number | null
+          flavor_notes: string[] | null
+          grapes: string
+          id: string
+          image_url: string | null
+          name: string
+          origin: string
+          pairing: string | null
+          price: string
+          region: string | null
+          story: string | null
+          sweetness: number | null
+          tannin: number | null
+          tasting_notes: string | null
+          temperature: string | null
+          updated_at: string
+          vintage: string | null
+        }
+        Insert: {
+          acidity?: number | null
+          alcohol?: string | null
+          body?: number | null
+          category: string
+          created_at?: string
+          description: string
+          fizzy?: number | null
+          flavor_notes?: string[] | null
+          grapes: string
+          id?: string
+          image_url?: string | null
+          name: string
+          origin: string
+          pairing?: string | null
+          price: string
+          region?: string | null
+          story?: string | null
+          sweetness?: number | null
+          tannin?: number | null
+          tasting_notes?: string | null
+          temperature?: string | null
+          updated_at?: string
+          vintage?: string | null
+        }
+        Update: {
+          acidity?: number | null
+          alcohol?: string | null
+          body?: number | null
+          category?: string
+          created_at?: string
+          description?: string
+          fizzy?: number | null
+          flavor_notes?: string[] | null
+          grapes?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          origin?: string
+          pairing?: string | null
+          price?: string
+          region?: string | null
+          story?: string | null
+          sweetness?: number | null
+          tannin?: number | null
+          tasting_notes?: string | null
+          temperature?: string | null
+          updated_at?: string
+          vintage?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
