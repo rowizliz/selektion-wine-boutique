@@ -35,6 +35,8 @@ const flavorData: Record<string, { label: string; Icon: LucideIcon; iconColor: s
   
   // Floral & Herbal
   floral: { label: "Hoa", Icon: Flower, iconColor: "text-pink-400", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
+  sage: { label: "Xô thơm", Icon: Leaf, iconColor: "text-green-600", bgColor: "bg-green-50 dark:bg-green-950/40" },
+  "orange peel": { label: "Vỏ cam", Icon: Citrus, iconColor: "text-orange-400", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
   rose: { label: "Hoa hồng", Icon: Flower, iconColor: "text-rose-500", bgColor: "bg-rose-50 dark:bg-rose-950/40" },
   jasmine: { label: "Hoa nhài", Icon: Flower2, iconColor: "text-white dark:text-slate-200", bgColor: "bg-slate-100 dark:bg-slate-800" },
   elderflower: { label: "Hoa cơm cháy", Icon: Flower2, iconColor: "text-amber-200", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
