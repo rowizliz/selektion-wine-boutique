@@ -25,6 +25,14 @@ import santeroAstiImg from "@/assets/wines/santero-asti-fixed.jpg";
 import confidentChardonnayImg from "@/assets/wines/confident-chardonnay-fixed.jpg";
 import confidentZinfandelImg from "@/assets/wines/confident-zinfandel-fixed.jpg";
 
+export interface WineCharacteristics {
+  sweetness: number; // 0-10 Độ Ngọt / Dryness
+  body: number; // 0-10 Độ Đậm / Body  
+  tannin: number; // 0-10 Độ Chát / Tannin
+  acidity: number; // 0-10 Độ Chua / Acidity
+  fizzy?: number; // 0-10 Độ Sủi / Fizzy (for sparkling)
+}
+
 export interface Wine {
   id: string;
   name: string;
@@ -32,84 +40,148 @@ export interface Wine {
   grapes: string;
   price: string;
   description: string;
+  story?: string; // Câu chuyện chi tiết về chai rượu
   image: string;
   category: "red" | "white" | "sparkling";
   temperature?: string;
   alcohol?: string;
   pairing?: string;
   tastingNotes?: string;
+  flavorNotes?: string[]; // Nốt hương (e.g. ["cherry", "plum", "vanilla"])
+  characteristics?: WineCharacteristics;
+  vintage?: string; // Năm sản xuất
+  region?: string; // Vùng chi tiết hơn
 }
 
 export const wines: Wine[] = [
   {
     id: "1",
     name: "Terres Rares 2022",
+    vintage: "2022",
     origin: "Côtes du Tarn, France",
+    region: "Tây Nam nước Pháp",
     grapes: "Gamay, Braucol",
     price: "780,000₫",
-    description: "Rượu vang Pháp Terres Rares Braucol Gamay là chai vang đỏ ngon của nhà sản xuất Vignobles Gayrel, được nhập khẩu trực tiếp nguyên chai từ tiểu vùng Cotes du Tarn, Tây Nam nước Pháp. Vùng đất đa dạng của miền Nam Tarn, với đặc tính thổ nhưỡng đất sét-đá vôi, mang đến chiều sâu và khoáng chất tuyệt vời.",
+    description: "Rượu vang Pháp Terres Rares Braucol Gamay là chai vang đỏ ngon của nhà sản xuất Vignobles Gayrel, được nhập khẩu trực tiếp nguyên chai từ tiểu vùng Cotes du Tarn, Tây Nam nước Pháp.",
+    story: `Vùng đất đa dạng của miền Nam Tarn, với đặc tính thổ nhưỡng đất sét-đá vôi, mang đến chiều sâu và khoáng chất tuyệt vời, làm tăng thêm phẩm chất của nho. Những loại rượu vang đỏ quý hiếm này thường được sản xuất với số lượng hạn chế, khiến chúng đặc biệt được những người yêu rượu vang tìm kiếm sự chân thực và khám phá đánh giá cao.
+
+Braucol, còn được gọi là Fer Servadou, là một giống nho biểu tượng của Tây Nam nước Pháp, đặc biệt là ở vùng Tarn. Giống nho này thường được sử dụng trong các loại rượu vang pha trộn, nhưng một số nhà sản xuất rượu vang lại nhấn mạnh độc tính đặc đáo của nó trong các loại rượu vang đơn giống.
+
+Gợi ý kết hợp ẩm thực: Hương vị trái cây và tannin tan chảy hoàn hảo để khai vị với bạn bè hoặc một pizza, thỏ nướng, bí ngô và thịt xông khói hầm.`,
     image: terresRaresImg,
     category: "red",
     temperature: "14-16°C",
     alcohol: "13%",
     pairing: "Pizza, thỏ nướng, bí ngô và thịt xông khói hầm",
     tastingNotes: "Trái cây đỏ chín, mận, anh đào, khoáng chất nhẹ",
+    flavorNotes: ["cherry", "plum", "berry", "mineral"],
+    characteristics: {
+      sweetness: 2,
+      body: 5,
+      tannin: 4,
+      acidity: 5,
+    },
   },
   {
     id: "2",
     name: "Vigné-Lourac Merlot Prestige",
     origin: "Gaillac, France",
+    region: "Tây Nam nước Pháp",
     grapes: "Merlot",
     price: "780,000₫",
-    description: "Ra đời từ vùng Gaillac – một trong những vùng sản xuất rượu vang cổ xưa nhất nước Pháp, Vigné-Lourac Merlot Prestige mang trong mình hơi thở của lịch sử hơn 2.000 năm. Rượu khoác lên mình sắc đỏ ruby sâu thẳm, hương thơm mê hoặc với trái cây đen và đỏ chín như mận, mâm xôi, cassis.",
+    description: "Ra đời từ vùng Gaillac – một trong những vùng sản xuất rượu vang cổ xưa nhất nước Pháp, Vigné-Lourac Merlot Prestige mang trong mình hơi thở của lịch sử hơn 2.000 năm.",
+    story: `Rượu khoác lên mình sắc đỏ ruby sâu thẳm, hương thơm mê hoặc với trái cây đen và đỏ chín như mận, mâm xôi, cassis. Vị rượu đậm đà, tanin mềm mại, kết thúc bằng dư vị dài của gia vị và cam thảo.
+
+Vùng Gaillac nằm ở Tây Nam nước Pháp, là một trong những vùng trồng nho lâu đời nhất châu Âu với lịch sử hơn 2.000 năm. Khí hậu ôn hòa và đất đai màu mỡ tạo điều kiện lý tưởng cho giống Merlot phát triển.`,
     image: vigneLouracImg,
     category: "red",
     temperature: "15-18°C",
     alcohol: "14%",
     pairing: "Thịt đỏ, thịt gà và nhiều loại phô mai lâu năm, thịt Bò hầm rau củ",
     tastingNotes: "Mận, mâm xôi, cassis, gia vị nhẹ, cam thảo",
+    flavorNotes: ["plum", "raspberry", "blackberry", "spice", "licorice"],
+    characteristics: {
+      sweetness: 2,
+      body: 6,
+      tannin: 5,
+      acidity: 4,
+    },
   },
   {
     id: "3",
     name: "Beau Marais Reserve Selection",
     origin: "Costières de Nîmes, France",
+    region: "Miền Nam nước Pháp",
     grapes: "Blend",
     price: "450,000₫",
-    description: "Beau Marais Reserve Selection Prestige là chai vang đỏ phân khúc phổ thông đến từ vùng Costières de Nîmes, miền Nam nước Pháp. Rượu có màu đỏ ruby đậm, hương thơm rõ ràng của trái cây đen chín như Acai Berry, anh đào, mật ong.",
+    description: "Beau Marais Reserve Selection Prestige là chai vang đỏ phân khúc phổ thông đến từ vùng Costières de Nîmes, miền Nam nước Pháp.",
+    story: `Rượu có màu đỏ ruby đậm, hương thơm rõ ràng của trái cây đen chín như Acai Berry, anh đào, mật ong. Vị rượu cân bằng với tanin mềm mại và độ chua vừa phải.
+
+Costières de Nîmes là vùng sản xuất rượu vang nằm ở phía Nam của thung lũng Rhône, được biết đến với khí hậu Địa Trung Hải và đất đá cuội độc đáo.`,
     image: beauMaraisImg,
     category: "red",
     temperature: "14-16°C",
     alcohol: "14%",
     pairing: "Pizza Hải sản, Phô mai mềm: Brie, Camembert, Mozzarella",
     tastingNotes: "Acai Berry, anh đào, mật ong, gia vị nhẹ",
+    flavorNotes: ["cherry", "berry", "honey", "spice"],
+    characteristics: {
+      sweetness: 3,
+      body: 5,
+      tannin: 4,
+      acidity: 4,
+    },
   },
   {
     id: "4",
     name: "Roberto Riga Rosso",
     origin: "Sardegna, Italy",
+    region: "Đảo Sardegna, Ý",
     grapes: "Cannonau",
     price: "520,000₫",
-    description: "Rượu vang Roberto Riga Rosso là sản phẩm tiêu biểu đến từ vùng Sardegna, một hòn đảo lớn nằm ở phía Tây nước Ý. Rượu có màu đỏ ruby đậm, hương thơm nổi bật của trái cây chín đỏ, anh đào, xen lẫn hương hoa - gia vị khô và thảo mộc.",
+    description: "Rượu vang Roberto Riga Rosso là sản phẩm tiêu biểu đến từ vùng Sardegna, một hòn đảo lớn nằm ở phía Tây nước Ý.",
+    story: `Rượu có màu đỏ ruby đậm, hương thơm nổi bật của trái cây chín đỏ, anh đào, xen lẫn hương hoa - gia vị khô và thảo mộc.
+
+Cannonau là giống nho bản địa của Sardegna, được cho là có nguồn gốc từ hơn 3.000 năm trước. Giống nho này tạo ra những chai vang đỏ đậm đà với hàm lượng antioxidant cao.`,
     image: robertoRigaImg,
     category: "red",
     temperature: "16-18°C",
     alcohol: "13%",
     pairing: "Thịt đỏ, thịt nướng, mì Ý, pizza và các món ăn Địa Trung Hải",
     tastingNotes: "Trái cây đỏ chín, anh đào, hoa, gia vị khô, thảo mộc",
+    flavorNotes: ["cherry", "berry", "floral", "herb", "spice"],
+    characteristics: {
+      sweetness: 2,
+      body: 5,
+      tannin: 5,
+      acidity: 5,
+    },
   },
   {
     id: "5",
     name: "Bervini Brut",
     origin: "Friuli-Venezia Giulia, Italy",
+    region: "Đông Bắc nước Ý",
     grapes: "Glera",
     price: "680,000₫",
-    description: "Bervini Brut là vang sủi được sản xuất từ giống nho Glera kết hợp cùng một số giống nho trắng địa phương. Rượu mang phong cách tươi mới, thanh lịch và dễ thưởng thức, màu sắc sáng trong, bọt mịn và đều.",
+    description: "Bervini Brut là vang sủi được sản xuất từ giống nho Glera kết hợp cùng một số giống nho trắng địa phương.",
+    story: `Rượu mang phong cách tươi mới, thanh lịch và dễ thưởng thức, màu sắc sáng trong, bọt mịn và đều. Hương thơm tinh tế của táo xanh, lê và hoa trắng.
+
+Friuli-Venezia Giulia là vùng sản xuất vang trắng hàng đầu của Ý, nổi tiếng với các loại vang có độ tinh khiết và sự thanh lịch đặc trưng.`,
     image: berviniBrutImg,
     category: "sparkling",
     temperature: "5-8°C",
     alcohol: "11%",
     pairing: "Vang khai vị, các món ăn nhẹ, hải sản, cá",
     tastingNotes: "Táo xanh, lê, hoa trắng, citrus, bọt mịn",
+    flavorNotes: ["apple", "pear", "floral", "citrus"],
+    characteristics: {
+      sweetness: 2,
+      body: 3,
+      tannin: 1,
+      acidity: 6,
+      fizzy: 7,
+    },
   },
   {
     id: "6",
