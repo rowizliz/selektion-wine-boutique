@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "./components/ScrollToTop";
-import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
 import Index from "./pages/Index";
 import Collection from "./pages/Collection";
 import WineDetail from "./pages/WineDetail";
@@ -30,7 +30,7 @@ const App = () => (
             <Route path="/collection/:id" element={<WineDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/admin/flavor-icons" element={<ProtectedRoute><AdminFlavorIcons /></ProtectedRoute>} />
+            <Route path="/admin/flavor-icons" element={<AdminRoute><AdminFlavorIcons /></AdminRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
