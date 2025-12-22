@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 import { Loader2 } from "lucide-react";
@@ -9,9 +9,15 @@ interface AdminRouteProps {
 }
 
 const AdminRoute = ({ children }: AdminRouteProps) => {
-  const [session, setSession] = useState<Session | null>(null);
+  const location = useLocation();
+
+  // undefined = chưa biết session (đang load), null = chưa đăng nhập, Session = đã đăng nhập
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const [sessionLoaded, setSessionLoaded] = useState(false);
+
   const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [adminChecked, setAdminChecked] = useState(false);
+  const [adminLoading, setAdminLoading] = useState(false);
 
   const userId = useMemo(() => session?.user?.id ?? null, [session?.user?.id]);
 
@@ -19,17 +25,26 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
   useEffect(() => {
     let mounted = true;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, nextSession) => {
-        if (!mounted) return;
-        setSession(nextSession);
-      }
-    );
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       if (!mounted) return;
-      setSession(session);
+      setSession(nextSession);
+      setSessionLoaded(true);
     });
+
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        if (!mounted) return;
+        setSession(session);
+        setSessionLoaded(true);
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setSession(null);
+        setSessionLoaded(true);
+      });
 
     return () => {
       mounted = false;
@@ -42,11 +57,15 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
     let cancelled = false;
 
     const checkAdmin = async () => {
-      setLoading(true);
+      if (!sessionLoaded) return;
+
+      setAdminLoading(true);
+      setAdminChecked(false);
 
       if (!userId) {
         setIsAdmin(false);
-        setLoading(false);
+        setAdminChecked(true);
+        setAdminLoading(false);
         return;
       }
 
@@ -54,7 +73,8 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 
       if (cancelled) return;
       setIsAdmin(!error && Boolean(data));
-      setLoading(false);
+      setAdminChecked(true);
+      setAdminLoading(false);
     };
 
     // Defer to avoid calling backend methods inside auth callbacks.
@@ -65,9 +85,9 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [sessionLoaded, userId]);
 
-  if (loading) {
+  if (!sessionLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -75,7 +95,26 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
     );
   }
 
-  if (!session || !isAdmin) {
+  const returnTo = `${location.pathname}${location.search}`;
+
+  if (!session) {
+    return (
+      <Navigate
+        to={`/auth?returnTo=${encodeURIComponent(returnTo)}`}
+        replace
+      />
+    );
+  }
+
+  if (adminLoading || !adminChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
     return <Navigate to="/" replace />;
   }
 
@@ -83,4 +122,5 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 };
 
 export default AdminRoute;
+
 
