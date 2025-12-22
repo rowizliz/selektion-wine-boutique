@@ -104,13 +104,26 @@ const WineDetail = () => {
 
                 {/* Quick Info Grid */}
                 <div className="grid grid-cols-2 gap-3 mb-8">
-                  <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className={`flex items-start gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors ${wine.grapes.split(',').length > 2 ? 'col-span-2' : ''}`}>
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <WineIcon className="w-5 h-5 text-primary/70" />
                     </div>
-                    <div>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Giống Nho</p>
-                      <p className="text-sm font-medium">{wine.grapes}</p>
+                    <div className="min-w-0">
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1">Giống Nho</p>
+                      {wine.grapes.split(',').length > 2 ? (
+                        <div className="flex flex-wrap gap-1.5">
+                          {wine.grapes.split(',').map((grape, index) => (
+                            <span 
+                              key={index} 
+                              className="inline-block px-2.5 py-1 text-xs font-medium bg-primary/5 border border-primary/10 rounded-full text-foreground/90"
+                            >
+                              {grape.trim()}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm font-medium">{wine.grapes}</p>
+                      )}
                     </div>
                   </div>
                   
