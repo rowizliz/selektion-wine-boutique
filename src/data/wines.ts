@@ -37,6 +37,7 @@ export interface Wine {
   temperature?: string;
   alcohol?: string;
   pairing?: string;
+  tastingNotes?: string;
 }
 
 export const wines: Wine[] = [
@@ -52,6 +53,7 @@ export const wines: Wine[] = [
     temperature: "14-16°C",
     alcohol: "13%",
     pairing: "Pizza, thỏ nướng, bí ngô và thịt xông khói hầm",
+    tastingNotes: "Trái cây đỏ chín, mận, anh đào, khoáng chất nhẹ",
   },
   {
     id: "2",
@@ -65,6 +67,7 @@ export const wines: Wine[] = [
     temperature: "15-18°C",
     alcohol: "14%",
     pairing: "Thịt đỏ, thịt gà và nhiều loại phô mai lâu năm, thịt Bò hầm rau củ",
+    tastingNotes: "Mận, mâm xôi, cassis, gia vị nhẹ, cam thảo",
   },
   {
     id: "3",
@@ -78,6 +81,7 @@ export const wines: Wine[] = [
     temperature: "14-16°C",
     alcohol: "14%",
     pairing: "Pizza Hải sản, Phô mai mềm: Brie, Camembert, Mozzarella",
+    tastingNotes: "Acai Berry, anh đào, mật ong, gia vị nhẹ",
   },
   {
     id: "4",
@@ -91,6 +95,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "13%",
     pairing: "Thịt đỏ, thịt nướng, mì Ý, pizza và các món ăn Địa Trung Hải",
+    tastingNotes: "Trái cây đỏ chín, anh đào, hoa, gia vị khô, thảo mộc",
   },
   {
     id: "5",
@@ -104,6 +109,7 @@ export const wines: Wine[] = [
     temperature: "5-8°C",
     alcohol: "11%",
     pairing: "Vang khai vị, các món ăn nhẹ, hải sản, cá",
+    tastingNotes: "Táo xanh, lê, hoa trắng, citrus, bọt mịn",
   },
   {
     id: "6",
@@ -117,6 +123,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "14.5%",
     pairing: "Thịt nai, bê, cừu, thịt hầm rau củ, phô mai trưởng thành",
+    tastingNotes: "Anh đào đen, mâm xôi đen, xạ hương, vani, gia vị",
   },
   {
     id: "7",
@@ -130,6 +137,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "15%",
     pairing: "Thịt đỏ, thịt nướng, món hầm, phô mai cứng",
+    tastingNotes: "Trái cây đen, gỗ sồi, vani, tanin mềm mại",
   },
   {
     id: "8",
@@ -143,6 +151,7 @@ export const wines: Wine[] = [
     temperature: "14-16°C",
     alcohol: "14%",
     pairing: "Các món pasta, thịt nướng, món hầm và phô mai",
+    tastingNotes: "Mận khô, nho khô, chocolate, vani, gia vị ngọt",
   },
   {
     id: "9",
@@ -156,6 +165,7 @@ export const wines: Wine[] = [
     temperature: "16°C",
     alcohol: "14%",
     pairing: "Thịt đỏ, thịt nướng, món hầm hoặc phô mai",
+    tastingNotes: "Trái cây đen chín, gỗ sồi, tanin mịn, dư vị dài",
   },
   {
     id: "10",
@@ -169,6 +179,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "14%",
     pairing: "Thịt nướng, thịt thú rừng và pho mát lâu năm",
+    tastingNotes: "Anh đào, mận chín, vani, chocolate, gia vị cay",
   },
   {
     id: "11",
@@ -182,6 +193,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "14%",
     pairing: "Thịt đỏ đậm đà và phô mai trưởng thành",
+    tastingNotes: "Trái cây đen chín, cam thảo, sô cô la, khói, gia vị mạnh",
   },
   {
     id: "12",
@@ -195,6 +207,7 @@ export const wines: Wine[] = [
     temperature: "15-18°C",
     alcohol: "14%",
     pairing: "Thịt đỏ, bít tết và phô mai lâu năm",
+    tastingNotes: "Mận chín, dâu tây, lá nguyệt quế, tanin mịn",
   },
   {
     id: "13",
@@ -208,6 +221,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "15%",
     pairing: "Ẩm thực Địa Trung Hải, các món sốt thịt, thịt quay, thịt thú rừng",
+    tastingNotes: "Mứt mâm xôi, anh đào, chocolate đen, gia vị, da thuộc",
   },
   {
     id: "14",
@@ -221,6 +235,7 @@ export const wines: Wine[] = [
     temperature: "15-18°C",
     alcohol: "14.5%",
     pairing: "Các món thịt nướng như bò, heo, cừu, phô mai lâu năm",
+    tastingNotes: "Mận chín, trái cây đỏ, chocolate, anh đào ngọt",
   },
   {
     id: "15",
@@ -234,6 +249,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "14%",
     pairing: "Ẩm thực Địa Trung Hải, các món sốt thịt, thịt nướng, thịt thú rừng",
+    tastingNotes: "Mứt anh đào, cherry đen, chocolate, vani, gia vị",
   },
   {
     id: "16",
@@ -247,6 +263,7 @@ export const wines: Wine[] = [
     temperature: "14-16°C",
     alcohol: "15%",
     pairing: "Các món ăn truyền thống Địa Trung Hải, thịt quay, thịt thú rừng",
+    tastingNotes: "Trái cây đen đậm đặc, đất ẩm, da thuộc, gia vị phức hợp",
   },
   {
     id: "17",
@@ -260,6 +277,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "15%",
     pairing: "Thịt đỏ, thịt thú rừng và các loại phô mai đậm vị",
+    tastingNotes: "Dâu đen, nho đen, anh đào, gia vị nồng, tanin đậm",
   },
   {
     id: "18",
@@ -273,6 +291,7 @@ export const wines: Wine[] = [
     temperature: "5-8°C",
     alcohol: "5.5%",
     pairing: "Vang khai vị, trái cây tươi, bánh ngọt, hạt rang, phô mai lâu năm",
+    tastingNotes: "Hoa cơm cháy, đào trắng, mật ong, xoài, bọt mịn",
   },
   {
     id: "19",
@@ -286,6 +305,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "14.5%",
     pairing: "Thịt đỏ, bò bít tết, mì ống, phi lê thịt lợn hoặc sô cô la đen",
+    tastingNotes: "Anh đào đen, cam thảo, hoa hồng khô, gỗ sồi, tanin mịn",
   },
   {
     id: "20",
@@ -299,6 +319,7 @@ export const wines: Wine[] = [
     temperature: "12°C",
     alcohol: "13%",
     pairing: "Salad rau xanh, hải sản, cá tươi và các món nhẹ",
+    tastingNotes: "Bưởi, chanh, cỏ tươi, khoáng chất, độ chua sống động",
   },
   {
     id: "21",
@@ -312,6 +333,7 @@ export const wines: Wine[] = [
     temperature: "16°C",
     alcohol: "14%",
     pairing: "Thịt nướng, BBQ, rau củ nướng và các món ăn đậm vị",
+    tastingNotes: "Anh đào chín, mâm xôi đen, ớt xanh, thảo mộc, gia vị",
   },
   {
     id: "22",
@@ -325,6 +347,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "14.5%",
     pairing: "Thịt đỏ, món hầm hoặc phô mai lâu năm",
+    tastingNotes: "Trái cây đen phức hợp, gỗ sồi Pháp, gia vị, tanin thanh lịch",
   },
   {
     id: "23",
@@ -338,6 +361,7 @@ export const wines: Wine[] = [
     temperature: "4-6°C",
     alcohol: "7%",
     pairing: "Vang khai vị, thịt trắng, hải sản, cá và các món ăn nhẹ",
+    tastingNotes: "Hoa cơm cháy, đào, nho Moscato, mật ong, bọt mịn sống động",
   },
   {
     id: "24",
@@ -351,6 +375,7 @@ export const wines: Wine[] = [
     temperature: "7-10°C",
     alcohol: "13.5%",
     pairing: "Thịt trắng, cá, hải sản, phô mai hoặc các món ăn nhẹ",
+    tastingNotes: "Táo vàng, lê, đào trắng, vani nhẹ, bơ, khoáng chất",
   },
   {
     id: "25",
@@ -364,6 +389,7 @@ export const wines: Wine[] = [
     temperature: "16-18°C",
     alcohol: "14.5%",
     pairing: "Các món nướng, thịt BBQ, pizza, burger, phô mai lâu năm",
+    tastingNotes: "Nho đen, nam việt quất, anh đào chín, tiêu đen, vani",
   },
 ];
 

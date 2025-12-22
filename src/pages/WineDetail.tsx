@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { getWineById, wines } from "@/data/wines";
-import { ArrowLeft, Thermometer, Wine as WineIcon, UtensilsCrossed } from "lucide-react";
+import { ArrowLeft, Thermometer, Wine as WineIcon, UtensilsCrossed, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const WineDetail = () => {
@@ -106,6 +106,16 @@ const WineDetail = () => {
                     </div>
                   </div>
                   
+                  {wine.tastingNotes && (
+                    <div className="flex items-start gap-3">
+                      <Sparkles className="w-5 h-5 text-muted-foreground mt-0.5" />
+                      <div>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Tasting Notes</p>
+                        <p className="text-sm">{wine.tastingNotes}</p>
+                      </div>
+                    </div>
+                  )}
+                  
                   {wine.temperature && (
                     <div className="flex items-start gap-3">
                       <Thermometer className="w-5 h-5 text-muted-foreground mt-0.5" />
@@ -129,7 +139,7 @@ const WineDetail = () => {
                   )}
                   
                   {wine.pairing && (
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-3 col-span-2">
                       <UtensilsCrossed className="w-5 h-5 text-muted-foreground mt-0.5" />
                       <div>
                         <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Food Pairing</p>
