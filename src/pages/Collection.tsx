@@ -3,6 +3,16 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 
+// Wine images
+import terresRaresImg from "@/assets/wines/terres-rares.jpg";
+import vigneLouracImg from "@/assets/wines/vigne-lourac.jpg";
+import beauMaraisImg from "@/assets/wines/beau-marais.jpg";
+import robertoRigaImg from "@/assets/wines/roberto-riga.jpg";
+import berviniBrutImg from "@/assets/wines/bervini-brut.jpg";
+import chateauHautBazignanImg from "@/assets/wines/chateau-haut-bazignan.jpg";
+import chateauLeBordieuImg from "@/assets/wines/chateau-le-bordieu.jpg";
+import massoAnticoImg from "@/assets/wines/masso-antico.jpg";
+
 interface Wine {
   id: string;
   name: string;
@@ -10,6 +20,7 @@ interface Wine {
   grapes: string;
   price: string;
   description: string;
+  image: string;
 }
 
 const wines: Wine[] = [
@@ -20,6 +31,7 @@ const wines: Wine[] = [
     grapes: "Gamay, Braucol",
     price: "780,000₫",
     description: "Elegant red wine with notes of strawberry, cherry, banana, and raspberry.",
+    image: terresRaresImg,
   },
   {
     id: "2",
@@ -28,6 +40,7 @@ const wines: Wine[] = [
     grapes: "Merlot",
     price: "780,000₫",
     description: "Deep ruby color with aromas of black fruits, plum, raspberry, and cocoa.",
+    image: vigneLouracImg,
   },
   {
     id: "3",
@@ -36,6 +49,7 @@ const wines: Wine[] = [
     grapes: "Blend",
     price: "450,000₫",
     description: "Approachable wine with honey and earthy notes, perfect for daily enjoyment.",
+    image: beauMaraisImg,
   },
   {
     id: "4",
@@ -44,6 +58,7 @@ const wines: Wine[] = [
     grapes: "Cannonau",
     price: "520,000₫",
     description: "Traditional Italian style with cherry, wild herbs, and tobacco undertones.",
+    image: robertoRigaImg,
   },
   {
     id: "5",
@@ -52,6 +67,7 @@ const wines: Wine[] = [
     grapes: "Glera",
     price: "680,000₫",
     description: "Elegant sparkling wine with citrus, honey, orange peel, and green apple.",
+    image: berviniBrutImg,
   },
   {
     id: "6",
@@ -60,6 +76,7 @@ const wines: Wine[] = [
     grapes: "Cabernet Sauvignon, Merlot",
     price: "650,000₫",
     description: "Classic Bordeaux with raspberry, blackberry, and musk notes.",
+    image: chateauHautBazignanImg,
   },
   {
     id: "7",
@@ -68,14 +85,16 @@ const wines: Wine[] = [
     grapes: "Merlot, Cabernet Sauvignon",
     price: "650,000₫",
     description: "Rich with black plum, cedar, butter, tobacco, and cherry complexity.",
+    image: chateauLeBordieuImg,
   },
   {
     id: "8",
-    name: "Gran Passione Rosso",
-    origin: "Veneto, Italy",
-    grapes: "Corvina, Merlot",
-    price: "890,000₫",
+    name: "Masso Antico Primitivo",
+    origin: "Puglia, Italy",
+    grapes: "Primitivo",
+    price: "650,000₫",
     description: "Lush Appassimento style with dried fruit intensity and velvety texture.",
+    image: massoAnticoImg,
   },
 ];
 
@@ -115,12 +134,12 @@ const Collection = () => {
                   className={`group opacity-0 animate-slide-up`}
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className="aspect-[3/4] bg-secondary mb-5 overflow-hidden">
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground group-hover:scale-105 transition-transform duration-700 ease-in-out">
-                      <div className="text-center p-6">
-                        <div className="w-12 h-36 border border-muted-foreground/30 mx-auto mb-3 rounded-t-full" />
-                      </div>
-                    </div>
+                  <div className="aspect-[3/4] bg-secondary mb-5 overflow-hidden flex items-center justify-center p-6">
+                    <img 
+                      src={wine.image} 
+                      alt={wine.name}
+                      className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                    />
                   </div>
                   <div className="space-y-2">
                     <h3 className="text-base font-serif group-hover:text-muted-foreground transition-colors duration-300 leading-tight">
