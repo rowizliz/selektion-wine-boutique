@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Session } from "@supabase/supabase-js";
+import type { Session } from "@supabase/supabase-js";
 import { Loader2 } from "lucide-react";
 
 interface AdminRouteProps {
@@ -13,41 +13,59 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const userId = useMemo(() => session?.user?.id ?? null, [session?.user?.id]);
+
+  // Keep session in sync with auth state.
   useEffect(() => {
-    const checkAdminRole = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      
-      if (session) {
-        const { data, error } = await supabase.rpc('is_admin');
-        if (!error && data) {
-          setIsAdmin(true);
-        }
-      }
-      setLoading(false);
-    };
-    
-    checkAdminRole();
-    
+    let mounted = true;
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        if (session) {
-          const { data, error } = await supabase.rpc('is_admin');
-          if (!error && data) {
-            setIsAdmin(true);
-          } else {
-            setIsAdmin(false);
-          }
-        } else {
-          setIsAdmin(false);
-        }
-        setLoading(false);
+      (_event, nextSession) => {
+        if (!mounted) return;
+        setSession(nextSession);
       }
     );
 
-    return () => subscription.unsubscribe();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      setSession(session);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
+
+  // Check admin role when user changes.
+  useEffect(() => {
+    let cancelled = false;
+
+    const checkAdmin = async () => {
+      setLoading(true);
+
+      if (!userId) {
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase.rpc("is_admin");
+
+      if (cancelled) return;
+      setIsAdmin(!error && Boolean(data));
+      setLoading(false);
+    };
+
+    // Defer to avoid calling backend methods inside auth callbacks.
+    setTimeout(() => {
+      void checkAdmin();
+    }, 0);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
 
   if (loading) {
     return (
@@ -65,3 +83,4 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 };
 
 export default AdminRoute;
+
