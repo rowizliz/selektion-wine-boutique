@@ -13,6 +13,7 @@ import {
   Sparkles,
   MapPin,
   Percent,
+  Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import WineCharacteristicsBar from "@/components/wine/WineCharacteristicsBar";
@@ -320,6 +321,20 @@ const WineDetail = () => {
                           Vùng
                         </p>
                         <p className="text-sm font-medium">{wine.region}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {wine.vintage && (
+                    <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Calendar className="w-5 h-5 text-primary/70" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                          Niên Vụ
+                        </p>
+                        <p className="text-sm font-medium">{wine.vintage}</p>
                       </div>
                     </div>
                   )}
