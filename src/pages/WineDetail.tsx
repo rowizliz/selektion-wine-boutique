@@ -272,46 +272,55 @@ const WineDetail = () => {
                   </p>
                 </div>
 
-                {/* Quick Info Grid - Compact */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-8">
+                {/* Quick Info Grid - Compact with dividers */}
+                <div className="flex flex-wrap justify-center sm:justify-start gap-y-4 mb-8">
                   {wine.temperature && (
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1.5 mb-1.5">
-                        <Thermometer className="w-3.5 h-3.5 text-primary/50" />
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
-                          Nhiệt Độ
-                        </p>
+                    <>
+                      <div className="text-center px-4 sm:px-6">
+                        <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                          <Thermometer className="w-3.5 h-3.5 text-primary/50" />
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
+                            Nhiệt Độ
+                          </p>
+                        </div>
+                        <p className="text-sm font-medium text-foreground">{wine.temperature}</p>
                       </div>
-                      <p className="text-sm font-medium text-foreground">{wine.temperature}</p>
-                    </div>
+                      <div className="hidden sm:block w-px h-10 bg-border/40 self-center" />
+                    </>
                   )}
 
                   {wine.alcohol && (
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1.5 mb-1.5">
-                        <Percent className="w-3.5 h-3.5 text-primary/50" />
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
-                          Nồng Độ
-                        </p>
+                    <>
+                      <div className="text-center px-4 sm:px-6">
+                        <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                          <Percent className="w-3.5 h-3.5 text-primary/50" />
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
+                            Nồng Độ
+                          </p>
+                        </div>
+                        <p className="text-sm font-medium text-foreground">{wine.alcohol}</p>
                       </div>
-                      <p className="text-sm font-medium text-foreground">{wine.alcohol}</p>
-                    </div>
+                      <div className="hidden sm:block w-px h-10 bg-border/40 self-center" />
+                    </>
                   )}
 
                   {wine.vintage && (
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1.5 mb-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-primary/50" />
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
-                          Niên Vụ
-                        </p>
+                    <>
+                      <div className="text-center px-4 sm:px-6">
+                        <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                          <Calendar className="w-3.5 h-3.5 text-primary/50" />
+                          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
+                            Niên Vụ
+                          </p>
+                        </div>
+                        <p className="text-sm font-medium text-foreground">{wine.vintage}</p>
                       </div>
-                      <p className="text-sm font-medium text-foreground">{wine.vintage}</p>
-                    </div>
+                      <div className="hidden sm:block w-px h-10 bg-border/40 self-center" />
+                    </>
                   )}
 
                   {wine.region && (
-                    <div className="text-center">
+                    <div className="text-center px-4 sm:px-6">
                       <div className="flex items-center justify-center gap-1.5 mb-1.5">
                         <MapPin className="w-4 h-4 text-primary/50" />
                         <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
