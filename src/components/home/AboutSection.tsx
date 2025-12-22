@@ -19,29 +19,29 @@ const AboutSection = () => {
           {/* Content */}
           <div className="space-y-8 order-1 lg:order-2">
             <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground">
-              Our Philosophy
+              Triết Lý Của Chúng Tôi
             </p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-light leading-tight">
-              A commitment to<br />
-              <span className="italic">excellence</span>
+              Cam kết về<br />
+              <span className="italic">sự xuất sắc</span>
             </h2>
             <div className="space-y-6 text-muted-foreground leading-relaxed">
               <p>
-                Sélection was born from a passion for discovering exceptional wines 
-                that tell stories of their terroir. We travel to the heart of France 
-                and Italy, seeking out artisanal producers who craft wines with 
-                dedication and authenticity.
+                Sélection được sinh ra từ niềm đam mê khám phá những chai rượu vang 
+                đặc biệt, mang trong mình câu chuyện về vùng đất. Chúng tôi đến tận 
+                trái tim của Pháp và Ý, tìm kiếm những nhà sản xuất thủ công tạo ra 
+                rượu vang với sự tận tâm và chân thực.
               </p>
               <p>
-                Each wine in our collection is personally selected, ensuring that 
-                every bottle meets our exacting standards of quality, character, 
-                and value.
+                Mỗi chai rượu trong bộ sưu tập đều được chọn lọc cá nhân, đảm bảo 
+                rằng mọi chai đều đáp ứng tiêu chuẩn khắt khe về chất lượng, 
+                đặc tính và giá trị.
               </p>
             </div>
             <div className="pt-4">
               <Button asChild variant="minimal" size="default">
                 <Link to="/about">
-                  Learn More
+                  Tìm Hiểu Thêm
                 </Link>
               </Button>
             </div>

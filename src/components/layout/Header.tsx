@@ -7,9 +7,9 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Collection", href: "/collection" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
+    { name: "Bộ Sưu Tập", href: "/collection" },
+    { name: "Về Chúng Tôi", href: "/about" },
+    { name: "Liên Hệ", href: "/contact" },
   ];
 
   return (
@@ -20,7 +20,7 @@ const Header = () => {
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2 -ml-2 text-foreground hover:text-muted-foreground transition-colors"
-            aria-label="Toggle menu"
+            aria-label="Mở menu"
           >
             {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -48,10 +48,10 @@ const Header = () => {
 
           {/* Right side icons */}
           <div className="flex items-center space-x-4">
-            <Link to="/chat" aria-label="Chat">
+            <Link to="/chat" aria-label="Trò chuyện">
               <MessageCircle className="h-5 w-5 text-foreground hover:text-muted-foreground transition-colors duration-300" />
             </Link>
-            <Link to="/cart" aria-label="Shopping bag">
+            <Link to="/cart" aria-label="Giỏ hàng">
               <ShoppingBag className="h-5 w-5 text-foreground hover:text-muted-foreground transition-colors duration-300" />
             </Link>
           </div>
