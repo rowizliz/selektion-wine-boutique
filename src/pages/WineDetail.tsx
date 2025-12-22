@@ -69,15 +69,11 @@ const WineDetail = () => {
             <div className="grid grid-cols-1 lg:grid-cols-[1fr,1.2fr] gap-8 lg:gap-16 items-start">
               {/* Image - Sticky on desktop */}
               <div className="lg:sticky lg:top-28">
-                <div className="relative bg-gradient-to-b from-secondary/20 to-secondary/5 rounded-2xl flex items-center justify-center p-6 md:p-10 lg:p-12 min-h-[500px] lg:min-h-[700px]">
-                  {/* Decorative elements */}
-                  <div className="absolute inset-0 rounded-2xl border border-border/30" />
-                  <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-                  
+                <div className="flex items-center justify-center min-h-[500px] lg:min-h-[700px]">
                   <img 
                     src={wine.image} 
                     alt={wine.name}
-                    className="w-auto h-full max-h-[420px] lg:max-h-[600px] object-contain animate-fade-in drop-shadow-2xl"
+                    className="w-auto h-full max-h-[420px] lg:max-h-[600px] object-contain animate-fade-in"
                   />
                 </div>
               </div>
@@ -155,6 +151,17 @@ const WineDetail = () => {
                   )}
                 </div>
 
+                {/* Flavor Notes - Moved before Wine Characteristics */}
+                {wine.flavorNotes && wine.flavorNotes.length > 0 && (
+                  <div className="mb-8">
+                    <h3 className="text-xs font-serif mb-4 uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-primary/70" />
+                      Nốt Hương
+                    </h3>
+                    <FlavorNotes notes={wine.flavorNotes} />
+                  </div>
+                )}
+
                 {/* Wine Characteristics */}
                 {wine.characteristics && (
                   <div className="mb-8 p-6 bg-gradient-to-br from-secondary/20 to-secondary/5 rounded-xl border border-border/30">
@@ -183,17 +190,6 @@ const WineDetail = () => {
                         />
                       )}
                     </div>
-                  </div>
-                )}
-
-                {/* Flavor Notes */}
-                {wine.flavorNotes && wine.flavorNotes.length > 0 && (
-                  <div className="mb-8">
-                    <h3 className="text-xs font-serif mb-4 uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-primary/70" />
-                      Nốt Hương
-                    </h3>
-                    <FlavorNotes notes={wine.flavorNotes} />
                   </div>
                 )}
 
