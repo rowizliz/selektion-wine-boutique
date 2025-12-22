@@ -32,21 +32,19 @@ const FeaturedWines = () => {
               to={`/collection/${wine.id}`}
               className={`group opacity-0 animate-slide-up stagger-${Math.min(index + 1, 5)}`}
             >
-              <div className="aspect-[3/4] bg-secondary mb-4 overflow-hidden">
-                <div className="w-full h-full flex items-center justify-center text-muted-foreground group-hover:scale-105 transition-transform duration-700 ease-luxury">
-                  {wine.image ? (
-                    <img 
-                      src={withImgCacheBust(wine.image)} 
-                      alt={wine.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-center p-8">
-                      <div className="w-16 h-48 border border-muted-foreground/30 mx-auto mb-4 rounded-t-full" />
-                      <p className="text-xs tracking-widest uppercase">Chai Rượu</p>
-                    </div>
-                  )}
-                </div>
+              <div className="aspect-[3/4] bg-white mb-4 overflow-hidden flex items-end justify-center p-4 rounded-sm">
+                {wine.image ? (
+                  <img 
+                    src={withImgCacheBust(wine.image)} 
+                    alt={wine.name}
+                    className="w-auto h-[200px] md:h-[220px] object-contain group-hover:scale-105 transition-transform duration-700 ease-luxury"
+                  />
+                ) : (
+                  <div className="text-center p-8">
+                    <div className="w-16 h-48 border border-muted-foreground/30 mx-auto mb-4 rounded-t-full" />
+                    <p className="text-xs tracking-widest uppercase">Chai Rượu</p>
+                  </div>
+                )}
               </div>
               <div className="space-y-2">
                 <h3 className="text-lg font-serif group-hover:text-muted-foreground transition-colors duration-300">
