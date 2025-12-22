@@ -1,10 +1,39 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X, ShoppingBag, MessageCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, ShoppingBag, MessageCircle, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
 
   const navLinks = [
     { name: "Bộ Sưu Tập", href: "/collection" },
@@ -54,6 +83,29 @@ const Header = () => {
             <Link to="/cart" aria-label="Giỏ hàng">
               <ShoppingBag className="h-5 w-5 text-foreground hover:text-muted-foreground transition-colors duration-300" />
             </Link>
+            
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-xs font-medium">
+                    {user.email?.charAt(0).toUpperCase()}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem className="text-xs text-muted-foreground cursor-default">
+                    {user.email}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout} className="text-xs cursor-pointer">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Đăng xuất
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth" aria-label="Đăng nhập">
+                <User className="h-5 w-5 text-foreground hover:text-muted-foreground transition-colors duration-300" />
+              </Link>
+            )}
           </div>
         </div>
 
@@ -71,6 +123,26 @@ const Header = () => {
                   {link.name}
                 </Link>
               ))}
+              {!user && (
+                <Link
+                  to="/auth"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block text-sm font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors"
+                >
+                  Đăng Nhập
+                </Link>
+              )}
+              {user && (
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="block text-sm font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors"
+                >
+                  Đăng Xuất
+                </button>
+              )}
             </div>
           </div>
         )}
