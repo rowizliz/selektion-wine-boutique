@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import selectionCover from "@/assets/selection-cover.jpg";
 
 const AboutSection = () => {
   return (
@@ -7,13 +8,12 @@ const AboutSection = () => {
       <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Image */}
-          <div className="aspect-[4/5] bg-background overflow-hidden order-2 lg:order-1">
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-              <div className="text-center p-8">
-                <p className="text-xs tracking-widest uppercase mb-4">Sélection</p>
-                <p className="font-serif text-4xl italic">Catalog No.1</p>
-              </div>
-            </div>
+          <div className="aspect-[4/5] overflow-hidden order-2 lg:order-1 group">
+            <img 
+              src={selectionCover} 
+              alt="Sélection Wine & Gift Catalog" 
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
           </div>
 
           {/* Content */}
