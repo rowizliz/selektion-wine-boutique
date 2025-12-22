@@ -64,83 +64,101 @@ const WineDetail = () => {
         </section>
 
         {/* Wine Detail - Hero Section */}
-        <section className="py-12 md:py-20 bg-background">
+        <section className="py-8 md:py-16 bg-background">
           <div className="container">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-              {/* Image */}
-              <div className="flex items-center justify-center">
-                <div className="aspect-[3/4] w-full max-w-md bg-white rounded-sm flex items-center justify-center p-8 lg:p-12 shadow-lg">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr,1.2fr] gap-8 lg:gap-16 items-start">
+              {/* Image - Sticky on desktop */}
+              <div className="lg:sticky lg:top-28">
+                <div className="relative bg-gradient-to-b from-secondary/20 to-secondary/5 rounded-2xl flex items-center justify-center p-6 md:p-10 lg:p-12 min-h-[500px] lg:min-h-[700px]">
+                  {/* Decorative elements */}
+                  <div className="absolute inset-0 rounded-2xl border border-border/30" />
+                  <div className="absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+                  
                   <img 
                     src={wine.image} 
                     alt={wine.name}
-                    className="max-w-full max-h-full object-contain animate-fade-in"
+                    className="w-auto h-full max-h-[420px] lg:max-h-[600px] object-contain animate-fade-in drop-shadow-2xl"
                   />
                 </div>
               </div>
 
               {/* Info */}
-              <div className="flex flex-col justify-center animate-fade-in" style={{ animationDelay: "0.2s" }}>
-                <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground mb-3">
-                  {wine.category === "red" ? "Red Wine" : wine.category === "white" ? "White Wine" : "Sparkling Wine"}
-                </p>
+              <div className="flex flex-col animate-fade-in" style={{ animationDelay: "0.2s" }}>
+                {/* Category Badge */}
+                <div className="inline-flex self-start mb-4">
+                  <span className="px-3 py-1 text-[10px] tracking-[0.25em] uppercase bg-primary/5 border border-primary/10 rounded-full text-primary/80">
+                    {wine.category === "red" ? "Red Wine" : wine.category === "white" ? "White Wine" : "Sparkling Wine"}
+                  </span>
+                </div>
                 
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-light mb-4">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-light mb-3 leading-tight">
                   {wine.name}
                 </h1>
                 
-                <p className="text-sm tracking-widest text-muted-foreground uppercase mb-6">
+                <p className="text-sm tracking-[0.2em] text-muted-foreground uppercase mb-6 flex items-center gap-2">
+                  <MapPin className="w-3.5 h-3.5" />
                   {wine.origin}
                 </p>
 
-                <p className="text-2xl md:text-3xl font-serif mb-8 text-primary">
-                  {wine.price}
-                </p>
+                <div className="flex items-baseline gap-3 mb-8">
+                  <p className="text-3xl md:text-4xl font-serif text-foreground">
+                    {wine.price}
+                  </p>
+                </div>
 
                 {/* Quick Info Grid */}
-                <div className="grid grid-cols-2 gap-4 mb-6 p-6 bg-secondary/30 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <WineIcon className="w-5 h-5 text-primary/70" />
+                <div className="grid grid-cols-2 gap-3 mb-8">
+                  <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <WineIcon className="w-5 h-5 text-primary/70" />
+                    </div>
                     <div>
-                      <p className="text-xs text-muted-foreground uppercase tracking-wider">Giống Nho</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Giống Nho</p>
                       <p className="text-sm font-medium">{wine.grapes}</p>
                     </div>
                   </div>
                   
                   {wine.temperature && (
-                    <div className="flex items-center gap-3">
-                      <Thermometer className="w-5 h-5 text-primary/70" />
+                    <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Thermometer className="w-5 h-5 text-primary/70" />
+                      </div>
                       <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider">Nhiệt Độ Lý Tưởng</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Nhiệt Độ</p>
                         <p className="text-sm font-medium">{wine.temperature}</p>
                       </div>
                     </div>
                   )}
                   
                   {wine.alcohol && (
-                    <div className="flex items-center gap-3">
-                      <Percent className="w-5 h-5 text-primary/70" />
+                    <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Percent className="w-5 h-5 text-primary/70" />
+                      </div>
                       <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider">Nồng Độ Cồn</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Nồng Độ Cồn</p>
                         <p className="text-sm font-medium">{wine.alcohol}</p>
                       </div>
                     </div>
                   )}
                   
                   {wine.region && (
-                    <div className="flex items-center gap-3">
-                      <MapPin className="w-5 h-5 text-primary/70" />
+                    <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-xl border border-border/30 hover:bg-secondary/40 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <MapPin className="w-5 h-5 text-primary/70" />
+                      </div>
                       <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider">Xuất Xứ</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Vùng</p>
                         <p className="text-sm font-medium">{wine.region}</p>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Wine Characteristics - In Right Column */}
+                {/* Wine Characteristics */}
                 {wine.characteristics && (
-                  <div className="mb-6 p-6 bg-secondary/20 rounded-lg">
-                    <h3 className="text-sm font-serif mb-4 uppercase tracking-wider text-muted-foreground">Đặc Tính Rượu</h3>
+                  <div className="mb-8 p-6 bg-gradient-to-br from-secondary/20 to-secondary/5 rounded-xl border border-border/30">
+                    <h3 className="text-xs font-serif mb-5 uppercase tracking-[0.2em] text-muted-foreground">Đặc Tính Rượu</h3>
                     <div className="space-y-4">
                       <WineCharacteristicsBar 
                         label="Độ Ngọt / Dryness" 
@@ -168,10 +186,10 @@ const WineDetail = () => {
                   </div>
                 )}
 
-                {/* Flavor Notes - In Right Column */}
+                {/* Flavor Notes */}
                 {wine.flavorNotes && wine.flavorNotes.length > 0 && (
                   <div className="mb-8">
-                    <h3 className="text-sm font-serif mb-4 uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                    <h3 className="text-xs font-serif mb-4 uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-primary/70" />
                       Nốt Hương
                     </h3>
@@ -180,13 +198,13 @@ const WineDetail = () => {
                 )}
 
                 {/* Contact CTA */}
-                <div className="flex flex-wrap gap-4">
-                  <Button asChild size="lg">
+                <div className="flex flex-wrap gap-3 pt-4 border-t border-border/30">
+                  <Button asChild size="lg" className="flex-1 sm:flex-none min-w-[180px]">
                     <a href="https://zalo.me/0906777377" target="_blank" rel="noopener noreferrer">
                       Đặt Hàng Qua Zalo
                     </a>
                   </Button>
-                  <Button variant="outline" size="lg" asChild>
+                  <Button variant="outline" size="lg" asChild className="flex-1 sm:flex-none min-w-[120px]">
                     <Link to="/contact">Liên Hệ</Link>
                   </Button>
                 </div>
