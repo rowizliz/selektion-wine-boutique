@@ -10,7 +10,7 @@ interface WineCharacteristicsBarProps {
 const WineCharacteristicsBar = ({ 
   label, 
   value, 
-  maxValue = 10,
+  maxValue = 9,
   className 
 }: WineCharacteristicsBarProps) => {
   const percentage = (value / maxValue) * 100;
