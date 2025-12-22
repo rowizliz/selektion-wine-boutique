@@ -252,84 +252,88 @@ const WineDetail = () => {
                   </p>
                 </div>
 
-                {/* Grapes Section */}
-                <div className="mb-6 pb-6 border-b border-border/30">
-                  <div className="flex items-center gap-2 mb-3">
-                    <WineIcon className="w-4 h-4 text-primary/60" />
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
-                      Giống Nho
+                {/* Wine Info Card - Luxury Style */}
+                <div className="relative mb-8 p-6 rounded-2xl bg-gradient-to-br from-secondary/40 via-secondary/20 to-transparent border border-border/20 shadow-sm">
+                  {/* Decorative corner accent */}
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-primary/5 to-transparent rounded-tr-2xl" />
+                  
+                  {/* Grapes Section */}
+                  <div className="relative mb-6">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                        <WineIcon className="w-3.5 h-3.5 text-primary/70" />
+                      </div>
+                      <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-[0.2em]">
+                        Giống Nho
+                      </p>
+                    </div>
+                    <p className="text-sm leading-relaxed text-foreground/90 pl-9">
+                      {wine.grapes.split(",").map((grape, index, arr) => (
+                        <span key={index} className="inline-block">
+                          <span className="font-medium">{grape.trim()}</span>
+                          {index < arr.length - 1 && (
+                            <span className="mx-2.5 text-primary/30">•</span>
+                          )}
+                        </span>
+                      ))}
                     </p>
                   </div>
-                  <p className="text-sm leading-relaxed text-foreground/90">
-                    {wine.grapes.split(",").map((grape, index, arr) => (
-                      <span key={index}>
-                        {grape.trim()}
-                        {index < arr.length - 1 && (
-                          <span className="mx-2 text-muted-foreground/40">·</span>
-                        )}
-                      </span>
-                    ))}
-                  </p>
-                </div>
 
-                {/* Quick Info Grid - Compact with dividers */}
-                <div className="flex flex-wrap justify-center sm:justify-start gap-y-4 mb-8">
-                  {wine.temperature && (
-                    <>
-                      <div className="text-center px-4 sm:px-6">
-                        <div className="flex items-center justify-center gap-1.5 mb-1.5">
-                          <Thermometer className="w-3.5 h-3.5 text-primary/50" />
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
-                            Nhiệt Độ
-                          </p>
+                  {/* Elegant Divider */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+                  </div>
+
+                  {/* Quick Info Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    {wine.temperature && (
+                      <div className="group text-center p-3 rounded-xl hover:bg-primary/5 transition-colors duration-300">
+                        <div className="w-8 h-8 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+                          <Thermometer className="w-4 h-4 text-primary/60" />
                         </div>
-                        <p className="text-sm font-medium text-foreground">{wine.temperature}</p>
+                        <p className="text-[9px] text-muted-foreground uppercase tracking-[0.15em] mb-1">
+                          Nhiệt Độ
+                        </p>
+                        <p className="text-sm font-semibold text-foreground">{wine.temperature}</p>
                       </div>
-                      <div className="hidden sm:block w-px h-10 bg-border/40 self-center" />
-                    </>
-                  )}
+                    )}
 
-                  {wine.alcohol && (
-                    <>
-                      <div className="text-center px-4 sm:px-6">
-                        <div className="flex items-center justify-center gap-1.5 mb-1.5">
-                          <Percent className="w-3.5 h-3.5 text-primary/50" />
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
-                            Nồng Độ
-                          </p>
+                    {wine.alcohol && (
+                      <div className="group text-center p-3 rounded-xl hover:bg-primary/5 transition-colors duration-300">
+                        <div className="w-8 h-8 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+                          <Percent className="w-4 h-4 text-primary/60" />
                         </div>
-                        <p className="text-sm font-medium text-foreground">{wine.alcohol}</p>
+                        <p className="text-[9px] text-muted-foreground uppercase tracking-[0.15em] mb-1">
+                          Nồng Độ
+                        </p>
+                        <p className="text-sm font-semibold text-foreground">{wine.alcohol}</p>
                       </div>
-                      <div className="hidden sm:block w-px h-10 bg-border/40 self-center" />
-                    </>
-                  )}
+                    )}
 
-                  {wine.vintage && (
-                    <>
-                      <div className="text-center px-4 sm:px-6">
-                        <div className="flex items-center justify-center gap-1.5 mb-1.5">
-                          <Calendar className="w-3.5 h-3.5 text-primary/50" />
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
-                            Niên Vụ
-                          </p>
+                    {wine.vintage && (
+                      <div className="group text-center p-3 rounded-xl hover:bg-primary/5 transition-colors duration-300">
+                        <div className="w-8 h-8 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+                          <Calendar className="w-4 h-4 text-primary/60" />
                         </div>
-                        <p className="text-sm font-medium text-foreground">{wine.vintage}</p>
+                        <p className="text-[9px] text-muted-foreground uppercase tracking-[0.15em] mb-1">
+                          Niên Vụ
+                        </p>
+                        <p className="text-sm font-semibold text-foreground">{wine.vintage}</p>
                       </div>
-                      <div className="hidden sm:block w-px h-10 bg-border/40 self-center" />
-                    </>
-                  )}
+                    )}
 
-                  {wine.region && (
-                    <div className="text-center px-4 sm:px-6">
-                      <div className="flex items-center justify-center gap-1.5 mb-1.5">
-                        <MapPin className="w-4 h-4 text-primary/50" />
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
+                    {wine.region && (
+                      <div className="group text-center p-3 rounded-xl hover:bg-primary/5 transition-colors duration-300">
+                        <div className="w-8 h-8 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+                          <MapPin className="w-[18px] h-[18px] text-primary/60" />
+                        </div>
+                        <p className="text-[9px] text-muted-foreground uppercase tracking-[0.15em] mb-1">
                           Vùng
                         </p>
+                        <p className="text-sm font-semibold text-foreground">{wine.region}</p>
                       </div>
-                      <p className="text-sm font-medium text-foreground">{wine.region}</p>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
 
                 {/* Flavor Notes */}
