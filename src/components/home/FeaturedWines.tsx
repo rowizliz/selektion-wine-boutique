@@ -1,34 +1,11 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { wines } from "@/data/wines";
 
-interface Wine {
-  id: string;
-  name: string;
-  origin: string;
-  price: string;
-  image?: string;
-}
-
-const featuredWines: Wine[] = [
-  {
-    id: "1",
-    name: "Terres Rares",
-    origin: "Côtes du Tarn, France",
-    price: "780,000₫",
-  },
-  {
-    id: "2",
-    name: "Vigné-Lourac Merlot Prestige",
-    origin: "Gaillac, France",
-    price: "780,000₫",
-  },
-  {
-    id: "3",
-    name: "Château Haut Bazignan",
-    origin: "Bordeaux, France",
-    price: "650,000₫",
-  },
-];
+const featuredWineIds = ["22", "16", "10", "26", "23"];
+const featuredWines = featuredWineIds
+  .map(id => wines.find(wine => wine.id === id))
+  .filter((wine): wine is NonNullable<typeof wine> => wine !== undefined);
 
 const FeaturedWines = () => {
   return (
@@ -45,14 +22,14 @@ const FeaturedWines = () => {
         </div>
 
         {/* Wine grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
           {featuredWines.map((wine, index) => (
             <Link
               key={wine.id}
               to={`/collection/${wine.id}`}
-              className={`group opacity-0 animate-slide-up stagger-${index + 1}`}
+              className={`group opacity-0 animate-slide-up stagger-${Math.min(index + 1, 5)}`}
             >
-              <div className="aspect-[3/4] bg-secondary mb-6 overflow-hidden">
+              <div className="aspect-[3/4] bg-secondary mb-4 overflow-hidden">
                 <div className="w-full h-full flex items-center justify-center text-muted-foreground group-hover:scale-105 transition-transform duration-700 ease-luxury">
                   {wine.image ? (
                     <img 
