@@ -43,11 +43,11 @@ const Collection = () => {
                   className={`group opacity-0 animate-slide-up`}
                   style={{ animationDelay: `${Math.min(index * 0.05, 0.5)}s` }}
                 >
-                  <div className="aspect-[3/4] bg-white mb-5 overflow-hidden flex items-center justify-center p-6 rounded-sm">
+                  <div className="aspect-[3/4] bg-white mb-5 overflow-hidden flex items-end justify-center p-6 rounded-sm">
                     <img 
                       src={wine.image} 
                       alt={wine.name}
-                      className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                      className="w-auto h-[280px] object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out"
                     />
                   </div>
                   <div className="space-y-2">
