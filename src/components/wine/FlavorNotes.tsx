@@ -1,92 +1,99 @@
 import { cn } from "@/lib/utils";
-import { 
-  Cherry, 
-  Grape, 
-  Leaf, 
-  Flower2, 
-  Coffee, 
-  Droplets,
-  Flame,
-  Citrus,
-  Apple,
-  TreeDeciduous,
-  Sparkles,
-  Mountain,
-  Wind,
-  Cookie,
-  Circle,
-  type LucideIcon
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Sparkles, type LucideIcon } from "lucide-react";
 
 interface FlavorNotesProps {
   notes: string[];
   className?: string;
 }
 
-// Map flavor notes to Vietnamese labels and Lucide icons
-const flavorMap: Record<string, { label: string; Icon: LucideIcon; color: string }> = {
-  // Fruits - Red
-  cherry: { label: "Anh đào", Icon: Cherry, color: "text-red-500" },
-  plum: { label: "Mận", Icon: Circle, color: "text-purple-600" },
-  berry: { label: "Dâu", Icon: Grape, color: "text-pink-500" },
-  blackberry: { label: "Dâu đen", Icon: Grape, color: "text-purple-800" },
-  raspberry: { label: "Mâm xôi", Icon: Grape, color: "text-pink-600" },
-  strawberry: { label: "Dâu tây", Icon: Cherry, color: "text-red-400" },
-  
-  // Fruits - Light
-  citrus: { label: "Cam quýt", Icon: Citrus, color: "text-orange-400" },
-  lemon: { label: "Chanh", Icon: Citrus, color: "text-yellow-400" },
-  apple: { label: "Táo", Icon: Apple, color: "text-green-500" },
-  pear: { label: "Lê", Icon: Apple, color: "text-lime-400" },
-  peach: { label: "Đào", Icon: Apple, color: "text-orange-300" },
-  tropical: { label: "Nhiệt đới", Icon: Leaf, color: "text-yellow-500" },
-  fig: { label: "Sung", Icon: Circle, color: "text-purple-400" },
-  raisin: { label: "Nho khô", Icon: Grape, color: "text-amber-700" },
-  
-  // Floral
-  floral: { label: "Hoa", Icon: Flower2, color: "text-pink-400" },
-  rose: { label: "Hoa hồng", Icon: Flower2, color: "text-rose-500" },
-  
-  // Herbs & Spices
-  herb: { label: "Thảo mộc", Icon: Leaf, color: "text-green-600" },
-  spice: { label: "Gia vị", Icon: Flame, color: "text-orange-500" },
-  pepper: { label: "Tiêu", Icon: Flame, color: "text-red-600" },
-  licorice: { label: "Cam thảo", Icon: Sparkles, color: "text-slate-700" },
-  
-  // Earth & Wood
-  mineral: { label: "Khoáng chất", Icon: Mountain, color: "text-slate-500" },
-  oak: { label: "Gỗ sồi", Icon: TreeDeciduous, color: "text-amber-600" },
-  earth: { label: "Đất", Icon: Mountain, color: "text-stone-600" },
-  tobacco: { label: "Thuốc lá", Icon: Leaf, color: "text-amber-800" },
-  leather: { label: "Da thuộc", Icon: Circle, color: "text-amber-900" },
-  smoke: { label: "Khói", Icon: Wind, color: "text-gray-500" },
-  
-  // Sweet & Rich
-  vanilla: { label: "Vani", Icon: Cookie, color: "text-amber-200" },
-  chocolate: { label: "Chocolate", Icon: Cookie, color: "text-amber-800" },
-  coffee: { label: "Cà phê", Icon: Coffee, color: "text-amber-900" },
-  honey: { label: "Mật ong", Icon: Droplets, color: "text-amber-400" },
-  butter: { label: "Bơ", Icon: Cookie, color: "text-yellow-300" },
-  cream: { label: "Kem", Icon: Droplets, color: "text-slate-100" },
-  almond: { label: "Hạnh nhân", Icon: Circle, color: "text-amber-500" },
+// Map flavor notes to Vietnamese labels
+const flavorLabels: Record<string, string> = {
+  cherry: "Anh đào",
+  plum: "Mận",
+  berry: "Dâu",
+  blackberry: "Dâu đen",
+  raspberry: "Mâm xôi",
+  strawberry: "Dâu tây",
+  citrus: "Cam quýt",
+  lemon: "Chanh",
+  apple: "Táo",
+  pear: "Lê",
+  peach: "Đào",
+  tropical: "Nhiệt đới",
+  fig: "Sung",
+  raisin: "Nho khô",
+  floral: "Hoa",
+  rose: "Hoa hồng",
+  herb: "Thảo mộc",
+  mint: "Bạc hà",
+  spice: "Gia vị",
+  pepper: "Tiêu",
+  licorice: "Cam thảo",
+  mineral: "Khoáng chất",
+  oak: "Gỗ sồi",
+  earth: "Đất",
+  tobacco: "Thuốc lá",
+  leather: "Da thuộc",
+  smoke: "Khói",
+  vanilla: "Vani",
+  chocolate: "Chocolate",
+  coffee: "Cà phê",
+  honey: "Mật ong",
+  butter: "Bơ",
+  cream: "Kem",
+  almond: "Hạnh nhân",
+  caramel: "Caramel",
 };
 
+// Supabase storage URL for flavor icons
+const STORAGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/flavor-icons`;
+
 const FlavorNotes = ({ notes, className }: FlavorNotesProps) => {
+  const [loadedIcons, setLoadedIcons] = useState<Record<string, boolean>>({});
+  const [failedIcons, setFailedIcons] = useState<Record<string, boolean>>({});
+
+  const handleImageLoad = (note: string) => {
+    setLoadedIcons(prev => ({ ...prev, [note]: true }));
+  };
+
+  const handleImageError = (note: string) => {
+    setFailedIcons(prev => ({ ...prev, [note]: true }));
+  };
+
   return (
     <div className={cn("flex flex-wrap gap-3", className)}>
       {notes.map((note) => {
-        const flavor = flavorMap[note.toLowerCase()];
-        const Icon = flavor?.Icon || Sparkles;
-        const label = flavor?.label || note;
-        const iconColor = flavor?.color || "text-primary";
+        const noteKey = note.toLowerCase();
+        const label = flavorLabels[noteKey] || note;
+        const iconUrl = `${STORAGE_URL}/${noteKey}.png`;
+        const hasLoaded = loadedIcons[noteKey];
+        const hasFailed = failedIcons[noteKey];
         
         return (
           <div
             key={note}
             className="flex flex-col items-center gap-2 p-3 bg-secondary/40 rounded-lg min-w-[72px] hover:bg-secondary/60 transition-colors"
           >
-            <div className={cn("w-8 h-8 flex items-center justify-center", iconColor)}>
-              <Icon className="w-6 h-6" strokeWidth={1.5} />
+            <div className="w-10 h-10 flex items-center justify-center">
+              {!hasFailed ? (
+                <img
+                  src={iconUrl}
+                  alt={label}
+                  className={cn(
+                    "w-10 h-10 object-contain transition-opacity duration-300",
+                    hasLoaded ? "opacity-100" : "opacity-0"
+                  )}
+                  onLoad={() => handleImageLoad(noteKey)}
+                  onError={() => handleImageError(noteKey)}
+                  loading="lazy"
+                />
+              ) : (
+                <Sparkles className="w-6 h-6 text-primary" strokeWidth={1.5} />
+              )}
+              {!hasLoaded && !hasFailed && (
+                <div className="absolute w-6 h-6 rounded-full bg-secondary animate-pulse" />
+              )}
             </div>
             <span className="text-xs text-muted-foreground text-center font-medium">{label}</span>
           </div>

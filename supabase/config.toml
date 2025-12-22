@@ -1,1 +1,4 @@
 project_id = "rdqcqlluhlovzphkkfdg"
+
+[functions.generate-flavor-icon]
+verify_jwt = false
