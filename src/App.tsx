@@ -14,6 +14,8 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import AdminFlavorIcons from "./pages/AdminFlavorIcons";
+import AdminWines from "./pages/AdminWines";
+import AdminImportWines from "./pages/AdminImportWines";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/admin/wines" element={<AdminRoute><AdminWines /></AdminRoute>} />
+            <Route path="/admin/import-wines" element={<AdminRoute><AdminImportWines /></AdminRoute>} />
             <Route path="/admin/flavor-icons" element={<AdminRoute><AdminFlavorIcons /></AdminRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
