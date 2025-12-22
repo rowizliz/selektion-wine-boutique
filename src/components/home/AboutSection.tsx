@@ -8,11 +8,11 @@ const AboutSection = () => {
       <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Image */}
-          <div className="aspect-[4/5] overflow-hidden order-2 lg:order-1 group">
+          <div className="overflow-hidden order-2 lg:order-1 group">
             <img 
               src={selectionCover} 
               alt="Sélection Wine & Gift Catalog" 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
             />
           </div>
 
