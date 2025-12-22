@@ -89,10 +89,12 @@ Gợi ý kết hợp ẩm thực: Hương vị trái cây và tannin tan chảy 
     region: "Tây Nam nước Pháp",
     grapes: "Merlot",
     price: "780,000₫",
-    description: "Ra đời từ vùng Gaillac – một trong những vùng sản xuất rượu vang cổ xưa nhất nước Pháp, Vigné-Lourac Merlot Prestige mang trong mình hơi thở của lịch sử hơn 2.000 năm.",
-    story: `Rượu khoác lên mình sắc đỏ ruby sâu thẳm, hương thơm mê hoặc với trái cây đen và đỏ chín như mận, mâm xôi, cassis. Vị rượu đậm đà, tanin mềm mại, kết thúc bằng dư vị dài của gia vị và cam thảo.
+    description: "Ra đời từ vùng Gaillac – một trong những vùng sản xuất rượu vang cổ xưa nhất nước Pháp, Vigné-Lourac Merlot Prestige mang trong mình hơi thở của lịch sử hơn 2.000 năm. Chai vang đỏ cao cấp này được làm từ 100% giống nho Merlot trồng trên những sườn đồi đất sét-đá vôi, nơi khí hậu ôn hòa và ánh nắng Địa Trung Hải tạo nên điều kiện hoàn hảo cho nho chín đều. Rượu khoác lên mình sắc đỏ ruby sâu thẳm với ánh tím quyến rũ, hương thơm mê hoặc toả ra từ những trái cây đen và đỏ chín mọng như mận, mâm xôi, cassis, xen lẫn gợi ý của vani và gia vị từ quá trình ủ gỗ sồi Pháp.",
+    story: `Vigné-Lourac là điền trang lâu đời tại vùng Gaillac, nơi nghệ thuật làm rượu được truyền từ thế hệ này sang thế hệ khác. Rượu khoác lên mình sắc đỏ ruby sâu thẳm, hương thơm mê hoặc với trái cây đen và đỏ chín như mận, mâm xôi, cassis. Vị rượu đậm đà, tanin mềm mại như nhung, kết thúc bằng dư vị dài của gia vị và cam thảo.
 
-Vùng Gaillac nằm ở Tây Nam nước Pháp, là một trong những vùng trồng nho lâu đời nhất châu Âu với lịch sử hơn 2.000 năm. Khí hậu ôn hòa và đất đai màu mỡ tạo điều kiện lý tưởng cho giống Merlot phát triển.`,
+Vùng Gaillac nằm ở Tây Nam nước Pháp, là một trong những vùng trồng nho lâu đời nhất châu Âu với lịch sử hơn 2.000 năm – thậm chí có trước cả vùng Bordeaux nổi tiếng. Khí hậu ôn hòa với ảnh hưởng từ cả Đại Tây Dương và Địa Trung Hải, cùng với đất đai màu mỡ giàu khoáng chất, tạo điều kiện lý tưởng cho giống Merlot phát triển và cho ra những quả nho có độ chín hoàn hảo.
+
+Merlot từ vùng Gaillac mang đặc trưng riêng biệt: mềm mại hơn, thanh lịch hơn so với Merlot từ các vùng khác, với hương vị trái cây chín mọng tự nhiên và tanin tròn trịa. Đây là sự lựa chọn hoàn hảo cho những ai yêu thích vang đỏ Pháp đậm đà nhưng dễ uống.`,
     image: vigneLouracImg,
     category: "red",
     temperature: "15-18°C",
