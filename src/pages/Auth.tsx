@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,26 +21,38 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const returnTo = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    const rt = params.get("returnTo");
+
+    // Security: prevent open redirects.
+    if (!rt) return "/";
+    if (!rt.startsWith("/")) return "/";
+    return rt;
+  }, [location.search]);
+
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session) {
-          navigate("/");
-        }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        navigate(returnTo, { replace: true });
       }
-    );
+    });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/");
+        navigate(returnTo, { replace: true });
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, returnTo]);
 
   const validateForm = () => {
     const result = authSchema.safeParse({ email, password });
@@ -58,7 +71,7 @@ const Auth = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -90,7 +103,7 @@ const Auth = () => {
           email: email.trim(),
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}${returnTo}`,
           },
         });
 
@@ -121,104 +134,110 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-12">
-          <Wine className="h-12 w-12 mx-auto mb-4 text-primary" />
-          <h1 className="text-3xl font-serif tracking-wider">SÉLECTION</h1>
-          <p className="text-muted-foreground mt-2 text-sm tracking-wide">
-            Bộ sưu tập rượu vang cao cấp
-          </p>
-        </div>
+    <>
+      <Helmet>
+        <title>Đăng nhập | Sélection</title>
+        <meta
+          name="description"
+          content="Đăng nhập hoặc đăng ký để quản lý bộ sưu tập rượu vang Sélection."
+        />
+        <link rel="canonical" href={`${window.location.origin}/auth`} />
+      </Helmet>
 
-        {/* Form */}
-        <div className="bg-card border border-border rounded-lg p-8">
-          <h2 className="text-xl font-serif text-center mb-6">
-            {isLogin ? "Đăng Nhập" : "Đăng Ký"}
-          </h2>
+      <main className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          {/* Logo */}
+          <header className="text-center mb-12">
+            <Wine className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <h1 className="text-3xl font-serif tracking-wider">SÉLECTION</h1>
+            <p className="text-muted-foreground mt-2 text-sm tracking-wide">
+              Bộ sưu tập rượu vang cao cấp
+            </p>
+          </header>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-xs tracking-widest uppercase">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="bg-background"
-                disabled={isLoading}
-              />
-              {errors.email && (
-                <p className="text-destructive text-xs">{errors.email}</p>
-              )}
-            </div>
+          {/* Form */}
+          <section className="bg-card border border-border rounded-lg p-8">
+            <h2 className="text-xl font-serif text-center mb-6">
+              {isLogin ? "Đăng Nhập" : "Đăng Ký"}
+            </h2>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-xs tracking-widest uppercase">
-                Mật khẩu
-              </Label>
-              <div className="relative">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-xs tracking-widest uppercase">
+                  Email
+                </Label>
                 <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="bg-background pr-10"
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  className="bg-background"
                   disabled={isLoading}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
+                {errors.email && <p className="text-destructive text-xs">{errors.email}</p>}
               </div>
-              {errors.password && (
-                <p className="text-destructive text-xs">{errors.password}</p>
-              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-xs tracking-widest uppercase">
+                  Mật khẩu
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="bg-background pr-10"
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-destructive text-xs">{errors.password}</p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full tracking-widest uppercase text-xs py-6"
+                disabled={isLoading}
+              >
+                {isLoading ? "Đang xử lý..." : isLogin ? "Đăng Nhập" : "Đăng Ký"}
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setErrors({});
+                }}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {isLogin
+                  ? "Chưa có tài khoản? Đăng ký ngay"
+                  : "Đã có tài khoản? Đăng nhập"}
+              </button>
             </div>
-
-            <Button
-              type="submit"
-              className="w-full tracking-widest uppercase text-xs py-6"
-              disabled={isLoading}
-            >
-              {isLoading
-                ? "Đang xử lý..."
-                : isLogin
-                ? "Đăng Nhập"
-                : "Đăng Ký"}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setErrors({});
-              }}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {isLogin
-                ? "Chưa có tài khoản? Đăng ký ngay"
-                : "Đã có tài khoản? Đăng nhập"}
-            </button>
-          </div>
+          </section>
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   );
 };
 
 export default Auth;
+
