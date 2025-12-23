@@ -147,7 +147,7 @@ const Gifts = () => {
         ) : (
           <>
             {/* Hero Section with Background Image */}
-            <section className="relative pb-16 lg:pb-24 overflow-hidden">
+            <section className="relative pb-12 lg:pb-24 overflow-hidden">
               {/* Background image with overlay */}
               <div className="absolute inset-0">
                 <img
@@ -165,26 +165,26 @@ const Gifts = () => {
               <div className="container relative">
                 <div className="text-center max-w-3xl mx-auto animate-fade-in">
                   {/* Badge */}
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-                    <Sparkles className="w-4 h-4 text-primary" />
-                    <span className="text-xs font-medium tracking-wider uppercase text-primary">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 lg:mb-6">
+                    <Sparkles className="w-3 h-3 lg:w-4 lg:h-4 text-primary" />
+                    <span className="text-[clamp(9px,2.5vw,12px)] font-medium tracking-wider uppercase text-primary">
                       Quà tặng doanh nghiệp
                     </span>
                   </div>
 
-                  <h1 className="text-4xl lg:text-6xl font-serif mb-6 tracking-tight">
+                  <h1 className="text-[clamp(28px,8vw,60px)] font-serif mb-4 tracking-tight leading-[1.1]">
                     Quà Tặng
-                    <span className="block text-primary/80 mt-2">Rượu Vang</span>
+                    <span className="block text-primary/80 mt-1 lg:mt-2">Rượu Vang</span>
                   </h1>
 
-                  <p className="text-muted-foreground text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
+                  <p className="text-muted-foreground text-[clamp(14px,3.5vw,20px)] leading-relaxed max-w-2xl mx-auto">
                     Bộ sưu tập quà tặng cao cấp kết hợp rượu vang hảo hạng cùng các
                     đặc sản tinh tuyển. Lựa chọn hoàn hảo để gửi gắm tâm ý đến đối
                     tác và khách hàng.
                   </p>
 
                   {/* USP Section */}
-                  <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-8 mt-10 pt-8 border-t border-border/30">
+                  <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-8 mt-6 pt-6 lg:mt-10 lg:pt-8 border-t border-border/30">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CheckCircle className="w-4 h-4 text-primary" />
                       <span>Nhập khẩu chính hãng</span>
