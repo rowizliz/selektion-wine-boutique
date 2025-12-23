@@ -14,6 +14,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Gifts from "./pages/Gifts";
+import TrackRequest from "./pages/TrackRequest";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminFlavorIcons from "./pages/AdminFlavorIcons";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/gifts" element={<Gifts />} />
+            <Route path="/tra-cuu" element={<TrackRequest />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
             <Route path="/admin/wines" element={<AdminRoute><AdminWines /></AdminRoute>} />

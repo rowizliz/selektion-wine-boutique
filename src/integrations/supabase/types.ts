@@ -35,6 +35,7 @@ export type Database = {
           status: string
           style_preferences: string[] | null
           taste_preferences: string[] | null
+          tracking_token: string
           updated_at: string
           wine_style: string | null
           wine_types: string[] | null
@@ -59,6 +60,7 @@ export type Database = {
           status?: string
           style_preferences?: string[] | null
           taste_preferences?: string[] | null
+          tracking_token?: string
           updated_at?: string
           wine_style?: string | null
           wine_types?: string[] | null
@@ -83,6 +85,7 @@ export type Database = {
           status?: string
           style_preferences?: string[] | null
           taste_preferences?: string[] | null
+          tracking_token?: string
           updated_at?: string
           wine_style?: string | null
           wine_types?: string[] | null
@@ -193,6 +196,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_birthday_gift_request_status: {
+        Args: { p_tracking_token: string }
+        Returns: {
+          created_at: string
+          recipient_name: string
+          sender_name: string
+          status: string
+          tracking_token: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
