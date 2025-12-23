@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { useWines } from "@/hooks/useWines";
+import logo from "@/assets/logo2.png";
 
 const parsePrice = (price: string): number => {
   // Remove currency symbol and commas, parse as number
@@ -82,6 +83,13 @@ const Collection = () => {
                 ? "Đang tải bộ sưu tập…"
                 : `${wines.length} loại rượu vang đặc biệt từ khắp nơi trên thế giới`}
             </p>
+
+            {/* Logo */}
+            <img 
+              src={logo} 
+              alt="SÉLECTION Logo" 
+              className="h-[200px] md:h-[280px] w-auto mx-auto mt-8 md:mt-12"
+            />
           </div>
         </section>
 
