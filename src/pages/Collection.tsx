@@ -74,7 +74,7 @@ const Collection = () => {
             <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground mb-4">
               Bộ Sưu Tập
             </p>
-            <h1 className="text-4xl md:text-6xl font-serif font-light">
+            <h1 className="text-[clamp(24px,7vw,60px)] font-serif font-light whitespace-nowrap tracking-tight leading-[1.05]">
               Rượu Vang Tuyển Lựa
             </h1>
             <p className="mt-6 text-muted-foreground text-sm">
