@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
-import { Gift, Wine, Sparkles, Phone, CheckCircle, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Gift, Wine, Sparkles, Phone, CheckCircle, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { giftSets, formatPrice, GiftSet } from "@/data/giftSets";
@@ -15,6 +15,7 @@ type FilterCategory = "all" | "standard" | "premium" | "luxury";
 interface SelectedImage {
   src: string;
   name: string;
+  index: number;
 }
 
 const Gifts = () => {
@@ -59,6 +60,41 @@ const Gifts = () => {
   const handleResetZoom = () => {
     setZoomLevel(1);
   };
+
+  const handlePrevious = useCallback(() => {
+    if (selectedImage && selectedImage.index > 0) {
+      const prevGift = sortedGifts[selectedImage.index - 1];
+      setSelectedImage({
+        src: prevGift.image,
+        name: prevGift.name,
+        index: selectedImage.index - 1,
+      });
+      setZoomLevel(1);
+    }
+  }, [selectedImage, sortedGifts]);
+
+  const handleNext = useCallback(() => {
+    if (selectedImage && selectedImage.index < sortedGifts.length - 1) {
+      const nextGift = sortedGifts[selectedImage.index + 1];
+      setSelectedImage({
+        src: nextGift.image,
+        name: nextGift.name,
+        index: selectedImage.index + 1,
+      });
+      setZoomLevel(1);
+    }
+  }, [selectedImage, sortedGifts]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedImage) return;
+      if (e.key === "ArrowLeft") handlePrevious();
+      if (e.key === "ArrowRight") handleNext();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedImage, handlePrevious, handleNext]);
 
   return (
     <>
@@ -158,7 +194,7 @@ const Gifts = () => {
                   key={gift.id}
                   gift={gift}
                   index={index}
-                  onImageClick={handleImageClick}
+                  onImageClick={(image) => handleImageClick({ ...image, index })}
                 />
               ))}
             </div>
@@ -203,9 +239,15 @@ const Gifts = () => {
         <DialogContent className="max-w-5xl w-[95vw] max-h-[95vh] p-0 bg-background/95 backdrop-blur-lg border-border/50 overflow-hidden">
           {/* Header with title and controls */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border/30 bg-background/80">
-            <DialogTitle className="font-serif text-base lg:text-lg truncate pr-4">
-              {selectedImage?.name}
-            </DialogTitle>
+            <div className="flex items-center gap-3">
+              <DialogTitle className="font-serif text-base lg:text-lg truncate pr-4">
+                {selectedImage?.name}
+              </DialogTitle>
+              {/* Image counter */}
+              <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full">
+                {selectedImage ? selectedImage.index + 1 : 0} / {sortedGifts.length}
+              </span>
+            </div>
             <div className="flex items-center gap-1.5">
               {/* Zoom Out Button */}
               <button
@@ -243,8 +285,18 @@ const Gifts = () => {
             </div>
           </div>
 
-          {/* Image Container */}
-          <div className="overflow-auto max-h-[calc(95vh-60px)] flex items-center justify-center p-4 bg-secondary/20">
+          {/* Image Container with Navigation Arrows */}
+          <div className="relative overflow-auto max-h-[calc(95vh-60px)] flex items-center justify-center p-4 bg-secondary/20">
+            {/* Previous Arrow */}
+            <button
+              onClick={handlePrevious}
+              disabled={!selectedImage || selectedImage.index === 0}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-background/90"
+              aria-label="Ảnh trước"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
             <img
               src={selectedImage?.src}
               alt={selectedImage?.name || ""}
@@ -254,6 +306,16 @@ const Gifts = () => {
               }}
               className="max-w-full max-h-[80vh] object-contain transition-transform duration-200 rounded-lg shadow-xl"
             />
+
+            {/* Next Arrow */}
+            <button
+              onClick={handleNext}
+              disabled={!selectedImage || selectedImage.index === sortedGifts.length - 1}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-background/90"
+              aria-label="Ảnh tiếp theo"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
           </div>
         </DialogContent>
       </Dialog>
@@ -264,7 +326,7 @@ const Gifts = () => {
 interface GiftCardProps {
   gift: GiftSet;
   index: number;
-  onImageClick: (image: SelectedImage) => void;
+  onImageClick: (image: { src: string; name: string }) => void;
 }
 
 const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
