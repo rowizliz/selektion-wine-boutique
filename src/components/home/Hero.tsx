@@ -8,7 +8,7 @@ const Hero = () => {
       <div className="container text-center">
         <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
           {/* Tagline */}
-          <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground">
+          <p className="text-[clamp(8px,2.5vw,12px)] font-sans tracking-[0.2em] md:tracking-[0.3em] uppercase text-muted-foreground whitespace-nowrap">
             Bộ Sưu Tập Rượu Vang Tuyển Chọn
           </p>
 
