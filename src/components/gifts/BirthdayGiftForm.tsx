@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Heart,
   User,
@@ -14,6 +15,8 @@ import {
   Send,
   Sparkles,
   Loader2,
+  CheckCircle,
+  Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -56,6 +60,7 @@ interface FormData {
 
 const BirthdayGiftForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [trackingToken, setTrackingToken] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     senderName: "",
     senderPhone: "",
@@ -114,7 +119,7 @@ const BirthdayGiftForm = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('birthday_gift_requests')
         .insert({
           sender_name: formData.senderName,
@@ -135,14 +140,14 @@ const BirthdayGiftForm = () => {
           birthday_message: formData.birthdayMessage || null,
           budget: formData.budget || null,
           additional_notes: formData.additionalNotes || null,
-        });
+        })
+        .select('tracking_token')
+        .single();
 
       if (error) throw error;
 
-      toast.success(
-        "Đã gửi yêu cầu thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.",
-        { duration: 5000 }
-      );
+      // Store tracking token to show to user
+      setTrackingToken(data.tracking_token);
 
       // Reset form
       setFormData({
@@ -327,6 +332,59 @@ const BirthdayGiftForm = () => {
     </div>
   );
 
+  const handleCopyToken = () => {
+    if (trackingToken) {
+      navigator.clipboard.writeText(trackingToken);
+      toast.success("Đã sao chép mã tra cứu!");
+    }
+  };
+
+  // Show success screen if we have a tracking token
+  if (trackingToken) {
+    return (
+      <div className="py-12 lg:py-16">
+        <div className="container max-w-2xl">
+          <Card className="text-center">
+            <CardHeader>
+              <div className="mx-auto w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <CardTitle className="text-2xl font-serif">Gửi yêu cầu thành công!</CardTitle>
+              <CardDescription className="text-base">
+                Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="p-4 rounded-xl bg-secondary/50 border">
+                <p className="text-sm text-muted-foreground mb-2">Mã tra cứu của bạn</p>
+                <div className="flex items-center gap-2 justify-center">
+                  <code className="text-sm font-mono bg-background px-3 py-2 rounded-lg border break-all">
+                    {trackingToken}
+                  </code>
+                  <Button variant="outline" size="icon" onClick={handleCopyToken}>
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  Lưu mã này để tra cứu trạng thái yêu cầu của bạn
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button asChild>
+                  <Link to="/tra-cuu">Tra cứu yêu cầu</Link>
+                </Button>
+                <Button variant="outline" onClick={() => setTrackingToken(null)}>
+                  Tạo yêu cầu mới
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-12 lg:py-16">
       <div className="container max-w-4xl">
@@ -345,6 +403,9 @@ const BirthdayGiftForm = () => {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Hãy cho chúng tôi biết về người bạn yêu thương. Chúng tôi sẽ chuẩn
             bị một món quà thật ý nghĩa cùng thiệp chúc mừng được thiết kế riêng.
+          </p>
+          <p className="text-sm text-muted-foreground mt-4">
+            Đã gửi yêu cầu? <Link to="/tra-cuu" className="text-primary hover:underline">Tra cứu tại đây</Link>
           </p>
         </div>
 
