@@ -236,27 +236,30 @@ const Gifts = () => {
 
       {/* Image Zoom Modal */}
       <Dialog open={!!selectedImage} onOpenChange={handleCloseModal}>
-        <DialogContent className="max-w-5xl w-[95vw] max-h-[95vh] p-0 bg-background/95 backdrop-blur-lg border-border/50 overflow-hidden">
-          {/* Header with title and controls */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border/30 bg-background/80">
-            <div className="flex items-center gap-3">
-              <DialogTitle className="font-serif text-base lg:text-lg truncate pr-4">
+        <DialogContent className="max-w-5xl w-[95vw] sm:w-[95vw] h-[100dvh] sm:h-auto sm:max-h-[95vh] p-0 bg-background/95 backdrop-blur-lg border-border/50 overflow-hidden flex flex-col">
+          {/* Header with title and controls - Stacked on mobile */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 px-4 py-3 border-b border-border/30 bg-background/80">
+            {/* Title row */}
+            <div className="flex items-center justify-between sm:justify-start gap-3">
+              <DialogTitle className="font-serif text-sm sm:text-base lg:text-lg line-clamp-1 flex-1 sm:flex-none">
                 {selectedImage?.name}
               </DialogTitle>
               {/* Image counter */}
-              <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full">
+              <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full whitespace-nowrap">
                 {selectedImage ? selectedImage.index + 1 : 0} / {sortedGifts.length}
               </span>
             </div>
-            <div className="flex items-center gap-1.5">
+            
+            {/* Zoom controls row - Centered on mobile */}
+            <div className="flex items-center justify-center sm:justify-end gap-2">
               {/* Zoom Out Button */}
               <button
                 onClick={handleZoomOut}
                 disabled={zoomLevel <= 0.5}
-                className="p-2 rounded-lg bg-secondary/80 hover:bg-secondary text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="p-2.5 sm:p-2 rounded-lg bg-secondary/80 hover:bg-secondary text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Thu nhỏ"
               >
-                <ZoomOut className="w-4 h-4" />
+                <ZoomOut className="w-5 h-5 sm:w-4 sm:h-4" />
               </button>
 
               {/* Zoom Level Indicator */}
@@ -268,30 +271,30 @@ const Gifts = () => {
               <button
                 onClick={handleZoomIn}
                 disabled={zoomLevel >= 3}
-                className="p-2 rounded-lg bg-secondary/80 hover:bg-secondary text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="p-2.5 sm:p-2 rounded-lg bg-secondary/80 hover:bg-secondary text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Phóng to"
               >
-                <ZoomIn className="w-4 h-4" />
+                <ZoomIn className="w-5 h-5 sm:w-4 sm:h-4" />
               </button>
 
               {/* Reset Button */}
               <button
                 onClick={handleResetZoom}
-                className="p-2 rounded-lg bg-secondary/80 hover:bg-secondary text-foreground transition-colors ml-1"
+                className="p-2.5 sm:p-2 rounded-lg bg-secondary/80 hover:bg-secondary text-foreground transition-colors ml-1"
                 aria-label="Đặt lại"
               >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw className="w-5 h-5 sm:w-4 sm:h-4" />
               </button>
             </div>
           </div>
 
-          {/* Image Container with Navigation Arrows */}
-          <div className="relative overflow-auto max-h-[calc(95vh-60px)] flex items-center justify-center p-4 bg-secondary/20">
-            {/* Previous Arrow */}
+          {/* Image Container */}
+          <div className="relative overflow-auto flex-1 flex items-center justify-center p-4 bg-secondary/20">
+            {/* Desktop Navigation Arrows */}
             <button
               onClick={handlePrevious}
               disabled={!selectedImage || selectedImage.index === 0}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-background/90"
+              className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-background/90"
               aria-label="Ảnh trước"
             >
               <ChevronLeft className="w-6 h-6" />
@@ -304,17 +307,44 @@ const Gifts = () => {
                 transform: `scale(${zoomLevel})`,
                 transformOrigin: "center",
               }}
-              className="max-w-full max-h-[80vh] object-contain transition-transform duration-200 rounded-lg shadow-xl"
+              className="max-w-full max-h-[60vh] sm:max-h-[80vh] object-contain transition-transform duration-200 rounded-lg shadow-xl"
             />
 
-            {/* Next Arrow */}
+            {/* Desktop Next Arrow */}
             <button
               onClick={handleNext}
               disabled={!selectedImage || selectedImage.index === sortedGifts.length - 1}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-background/90"
+              className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-background/90 backdrop-blur-sm hover:bg-background border border-border/50 shadow-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-background/90"
               aria-label="Ảnh tiếp theo"
             >
               <ChevronRight className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Mobile Navigation Bar - Bottom */}
+          <div className="flex sm:hidden items-center justify-between px-4 py-3 border-t border-border/30 bg-background/80">
+            <button
+              onClick={handlePrevious}
+              disabled={!selectedImage || selectedImage.index === 0}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-secondary/80 hover:bg-secondary text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Ảnh trước"
+            >
+              <ChevronLeft className="w-5 h-5" />
+              <span className="text-sm font-medium">Trước</span>
+            </button>
+
+            <span className="text-xs text-muted-foreground">
+              Vuốt để xem
+            </span>
+
+            <button
+              onClick={handleNext}
+              disabled={!selectedImage || selectedImage.index === sortedGifts.length - 1}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-secondary/80 hover:bg-secondary text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Ảnh tiếp theo"
+            >
+              <span className="text-sm font-medium">Tiếp</span>
+              <ChevronRight className="w-5 h-5" />
             </button>
           </div>
         </DialogContent>
