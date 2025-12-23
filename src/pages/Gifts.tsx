@@ -68,35 +68,6 @@ const Gifts = () => {
                 tác và khách hàng.
               </p>
 
-              {/* Stats */}
-              <div className="flex items-center justify-center gap-8 lg:gap-12 mt-10 pt-8 border-t border-border/50">
-                <div className="text-center">
-                  <p className="text-2xl lg:text-3xl font-serif text-primary">
-                    {giftSets.length}+
-                  </p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">
-                    Set quà
-                  </p>
-                </div>
-                <div className="w-px h-10 bg-border/50" />
-                <div className="text-center">
-                  <p className="text-2xl lg:text-3xl font-serif text-primary">
-                    100%
-                  </p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">
-                    Nhập khẩu
-                  </p>
-                </div>
-                <div className="w-px h-10 bg-border/50" />
-                <div className="text-center">
-                  <p className="text-2xl lg:text-3xl font-serif text-primary">
-                    In Logo
-                  </p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">
-                    Theo yêu cầu
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -139,13 +110,15 @@ const Gifts = () => {
                   Liên hệ ngay để nhận báo giá ưu đãi và dịch vụ in logo theo
                   yêu cầu doanh nghiệp
                 </p>
-                <Link
-                  to="/contact"
+                <a
+                  href="https://zalo.me/0906777377"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium tracking-wider uppercase hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                 >
                   <Phone className="w-4 h-4" />
                   Liên hệ tư vấn
-                </Link>
+                </a>
               </div>
             </div>
           </div>
@@ -176,11 +149,11 @@ const GiftCard = ({ gift, index }: { gift: GiftSet; index: number }) => {
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Image */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-secondary/30">
+      <div className="relative overflow-hidden bg-secondary/30">
         <img
           src={gift.image}
           alt={gift.name}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+          className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-700"
         />
         {/* Category Badge */}
         <div className="absolute top-4 left-4">
@@ -230,13 +203,15 @@ const GiftCard = ({ gift, index }: { gift: GiftSet; index: number }) => {
         </ul>
 
         {/* Contact Button */}
-        <Link
-          to="/contact"
+        <a
+          href="https://zalo.me/0906777377"
+          target="_blank"
+          rel="noopener noreferrer"
           className="mt-5 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-secondary/50 text-sm font-medium text-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300 group-hover:bg-primary/10"
         >
           <Gift className="w-4 h-4" />
           Đặt hàng
-        </Link>
+        </a>
       </div>
     </article>
   );
