@@ -1,12 +1,20 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-wine.jpg";
+import logo from "@/assets/logo2.png";
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-background pt-20 pb-28 md:pb-32">
       <div className="container text-center">
-        <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+        <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
+          {/* Logo */}
+          <img 
+            src={logo} 
+            alt="SÉLECTION Logo" 
+            className="h-[180px] md:h-[240px] w-auto mx-auto"
+          />
+
           {/* Tagline */}
           <p className="text-[clamp(8px,2.5vw,12px)] font-sans tracking-[0.2em] md:tracking-[0.3em] uppercase text-muted-foreground whitespace-nowrap">
             Bộ Sưu Tập Rượu Vang Tuyển Chọn
