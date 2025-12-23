@@ -35,10 +35,10 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Decorative elements */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground">
+      {/* Decorative elements - hidden on small screens to avoid overlap */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-muted-foreground hidden md:flex">
         <span className="text-xs tracking-widest uppercase">Cuộn</span>
-        <div className="w-px h-12 bg-border" />
+        <div className="w-px h-10 bg-border" />
       </div>
     </section>
   );
