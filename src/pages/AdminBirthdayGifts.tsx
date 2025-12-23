@@ -130,7 +130,7 @@ const AdminBirthdayGifts = () => {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
-              <Link to="/admin/wines">
+              <Link to="/admin">
                 <Button variant="ghost" size="icon">
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
@@ -146,8 +146,8 @@ const AdminBirthdayGifts = () => {
               </div>
             </div>
             
-            <Link to="/admin/wines">
-              <Button variant="outline">Quản lý Rượu</Button>
+            <Link to="/admin">
+              <Button variant="outline">Dashboard</Button>
             </Link>
           </div>
 

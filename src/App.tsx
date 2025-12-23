@@ -15,6 +15,7 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Gifts from "./pages/Gifts";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
 import AdminFlavorIcons from "./pages/AdminFlavorIcons";
 import AdminWines from "./pages/AdminWines";
 import AdminImportWines from "./pages/AdminImportWines";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/gifts" element={<Gifts />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
             <Route path="/admin/wines" element={<AdminRoute><AdminWines /></AdminRoute>} />
             <Route path="/admin/import-wines" element={<AdminRoute><AdminImportWines /></AdminRoute>} />
             <Route path="/admin/flavor-icons" element={<AdminRoute><AdminFlavorIcons /></AdminRoute>} />
