@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ImageIcon } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ImageIcon, ArrowLeft } from "lucide-react";
 
 const FLAVORS = [
   "cherry", "plum", "berry", "blackberry", "raspberry", "strawberry",
@@ -125,12 +126,27 @@ const AdminFlavorIcons = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Header */}
+        <header className="flex items-center gap-4">
+          <Link to="/admin">
+            <Button variant="ghost" size="icon" aria-label="Về Admin Dashboard">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-serif">Quản lý Icons Nốt Hương</h1>
+            <p className="text-muted-foreground text-sm">
+              Tạo và quản lý icon cho các hương vị rượu
+            </p>
+          </div>
+        </header>
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ImageIcon className="w-6 h-6" />
-              Quản lý Icons Nốt Hương
+              Danh sách Icons
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">

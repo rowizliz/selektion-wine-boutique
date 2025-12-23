@@ -85,8 +85,8 @@ const AdminWines = () => {
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header */}
           <header className="flex items-center gap-4">
-            <Link to="/">
-              <Button variant="ghost" size="icon" aria-label="Về trang chủ">
+            <Link to="/admin">
+              <Button variant="ghost" size="icon" aria-label="Về Admin Dashboard">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
