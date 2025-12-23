@@ -1,14 +1,26 @@
 import { useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { Gift, Wine, Sparkles, Phone, CheckCircle } from "lucide-react";
+import { Gift, Wine, Sparkles, Phone, CheckCircle, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { giftSets, formatPrice, GiftSet } from "@/data/giftSets";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type FilterCategory = "all" | "standard" | "premium" | "luxury";
 
+interface SelectedImage {
+  src: string;
+  name: string;
+}
+
 const Gifts = () => {
   const [filter, setFilter] = useState<FilterCategory>("all");
+  const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   const filteredGifts = useMemo(() => {
     if (filter === "all") return giftSets;
@@ -25,6 +37,28 @@ const Gifts = () => {
     { value: "premium", label: "Cao cấp" },
     { value: "luxury", label: "Sang trọng" },
   ];
+
+  const handleImageClick = (image: SelectedImage) => {
+    setSelectedImage(image);
+    setZoomLevel(1);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+    setZoomLevel(1);
+  };
+
+  const handleZoomIn = () => {
+    setZoomLevel((z) => Math.min(3, z + 0.25));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel((z) => Math.max(0.5, z - 0.25));
+  };
+
+  const handleResetZoom = () => {
+    setZoomLevel(1);
+  };
 
   return (
     <>
@@ -120,7 +154,12 @@ const Gifts = () => {
             {/* Gift Sets Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
               {sortedGifts.map((gift, index) => (
-                <GiftCard key={gift.id} gift={gift} index={index} />
+                <GiftCard
+                  key={gift.id}
+                  gift={gift}
+                  index={index}
+                  onImageClick={handleImageClick}
+                />
               ))}
             </div>
 
@@ -158,11 +197,77 @@ const Gifts = () => {
       </main>
 
       <Footer />
+
+      {/* Image Zoom Modal */}
+      <Dialog open={!!selectedImage} onOpenChange={handleCloseModal}>
+        <DialogContent className="max-w-5xl w-[95vw] max-h-[95vh] p-0 bg-background/95 backdrop-blur-lg border-border/50 overflow-hidden">
+          {/* Header with title and controls */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border/30 bg-background/80">
+            <DialogTitle className="font-serif text-base lg:text-lg truncate pr-4">
+              {selectedImage?.name}
+            </DialogTitle>
+            <div className="flex items-center gap-1.5">
+              {/* Zoom Out Button */}
+              <button
+                onClick={handleZoomOut}
+                disabled={zoomLevel <= 0.5}
+                className="p-2 rounded-lg bg-secondary/80 hover:bg-secondary text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Thu nhỏ"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+
+              {/* Zoom Level Indicator */}
+              <span className="text-xs font-medium w-12 text-center text-muted-foreground">
+                {Math.round(zoomLevel * 100)}%
+              </span>
+
+              {/* Zoom In Button */}
+              <button
+                onClick={handleZoomIn}
+                disabled={zoomLevel >= 3}
+                className="p-2 rounded-lg bg-secondary/80 hover:bg-secondary text-foreground transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Phóng to"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+
+              {/* Reset Button */}
+              <button
+                onClick={handleResetZoom}
+                className="p-2 rounded-lg bg-secondary/80 hover:bg-secondary text-foreground transition-colors ml-1"
+                aria-label="Đặt lại"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Image Container */}
+          <div className="overflow-auto max-h-[calc(95vh-60px)] flex items-center justify-center p-4 bg-secondary/20">
+            <img
+              src={selectedImage?.src}
+              alt={selectedImage?.name || ""}
+              style={{
+                transform: `scale(${zoomLevel})`,
+                transformOrigin: "center",
+              }}
+              className="max-w-full max-h-[80vh] object-contain transition-transform duration-200 rounded-lg shadow-xl"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
 
-const GiftCard = ({ gift, index }: { gift: GiftSet; index: number }) => {
+interface GiftCardProps {
+  gift: GiftSet;
+  index: number;
+  onImageClick: (image: SelectedImage) => void;
+}
+
+const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
   const categoryLabel = {
     standard: "Tiêu chuẩn",
     premium: "Cao cấp",
@@ -183,13 +288,25 @@ const GiftCard = ({ gift, index }: { gift: GiftSet; index: number }) => {
     >
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-secondary/30">
-        <img
-          src={gift.image}
-          alt={gift.name}
-          className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
-        />
+        <button
+          onClick={() => onImageClick({ src: gift.image, name: gift.name })}
+          className="w-full h-full cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-inset"
+          aria-label={`Xem ảnh ${gift.name}`}
+        >
+          <img
+            src={gift.image}
+            alt={gift.name}
+            className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+          />
+          {/* Hover overlay with zoom icon */}
+          <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors duration-300 flex items-center justify-center">
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3 rounded-full bg-background/80 backdrop-blur-sm shadow-lg">
+              <ZoomIn className="w-5 h-5 text-foreground" />
+            </div>
+          </div>
+        </button>
         {/* Category Badge */}
-        <div className="absolute top-4 left-4">
+        <div className="absolute top-4 left-4 pointer-events-none">
           <span
             className={`px-3 py-1.5 rounded-full text-[10px] font-medium tracking-wider uppercase ${categoryColor[gift.category]}`}
           >
@@ -197,13 +314,13 @@ const GiftCard = ({ gift, index }: { gift: GiftSet; index: number }) => {
           </span>
         </div>
         {/* Price Badge */}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 pointer-events-none">
           <span className="px-3 py-1.5 rounded-full bg-background/90 backdrop-blur-sm text-foreground text-xs font-semibold shadow-lg border border-border/50">
             {formatPrice(gift.price)}
           </span>
         </div>
         {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-40 pointer-events-none" />
       </div>
 
       {/* Content */}
