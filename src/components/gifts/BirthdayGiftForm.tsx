@@ -13,13 +13,16 @@ import {
   FileText,
   Send,
   Sparkles,
+  Loader2,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FormData {
   // Người đặt
@@ -52,6 +55,7 @@ interface FormData {
 }
 
 const BirthdayGiftForm = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     senderName: "",
     senderPhone: "",
@@ -98,7 +102,7 @@ const BirthdayGiftForm = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate required fields
@@ -107,16 +111,70 @@ const BirthdayGiftForm = () => {
       return;
     }
 
-    toast.success(
-      "Đã ghi nhận thông tin! Vui lòng chụp màn hình form và gửi qua Zalo.",
-      { duration: 5000 }
-    );
+    setIsSubmitting(true);
 
-    const message = `🎂 Xin chào! Em muốn đặt quà sinh nhật cho ${formData.recipientName}. Em đã điền form và sẽ gửi ảnh chụp màn hình.`;
-    window.open(
-      `https://zalo.me/0906777377?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
+    try {
+      const { error } = await supabase
+        .from('birthday_gift_requests')
+        .insert({
+          sender_name: formData.senderName,
+          sender_phone: formData.senderPhone,
+          recipient_name: formData.recipientName,
+          recipient_birthday: formData.recipientBirthday || null,
+          recipient_gender: formData.recipientGender || null,
+          relationship: formData.relationship || null,
+          wine_types: formData.wineTypes.length > 0 ? formData.wineTypes : null,
+          wine_style: formData.wineStyle || null,
+          cuisine_types: formData.cuisineTypes.length > 0 ? formData.cuisineTypes : null,
+          taste_preferences: formData.tastePreferences.length > 0 ? formData.tastePreferences : null,
+          food_allergies: formData.foodAllergies || null,
+          music_genres: formData.musicGenres.length > 0 ? formData.musicGenres : null,
+          hobbies: formData.hobbies.length > 0 ? formData.hobbies : null,
+          favorite_colors: formData.favoriteColors.length > 0 ? formData.favoriteColors : null,
+          style_preferences: formData.stylePreferences.length > 0 ? formData.stylePreferences : null,
+          birthday_message: formData.birthdayMessage || null,
+          budget: formData.budget || null,
+          additional_notes: formData.additionalNotes || null,
+        });
+
+      if (error) throw error;
+
+      toast.success(
+        "Đã gửi yêu cầu thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.",
+        { duration: 5000 }
+      );
+
+      // Reset form
+      setFormData({
+        senderName: "",
+        senderPhone: "",
+        recipientName: "",
+        recipientBirthday: "",
+        recipientGender: "",
+        relationship: "",
+        wineTypes: [],
+        wineStyle: "",
+        cuisineTypes: [],
+        tastePreferences: [],
+        foodAllergies: "",
+        musicGenres: [],
+        hobbies: [],
+        favoriteColors: [],
+        stylePreferences: [],
+        birthdayMessage: "",
+        budget: "",
+        additionalNotes: "",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại!");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleZaloContact = () => {
+    window.open("https://zalo.me/0906777377", "_blank");
   };
 
   // Options data
@@ -598,19 +656,40 @@ const BirthdayGiftForm = () => {
           <div className="p-6 rounded-2xl bg-primary/5 border border-primary/10 text-center">
             <Sparkles className="w-8 h-8 text-primary mx-auto mb-3" />
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Sau khi điền form, hãy <strong>chụp màn hình</strong> toàn bộ
-              thông tin và gửi cho chúng tôi qua Zalo nhé!
+              Sau khi gửi yêu cầu, chúng tôi sẽ liên hệ để tư vấn chi tiết trong vòng 24h.
             </p>
           </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-2xl text-base font-medium tracking-wider uppercase hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg shadow-primary/25"
-          >
-            <Send className="w-5 h-5" />
-            Gửi yêu cầu qua Zalo
-          </button>
+          {/* Submit Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 h-14 text-base font-medium tracking-wider uppercase shadow-lg shadow-primary/25"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Đang gửi...
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5 mr-2" />
+                  Gửi yêu cầu
+                </>
+              )}
+            </Button>
+            
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleZaloContact}
+              className="flex-1 h-14 text-base font-medium"
+            >
+              <MessageCircle className="w-5 h-5 mr-2" />
+              Liên hệ qua Zalo
+            </Button>
+          </div>
         </form>
       </div>
     </div>

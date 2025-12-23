@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      birthday_gift_requests: {
+        Row: {
+          additional_notes: string | null
+          birthday_message: string | null
+          budget: string | null
+          created_at: string
+          cuisine_types: string[] | null
+          favorite_colors: string[] | null
+          food_allergies: string | null
+          hobbies: string[] | null
+          id: string
+          music_genres: string[] | null
+          recipient_birthday: string | null
+          recipient_gender: string | null
+          recipient_name: string
+          relationship: string | null
+          sender_name: string
+          sender_phone: string
+          status: string
+          style_preferences: string[] | null
+          taste_preferences: string[] | null
+          updated_at: string
+          wine_style: string | null
+          wine_types: string[] | null
+        }
+        Insert: {
+          additional_notes?: string | null
+          birthday_message?: string | null
+          budget?: string | null
+          created_at?: string
+          cuisine_types?: string[] | null
+          favorite_colors?: string[] | null
+          food_allergies?: string | null
+          hobbies?: string[] | null
+          id?: string
+          music_genres?: string[] | null
+          recipient_birthday?: string | null
+          recipient_gender?: string | null
+          recipient_name: string
+          relationship?: string | null
+          sender_name: string
+          sender_phone: string
+          status?: string
+          style_preferences?: string[] | null
+          taste_preferences?: string[] | null
+          updated_at?: string
+          wine_style?: string | null
+          wine_types?: string[] | null
+        }
+        Update: {
+          additional_notes?: string | null
+          birthday_message?: string | null
+          budget?: string | null
+          created_at?: string
+          cuisine_types?: string[] | null
+          favorite_colors?: string[] | null
+          food_allergies?: string | null
+          hobbies?: string[] | null
+          id?: string
+          music_genres?: string[] | null
+          recipient_birthday?: string | null
+          recipient_gender?: string | null
+          recipient_name?: string
+          relationship?: string | null
+          sender_name?: string
+          sender_phone?: string
+          status?: string
+          style_preferences?: string[] | null
+          taste_preferences?: string[] | null
+          updated_at?: string
+          wine_style?: string | null
+          wine_types?: string[] | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
