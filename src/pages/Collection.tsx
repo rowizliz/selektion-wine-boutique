@@ -71,7 +71,7 @@ const Collection = () => {
         {/* Page Header */}
         <section className="py-16 md:py-24 bg-background">
           <div className="container text-center">
-            <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground mb-4">
+            <p className="text-[clamp(8px,2.5vw,12px)] font-sans tracking-[0.2em] md:tracking-[0.3em] uppercase text-muted-foreground whitespace-nowrap">
               Bộ Sưu Tập
             </p>
             <h1 className="text-[clamp(24px,7vw,60px)] font-serif font-light whitespace-nowrap tracking-tight leading-[1.05]">
