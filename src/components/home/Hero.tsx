@@ -4,7 +4,7 @@ import heroImage from "@/assets/hero-wine.jpg";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-background pt-20">
+    <section className="relative min-h-screen flex items-center justify-center bg-background pt-20 pb-28 md:pb-32">
       <div className="container text-center">
         <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
           {/* Tagline */}
@@ -20,7 +20,7 @@ const Hero = () => {
 
           {/* Description */}
           <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed font-light">
-            Khám phá những chai rượu vang đặc biệt từ những vườn nho danh tiếng của Pháp, Ý, Chilê, Mỹ, Úc Châu... 
+            Khám phá những chai rượu vang đặc biệt từ những vườn nho danh tiếng của Pháp, Ý, Chilê, Mỹ, Úc Châu...
             Mỗi chai được tuyển chọn kỹ lưỡng cho tính cách, di sản và sự xuất sắc.
           </p>
 
@@ -35,10 +35,10 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Decorative elements - hidden on small screens to avoid overlap */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-muted-foreground hidden md:flex">
+      {/* Decorative elements (kept off the CTA area on smaller heights) */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-2 text-muted-foreground hidden md:flex">
         <span className="text-xs tracking-widest uppercase">Cuộn</span>
-        <div className="w-px h-10 bg-border" />
+        <div className="w-px h-8 bg-border" />
       </div>
     </section>
   );
