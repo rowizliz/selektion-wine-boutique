@@ -13,7 +13,7 @@ const Hero = () => {
           </p>
 
           {/* Main heading */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light tracking-wide leading-tight">
+          <h1 className="text-[clamp(32px,9vw,96px)] font-serif font-light tracking-wide leading-[1.1]">
             Nghệ Thuật<br />
             <span className="italic">Tuyển Chọn</span>
           </h1>
