@@ -31,6 +31,7 @@ const Header = () => {
   // Links shown in hamburger menu (all views)
   const menuLinks = [
     { name: "Bộ Sưu Tập", href: "/collection", hideOnDesktop: true },
+    { name: "Quà Tặng", href: "/gifts", hideOnDesktop: true },
     { name: "Về Chúng Tôi", href: "/about" },
     { name: "Liên Hệ", href: "/contact" },
   ];
@@ -50,13 +51,21 @@ const Header = () => {
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
-            {/* Desktop: "Bộ Sưu Tập" link on left */}
-            <Link
-              to="/collection"
-              className="hidden lg:block text-xs font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors duration-300"
-            >
-              Bộ Sưu Tập
-            </Link>
+            {/* Desktop: "Bộ Sưu Tập" và "Quà Tặng" links on left */}
+            <div className="hidden lg:flex items-center gap-6">
+              <Link
+                to="/collection"
+                className="text-xs font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors duration-300"
+              >
+                Bộ Sưu Tập
+              </Link>
+              <Link
+                to="/gifts"
+                className="text-xs font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors duration-300"
+              >
+                Quà Tặng
+              </Link>
+            </div>
           </div>
 
           {/* Logo - centered */}
