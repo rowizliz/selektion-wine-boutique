@@ -77,7 +77,7 @@ const Collection = () => {
             <h1 className="text-[clamp(24px,7vw,60px)] font-serif font-light whitespace-nowrap tracking-tight leading-[1.05]">
               Rượu Vang Tuyển Lựa
             </h1>
-            <p className="mt-6 text-muted-foreground text-sm">
+            <p className="mt-6 text-muted-foreground text-[clamp(10px,2.8vw,14px)] whitespace-nowrap">
               {isLoading
                 ? "Đang tải bộ sưu tập…"
                 : `${wines.length} loại rượu vang đặc biệt từ khắp nơi trên thế giới`}
