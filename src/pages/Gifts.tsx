@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
-import { Gift, Wine, Sparkles, Phone, CheckCircle, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight } from "lucide-react";
+import { Gift, Wine, Sparkles, Phone, CheckCircle, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, Building, Cake } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { giftSets, formatPrice, GiftSet } from "@/data/giftSets";
@@ -9,8 +9,10 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
+import BirthdayGiftForm from "@/components/gifts/BirthdayGiftForm";
 
 type FilterCategory = "all" | "standard" | "premium" | "luxury";
+type GiftType = "corporate" | "birthday";
 
 interface SelectedImage {
   src: string;
@@ -19,6 +21,7 @@ interface SelectedImage {
 }
 
 const Gifts = () => {
+  const [giftType, setGiftType] = useState<GiftType>("corporate");
   const [filter, setFilter] = useState<FilterCategory>("all");
   const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -109,63 +112,97 @@ const Gifts = () => {
       <Header />
 
       <main className="min-h-screen bg-background">
-        {/* Hero Section with Background Image */}
-        <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden">
-          {/* Background image with overlay */}
-          <div className="absolute inset-0">
-            <img
-              src="/gifts/rw20.jpg"
-              alt=""
-              className="w-full h-full object-cover opacity-15"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/95 to-background" />
-          </div>
-
-          {/* Decorative elements */}
-          <div className="absolute top-20 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-primary/3 rounded-full blur-2xl" />
-
-          <div className="container relative">
-            <div className="text-center max-w-3xl mx-auto animate-fade-in">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-xs font-medium tracking-wider uppercase text-primary">
-                  Quà tặng doanh nghiệp
-                </span>
-              </div>
-
-              <h1 className="text-4xl lg:text-6xl font-serif mb-6 tracking-tight">
-                Quà Tặng
-                <span className="block text-primary/80 mt-2">Rượu Vang</span>
-              </h1>
-
-              <p className="text-muted-foreground text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
-                Bộ sưu tập quà tặng cao cấp kết hợp rượu vang hảo hạng cùng các
-                đặc sản tinh tuyển. Lựa chọn hoàn hảo để gửi gắm tâm ý đến đối
-                tác và khách hàng.
-              </p>
-
-              {/* USP Section */}
-              <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-8 mt-10 pt-8 border-t border-border/30">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle className="w-4 h-4 text-primary" />
-                  <span>Nhập khẩu chính hãng</span>
-                </div>
-                <div className="hidden sm:block w-px h-4 bg-border/50" />
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle className="w-4 h-4 text-primary" />
-                  <span>In logo theo yêu cầu</span>
-                </div>
-                <div className="hidden sm:block w-px h-4 bg-border/50" />
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle className="w-4 h-4 text-primary" />
-                  <span>Giao hàng toàn quốc</span>
-                </div>
-              </div>
+        {/* Gift Type Tabs */}
+        <section className="pt-24 lg:pt-32 pb-8">
+          <div className="container">
+            <div className="flex items-center justify-center gap-3 sm:gap-4">
+              <button
+                onClick={() => setGiftType("corporate")}
+                className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 ${
+                  giftType === "corporate"
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                }`}
+              >
+                <Building className="w-4 h-4" />
+                <span className="hidden sm:inline">Quà tặng</span> Doanh nghiệp
+              </button>
+              <button
+                onClick={() => setGiftType("birthday")}
+                className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 ${
+                  giftType === "birthday"
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                }`}
+              >
+                <Cake className="w-4 h-4" />
+                <span className="hidden sm:inline">Quà tặng</span> Sinh nhật
+              </button>
             </div>
           </div>
         </section>
+
+        {giftType === "birthday" ? (
+          <BirthdayGiftForm />
+        ) : (
+          <>
+            {/* Hero Section with Background Image */}
+            <section className="relative pb-16 lg:pb-24 overflow-hidden">
+              {/* Background image with overlay */}
+              <div className="absolute inset-0">
+                <img
+                  src="/gifts/rw20.jpg"
+                  alt=""
+                  className="w-full h-full object-cover opacity-15"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/95 to-background" />
+              </div>
+
+              {/* Decorative elements */}
+              <div className="absolute top-20 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+              <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-primary/3 rounded-full blur-2xl" />
+
+              <div className="container relative">
+                <div className="text-center max-w-3xl mx-auto animate-fade-in">
+                  {/* Badge */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <span className="text-xs font-medium tracking-wider uppercase text-primary">
+                      Quà tặng doanh nghiệp
+                    </span>
+                  </div>
+
+                  <h1 className="text-4xl lg:text-6xl font-serif mb-6 tracking-tight">
+                    Quà Tặng
+                    <span className="block text-primary/80 mt-2">Rượu Vang</span>
+                  </h1>
+
+                  <p className="text-muted-foreground text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
+                    Bộ sưu tập quà tặng cao cấp kết hợp rượu vang hảo hạng cùng các
+                    đặc sản tinh tuyển. Lựa chọn hoàn hảo để gửi gắm tâm ý đến đối
+                    tác và khách hàng.
+                  </p>
+
+                  {/* USP Section */}
+                  <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-8 mt-10 pt-8 border-t border-border/30">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CheckCircle className="w-4 h-4 text-primary" />
+                      <span>Nhập khẩu chính hãng</span>
+                    </div>
+                    <div className="hidden sm:block w-px h-4 bg-border/50" />
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CheckCircle className="w-4 h-4 text-primary" />
+                      <span>In logo theo yêu cầu</span>
+                    </div>
+                    <div className="hidden sm:block w-px h-4 bg-border/50" />
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CheckCircle className="w-4 h-4 text-primary" />
+                      <span>Giao hàng toàn quốc</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
 
         {/* Filter & Grid Section */}
         <section className="py-12 lg:py-16">
@@ -228,8 +265,10 @@ const Gifts = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+            </div>
+          </section>
+        </>
+      )}
       </main>
 
       <Footer />
