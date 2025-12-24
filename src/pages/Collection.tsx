@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { useWines } from "@/hooks/useWines";
 import logo from "@/assets/logo2.png";
+import PersonalizedWineCard from "@/components/personalized-wine/PersonalizedWineCard";
 
 const parsePrice = (price: string): number => {
   // Remove currency symbol and commas, parse as number
@@ -141,6 +142,9 @@ const Collection = () => {
                     </Link>
                   );
                 })}
+                
+                {/* Personalized Wine Card - appears at the end */}
+                <PersonalizedWineCard />
               </div>
             )}
           </div>

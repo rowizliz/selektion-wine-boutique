@@ -92,6 +92,66 @@ export type Database = {
         }
         Relationships: []
       }
+      personalized_wine_requests: {
+        Row: {
+          additional_notes: string | null
+          budget_range: string | null
+          created_at: string
+          cuisine_types: string[] | null
+          customer_name: string
+          hobbies: string[] | null
+          id: string
+          music_genres: string[] | null
+          occasions: string[] | null
+          phone: string
+          status: string
+          taste_spicy_level: number | null
+          taste_sweet_level: number | null
+          tracking_token: string
+          updated_at: string
+          wine_styles: string[] | null
+          wine_types: string[] | null
+        }
+        Insert: {
+          additional_notes?: string | null
+          budget_range?: string | null
+          created_at?: string
+          cuisine_types?: string[] | null
+          customer_name: string
+          hobbies?: string[] | null
+          id?: string
+          music_genres?: string[] | null
+          occasions?: string[] | null
+          phone: string
+          status?: string
+          taste_spicy_level?: number | null
+          taste_sweet_level?: number | null
+          tracking_token?: string
+          updated_at?: string
+          wine_styles?: string[] | null
+          wine_types?: string[] | null
+        }
+        Update: {
+          additional_notes?: string | null
+          budget_range?: string | null
+          created_at?: string
+          cuisine_types?: string[] | null
+          customer_name?: string
+          hobbies?: string[] | null
+          id?: string
+          music_genres?: string[] | null
+          occasions?: string[] | null
+          phone?: string
+          status?: string
+          taste_spicy_level?: number | null
+          taste_sweet_level?: number | null
+          tracking_token?: string
+          updated_at?: string
+          wine_styles?: string[] | null
+          wine_types?: string[] | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

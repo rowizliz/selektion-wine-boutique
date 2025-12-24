@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wine, Gift, Palette, Upload, ArrowLeft } from "lucide-react";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const adminModules = [
@@ -18,6 +18,13 @@ const adminModules = [
     icon: Gift,
     href: "/admin/birthday-gifts",
     color: "bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400"
+  },
+  {
+    title: "Tư Vấn Cá Nhân Hoá",
+    description: "Xem và xử lý các yêu cầu tư vấn rượu",
+    icon: Sparkles,
+    href: "/admin/tu-van",
+    color: "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
   },
   {
     title: "Flavor Icons",
