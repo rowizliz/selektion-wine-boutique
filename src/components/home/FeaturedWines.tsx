@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { WINES_DATA_TIMESTAMP, wines } from "@/data/wines";
 
-const featuredWineIds = ["22", "16", "10", "26", "23"];
+const featuredWineIds = ["22", "16", "10", "26", "23", "11"];
 const featuredWines = featuredWineIds
   .map(id => wines.find(wine => wine.id === id))
   .filter((wine): wine is NonNullable<typeof wine> => wine !== undefined);
@@ -25,19 +25,19 @@ const FeaturedWines = () => {
         </div>
 
         {/* Wine grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8">
           {featuredWines.map((wine, index) => (
             <Link
               key={wine.id}
               to={`/collection/${wine.id}`}
-              className={`group opacity-0 animate-slide-up stagger-${Math.min(index + 1, 5)}`}
+              className={`group opacity-0 animate-slide-up stagger-${Math.min(index + 1, 6)}`}
             >
-              <div className="aspect-[3/4] bg-white mb-4 overflow-hidden flex items-end justify-center p-4 rounded-sm">
+              <div className="aspect-[3/4] bg-white mb-4 overflow-hidden flex items-center justify-center p-4 rounded-sm">
                 {wine.image ? (
                   <img 
                     src={withImgCacheBust(wine.image)} 
                     alt={wine.name}
-                    className="w-auto h-[200px] md:h-[220px] object-contain group-hover:scale-105 transition-transform duration-700 ease-luxury"
+                    className="max-w-full max-h-full h-[180px] md:h-[200px] object-contain group-hover:scale-105 transition-transform duration-700 ease-luxury"
                   />
                 ) : (
                   <div className="text-center p-8">
