@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import goldLogo from "@/assets/logo3.png";
+import goldLogo from "@/assets/logo2.png";
 
 const PersonalizedWineCard = () => {
   return (
