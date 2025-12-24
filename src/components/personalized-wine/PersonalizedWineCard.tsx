@@ -48,22 +48,25 @@ const PersonalizedWineCard = () => {
 
         {/* Content */}
         <div className="relative h-full flex flex-col items-center justify-center p-8 text-center">
-          {/* Gold Logo with float animation */}
-          <div className="relative mb-12 animate-float">
-            {/* Glow ring behind logo */}
-            <div className="absolute inset-0 w-28 h-28 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-full bg-gradient-to-r from-amber-400/0 via-amber-400/10 to-amber-400/0 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+          {/* Gold Logo with glow effects */}
+          <div className="relative mb-14 flex items-center justify-center">
+            {/* Glow rings radiating outward */}
+            <div className="absolute w-48 h-48 rounded-full bg-amber-400/5 animate-glow-ring" />
+            <div className="absolute w-48 h-48 rounded-full bg-amber-500/5 animate-glow-ring" style={{ animationDelay: "1.5s" }} />
+            <div className="absolute w-48 h-48 rounded-full bg-amber-300/5 animate-glow-ring" style={{ animationDelay: "3s" }} />
             
-            <div className="w-28 h-28 flex items-center justify-center transition-all duration-700 group-hover:scale-110 group-hover:rotate-3">
-              <img 
-                src={goldLogo} 
-                alt="Rượu Ý Logo" 
-                className="w-24 h-auto opacity-60 group-hover:opacity-100 transition-all duration-700 drop-shadow-[0_0_8px_rgba(212,175,55,0.3)] group-hover:drop-shadow-[0_0_20px_rgba(212,175,55,0.6)]"
-              />
-            </div>
+            {/* Static glow backdrop */}
+            <div className="absolute w-40 h-40 rounded-full bg-gradient-radial from-amber-400/15 via-amber-500/5 to-transparent blur-xl" />
             
-            {/* Pulse rings */}
-            <div className="absolute inset-0 w-28 h-28 rounded-full border border-amber-500/10 animate-ping-slow opacity-60" />
-            <div className="absolute inset-0 w-28 h-28 rounded-full border border-amber-400/5 animate-ping-slow opacity-40" style={{ animationDelay: "1s" }} />
+            {/* Logo with glow pulse */}
+            <img 
+              src={goldLogo} 
+              alt="Rượu Ý Logo" 
+              className="relative h-32 w-auto animate-glow-pulse opacity-70 group-hover:opacity-100 transition-opacity duration-700 group-hover:scale-105"
+            />
+            
+            {/* Shimmer overlay on hover */}
+            <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-amber-200/0 via-amber-200/20 to-amber-200/0 opacity-0 group-hover:opacity-100 group-hover:animate-shimmer-vertical pointer-events-none" />
           </div>
 
           {/* Text content with stagger animation */}
