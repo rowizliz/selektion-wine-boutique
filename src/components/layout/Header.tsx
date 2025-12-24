@@ -32,6 +32,7 @@ const Header = () => {
   const menuLinks = [
     { name: "Bộ Sưu Tập", href: "/collection", hideOnDesktop: true },
     { name: "Quà Tặng", href: "/gifts", hideOnDesktop: true },
+    { name: "Tư Vấn Cá Nhân Hoá", href: "/tu-van-ca-nhan" },
     { name: "Về Chúng Tôi", href: "/about" },
     { name: "Liên Hệ", href: "/contact" },
   ];
