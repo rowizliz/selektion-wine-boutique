@@ -18,7 +18,7 @@ import SuccessScreen from "@/components/personalized-wine/SuccessScreen";
 import { useCreatePersonalizedWineRequest } from "@/hooks/usePersonalizedWineRequests";
 
 const TOTAL_STEPS = 6;
-const STEP_LABELS = ["Thông tin", "Rượu vang", "Ẩm thực", "Sở thích", "Ngân sách", "Ghi chú"];
+const STEP_LABELS = ["Rượu vang", "Ẩm thực", "Sở thích", "Ngân sách", "Ghi chú", "Thông tin"];
 
 interface FormData {
   customer_name: string;
@@ -62,7 +62,8 @@ const PersonalizedWineConsultation = () => {
   };
 
   const validateStep = () => {
-    if (currentStep === 0) {
+    // Validation for step 5 (Thông tin - Contact info, now the last step)
+    if (currentStep === 5) {
       if (!formData.customer_name.trim()) {
         toast.error("Vui lòng nhập họ và tên");
         return false;
@@ -125,19 +126,12 @@ const PersonalizedWineConsultation = () => {
     switch (currentStep) {
       case 0:
         return (
-          <StepContact
-            data={{ customer_name: formData.customer_name, phone: formData.phone }}
-            onChange={updateFormData}
-          />
-        );
-      case 1:
-        return (
           <StepWinePreference
             data={{ wine_types: formData.wine_types, wine_styles: formData.wine_styles }}
             onChange={(field, value) => updateFormData(field, value)}
           />
         );
-      case 2:
+      case 1:
         return (
           <StepCuisine
             data={{
@@ -148,24 +142,31 @@ const PersonalizedWineConsultation = () => {
             onChange={updateFormData}
           />
         );
-      case 3:
+      case 2:
         return (
           <StepLifestyle
             data={{ music_genres: formData.music_genres, hobbies: formData.hobbies }}
             onChange={(field, value) => updateFormData(field, value)}
           />
         );
-      case 4:
+      case 3:
         return (
           <StepBudget
             data={{ budget_range: formData.budget_range, occasions: formData.occasions }}
             onChange={updateFormData}
           />
         );
-      case 5:
+      case 4:
         return (
           <StepNotes
             data={{ additional_notes: formData.additional_notes }}
+            onChange={updateFormData}
+          />
+        );
+      case 5:
+        return (
+          <StepContact
+            data={{ customer_name: formData.customer_name, phone: formData.phone }}
             onChange={updateFormData}
           />
         );
