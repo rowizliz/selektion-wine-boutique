@@ -1,5 +1,6 @@
-import { Sparkles, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import goldLogo from "@/assets/logo3.png";
 
 const PersonalizedWineCard = () => {
   return (
@@ -35,13 +36,17 @@ const PersonalizedWineCard = () => {
 
         {/* Content */}
         <div className="relative h-full flex flex-col items-center justify-center p-6 text-center">
-          {/* Animated icon */}
+          {/* Gold Logo */}
           <div className="relative mb-6">
-            <div className="w-16 h-16 rounded-full border border-foreground/20 flex items-center justify-center group-hover:border-foreground/40 transition-all duration-500 group-hover:scale-110">
-              <Sparkles className="w-7 h-7 text-foreground/50 group-hover:text-foreground transition-colors duration-500" />
+            <div className="w-20 h-20 flex items-center justify-center transition-all duration-500 group-hover:scale-110">
+              <img 
+                src={goldLogo} 
+                alt="Rượu Ý Logo" 
+                className="w-16 h-auto opacity-70 group-hover:opacity-100 transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(212,175,55,0.6)]"
+              />
             </div>
             {/* Pulse ring */}
-            <div className="absolute inset-0 rounded-full border border-foreground/10 animate-ping opacity-0 group-hover:opacity-100" style={{ animationDuration: "2s" }} />
+            <div className="absolute inset-0 rounded-full border border-amber-500/20 animate-ping opacity-0 group-hover:opacity-100" style={{ animationDuration: "2s" }} />
           </div>
 
           {/* Text content */}
