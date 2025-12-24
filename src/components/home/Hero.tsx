@@ -22,8 +22,8 @@ const Hero = () => {
 
           {/* Main heading */}
           <h1 className="text-[clamp(32px,9vw,96px)] font-serif font-light tracking-wide leading-[1.1]">
-            Nghệ Thuật<br />
-            <span className="italic">Tuyển Chọn</span>
+            Nghệ Thuật, Di Sản<br />
+            <span className="italic">Thổ Nhưỡng</span>
           </h1>
 
           {/* Description */}
