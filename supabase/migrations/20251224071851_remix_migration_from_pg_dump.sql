@@ -44,6 +44,25 @@ CREATE TYPE public.app_role AS ENUM (
 
 
 --
+-- Name: get_birthday_gift_request_status(uuid); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.get_birthday_gift_request_status(p_tracking_token uuid) RETURNS TABLE(tracking_token uuid, status text, created_at timestamp with time zone, recipient_name text, sender_name text)
+    LANGUAGE sql STABLE SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+  SELECT 
+    bgr.tracking_token,
+    bgr.status,
+    bgr.created_at,
+    bgr.recipient_name,
+    bgr.sender_name
+  FROM public.birthday_gift_requests bgr
+  WHERE bgr.tracking_token = p_tracking_token
+$$;
+
+
+--
 -- Name: has_role(uuid, public.app_role); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -90,6 +109,62 @@ $$;
 SET default_table_access_method = heap;
 
 --
+-- Name: birthday_gift_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.birthday_gift_requests (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    sender_name text NOT NULL,
+    sender_phone text NOT NULL,
+    recipient_name text NOT NULL,
+    recipient_birthday date,
+    recipient_gender text,
+    relationship text,
+    wine_types text[],
+    wine_style text,
+    cuisine_types text[],
+    taste_preferences text[],
+    food_allergies text,
+    music_genres text[],
+    hobbies text[],
+    favorite_colors text[],
+    style_preferences text[],
+    birthday_message text,
+    budget text,
+    additional_notes text,
+    status text DEFAULT 'pending'::text NOT NULL,
+    tracking_token uuid DEFAULT gen_random_uuid() NOT NULL
+);
+
+
+--
+-- Name: personalized_wine_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.personalized_wine_requests (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    tracking_token uuid DEFAULT gen_random_uuid() NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    customer_name text NOT NULL,
+    phone text NOT NULL,
+    wine_types text[],
+    wine_styles text[],
+    cuisine_types text[],
+    taste_sweet_level integer,
+    taste_spicy_level integer,
+    music_genres text[],
+    hobbies text[],
+    budget_range text,
+    occasions text[],
+    additional_notes text,
+    status text DEFAULT 'pending'::text NOT NULL
+);
+
+
+--
 -- Name: user_roles; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -134,6 +209,30 @@ CREATE TABLE public.wines (
 
 
 --
+-- Name: birthday_gift_requests birthday_gift_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.birthday_gift_requests
+    ADD CONSTRAINT birthday_gift_requests_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: personalized_wine_requests personalized_wine_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.personalized_wine_requests
+    ADD CONSTRAINT personalized_wine_requests_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: personalized_wine_requests personalized_wine_requests_tracking_token_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.personalized_wine_requests
+    ADD CONSTRAINT personalized_wine_requests_tracking_token_key UNIQUE (tracking_token);
+
+
+--
 -- Name: user_roles user_roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -158,6 +257,27 @@ ALTER TABLE ONLY public.wines
 
 
 --
+-- Name: idx_birthday_gift_requests_tracking_token; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_birthday_gift_requests_tracking_token ON public.birthday_gift_requests USING btree (tracking_token);
+
+
+--
+-- Name: birthday_gift_requests update_birthday_gift_requests_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_birthday_gift_requests_updated_at BEFORE UPDATE ON public.birthday_gift_requests FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: personalized_wine_requests update_personalized_wine_requests_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_personalized_wine_requests_updated_at BEFORE UPDATE ON public.personalized_wine_requests FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
 -- Name: wines update_wines_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -170,6 +290,20 @@ CREATE TRIGGER update_wines_updated_at BEFORE UPDATE ON public.wines FOR EACH RO
 
 ALTER TABLE ONLY public.user_roles
     ADD CONSTRAINT user_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+
+
+--
+-- Name: personalized_wine_requests Admins can delete personalized wine requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins can delete personalized wine requests" ON public.personalized_wine_requests FOR DELETE USING (public.is_admin());
+
+
+--
+-- Name: birthday_gift_requests Admins can delete requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins can delete requests" ON public.birthday_gift_requests FOR DELETE USING (public.is_admin());
 
 
 --
@@ -201,6 +335,20 @@ CREATE POLICY "Admins can insert wines" ON public.wines FOR INSERT WITH CHECK (p
 
 
 --
+-- Name: personalized_wine_requests Admins can update personalized wine requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins can update personalized wine requests" ON public.personalized_wine_requests FOR UPDATE USING (public.is_admin());
+
+
+--
+-- Name: birthday_gift_requests Admins can update requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins can update requests" ON public.birthday_gift_requests FOR UPDATE USING (public.is_admin());
+
+
+--
 -- Name: user_roles Admins can update roles; Type: POLICY; Schema: public; Owner: -
 --
 
@@ -215,10 +363,38 @@ CREATE POLICY "Admins can update wines" ON public.wines FOR UPDATE USING (public
 
 
 --
+-- Name: birthday_gift_requests Admins can view all requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins can view all requests" ON public.birthday_gift_requests FOR SELECT USING (public.is_admin());
+
+
+--
 -- Name: user_roles Admins can view all roles; Type: POLICY; Schema: public; Owner: -
 --
 
 CREATE POLICY "Admins can view all roles" ON public.user_roles FOR SELECT TO authenticated USING (public.is_admin());
+
+
+--
+-- Name: personalized_wine_requests Admins can view personalized wine requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins can view personalized wine requests" ON public.personalized_wine_requests FOR SELECT USING (public.is_admin());
+
+
+--
+-- Name: birthday_gift_requests Anyone can insert birthday gift requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Anyone can insert birthday gift requests" ON public.birthday_gift_requests FOR INSERT WITH CHECK (true);
+
+
+--
+-- Name: personalized_wine_requests Anyone can insert personalized wine requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Anyone can insert personalized wine requests" ON public.personalized_wine_requests FOR INSERT WITH CHECK (true);
 
 
 --
@@ -234,6 +410,18 @@ CREATE POLICY "Anyone can view wines" ON public.wines FOR SELECT USING (true);
 
 CREATE POLICY "Users can view own roles" ON public.user_roles FOR SELECT TO authenticated USING ((user_id = auth.uid()));
 
+
+--
+-- Name: birthday_gift_requests; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.birthday_gift_requests ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: personalized_wine_requests; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.personalized_wine_requests ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: user_roles; Type: ROW SECURITY; Schema: public; Owner: -
