@@ -32,19 +32,19 @@ const StepWinePreference = ({ data, onChange }: StepWinePreferenceProps) => {
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 md:space-y-10">
       {/* Wine Types */}
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         <div className="text-center">
-          <h2 className="text-2xl md:text-3xl font-serif">
+          <h2 className="text-xl md:text-3xl font-serif">
             Bạn thích loại rượu vang nào?
           </h2>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm md:text-base mt-1 md:mt-2">
             Có thể chọn nhiều loại
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
           {wineTypes.map((type) => (
             <VisualSelectCard
               key={type.id}
@@ -59,17 +59,17 @@ const StepWinePreference = ({ data, onChange }: StepWinePreferenceProps) => {
       </div>
 
       {/* Wine Styles */}
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         <div className="text-center">
-          <h2 className="text-2xl md:text-3xl font-serif">
+          <h2 className="text-xl md:text-3xl font-serif">
             Phong cách yêu thích?
           </h2>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm md:text-base mt-1 md:mt-2">
             Có thể chọn nhiều phong cách
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
           {wineStyles.map((style) => (
             <VisualSelectCard
               key={style.id}

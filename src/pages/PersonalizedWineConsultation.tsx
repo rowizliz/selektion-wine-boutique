@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -54,8 +54,14 @@ const PersonalizedWineConsultation = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [trackingToken, setTrackingToken] = useState<string | null>(null);
+  const stepContentRef = useRef<HTMLDivElement>(null);
   
   const createRequest = useCreatePersonalizedWineRequest();
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentStep]);
 
   const updateFormData = (field: string, value: string | string[] | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -203,9 +209,9 @@ const PersonalizedWineConsultation = () => {
 
       <Header />
       <main className="pt-20 md:pt-24 min-h-screen bg-background">
-        <div className="container max-w-4xl py-8 md:py-12">
+        <div className="container max-w-4xl py-5 md:py-12 px-4">
           {/* Progress */}
-          <div className="mb-10">
+          <div className="mb-6 md:mb-10">
             <WizardProgress
               currentStep={currentStep}
               totalSteps={TOTAL_STEPS}
@@ -214,41 +220,42 @@ const PersonalizedWineConsultation = () => {
           </div>
 
           {/* Step Content */}
-          <div className="min-h-[400px] py-4">
+          <div ref={stepContentRef} className="min-h-[280px] md:min-h-[400px] py-2 md:py-4">
             {renderStep()}
           </div>
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between items-center pt-8 border-t">
+          <div className="flex justify-between items-center pt-6 md:pt-8 border-t gap-2">
             <Button
               variant="ghost"
               onClick={handlePrev}
               disabled={currentStep === 0}
-              className="gap-2"
+              className="gap-1 md:gap-2 px-3 md:px-4"
             >
               <ArrowLeft className="w-4 h-4" />
-              Quay lại
+              <span className="hidden sm:inline">Quay lại</span>
             </Button>
 
-            <div className="text-sm text-muted-foreground">
-              Bước {currentStep + 1} / {TOTAL_STEPS}
+            <div className="text-xs md:text-sm text-muted-foreground">
+              {currentStep + 1} / {TOTAL_STEPS}
             </div>
 
             <Button
               onClick={handleNext}
               disabled={createRequest.isPending}
-              className="gap-2"
+              className="gap-1 md:gap-2 px-3 md:px-4"
             >
               {createRequest.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Đang gửi...
+                  <span className="hidden sm:inline">Đang gửi...</span>
                 </>
               ) : currentStep === TOTAL_STEPS - 1 ? (
                 "Gửi yêu cầu"
               ) : (
                 <>
-                  Tiếp tục
+                  <span className="hidden sm:inline">Tiếp tục</span>
+                  <span className="sm:hidden">Tiếp</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
