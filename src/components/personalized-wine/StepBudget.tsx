@@ -56,27 +56,27 @@ const StepBudget = ({ data, onChange }: StepBudgetProps) => {
   const currentBudget = budgetRanges.find((b) => b.value === budgetValue);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 md:space-y-10">
       {/* Budget */}
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         <div className="text-center">
-          <h2 className="text-2xl md:text-3xl font-serif">
+          <h2 className="text-xl md:text-3xl font-serif">
             Ngân sách của bạn?
           </h2>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm md:text-base mt-1 md:mt-2">
             Giúp chúng tôi gợi ý rượu phù hợp với túi tiền
           </p>
         </div>
 
-        <div className="max-w-md mx-auto space-y-6">
+        <div className="max-w-md mx-auto space-y-4 md:space-y-6">
           {/* Budget Display */}
-          <div className="text-center py-6 rounded-lg bg-foreground/5 border">
-            <p className="text-4xl font-serif">{currentBudget?.range}</p>
-            <p className="text-muted-foreground text-sm mt-1">{currentBudget?.label}</p>
+          <div className="text-center py-4 md:py-6 rounded-lg bg-foreground/5 border">
+            <p className="text-2xl md:text-4xl font-serif">{currentBudget?.range}</p>
+            <p className="text-muted-foreground text-xs md:text-sm mt-1">{currentBudget?.label}</p>
           </div>
 
           {/* Slider */}
-          <div className="px-4">
+          <div className="px-2 md:px-4">
             <Slider
               value={[budgetValue]}
               onValueChange={handleBudgetChange}
@@ -94,32 +94,32 @@ const StepBudget = ({ data, onChange }: StepBudgetProps) => {
       </div>
 
       {/* Occasions */}
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         <div className="text-center">
-          <h2 className="text-2xl md:text-3xl font-serif">
+          <h2 className="text-xl md:text-3xl font-serif">
             Dịp sử dụng?
           </h2>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm md:text-base mt-1 md:mt-2">
             Bạn dùng rượu cho dịp gì?
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 max-w-lg mx-auto">
+        <div className="grid grid-cols-3 gap-2 md:gap-3 max-w-lg mx-auto">
           {occasionOptions.map((occasion) => (
             <button
               key={occasion.id}
               type="button"
               onClick={() => toggleOccasion(occasion.id)}
               className={cn(
-                "flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-300",
-                "hover:border-foreground/50 hover:scale-105",
+                "flex flex-col items-center p-2 md:p-4 rounded-lg border-2 transition-all duration-300",
+                "hover:border-foreground/50 active:scale-95 md:hover:scale-105",
                 data.occasions.includes(occasion.id)
                   ? "border-foreground bg-foreground text-background"
                   : "border-border bg-background"
               )}
             >
-              <span className="text-2xl mb-2">{occasion.icon}</span>
-              <span className="text-xs font-sans">{occasion.label}</span>
+              <span className="text-lg md:text-2xl mb-1 md:mb-2">{occasion.icon}</span>
+              <span className="text-[10px] md:text-xs font-sans">{occasion.label}</span>
             </button>
           ))}
         </div>

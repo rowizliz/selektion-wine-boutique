@@ -49,8 +49,8 @@ const ChipButton = ({
     type="button"
     onClick={onClick}
     className={cn(
-      "inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm font-sans transition-all duration-300",
-      "hover:border-foreground/50 hover:scale-105",
+      "inline-flex items-center gap-1.5 md:gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full border-2 text-xs md:text-sm font-sans transition-all duration-300",
+      "hover:border-foreground/50 active:scale-95 md:hover:scale-105",
       selected
         ? "border-foreground bg-foreground text-background"
         : "border-border bg-background"
@@ -77,19 +77,19 @@ const StepLifestyle = ({ data, onChange }: StepLifestyleProps) => {
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6 md:space-y-10">
       {/* Music Genres */}
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         <div className="text-center">
-          <h2 className="text-2xl md:text-3xl font-serif">
+          <h2 className="text-xl md:text-3xl font-serif">
             Bạn thích nghe nhạc gì?
           </h2>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm md:text-base mt-1 md:mt-2">
             Âm nhạc nói lên nhiều về phong cách của bạn
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3 max-w-2xl mx-auto">
           {musicOptions.map((music) => (
             <ChipButton
               key={music.id}
@@ -103,17 +103,17 @@ const StepLifestyle = ({ data, onChange }: StepLifestyleProps) => {
       </div>
 
       {/* Hobbies */}
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         <div className="text-center">
-          <h2 className="text-2xl md:text-3xl font-serif">
+          <h2 className="text-xl md:text-3xl font-serif">
             Sở thích của bạn?
           </h2>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm md:text-base mt-1 md:mt-2">
             Chọn những hoạt động bạn yêu thích
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-2 md:gap-3 max-w-2xl mx-auto">
           {hobbyOptions.map((hobby) => (
             <ChipButton
               key={hobby.id}
