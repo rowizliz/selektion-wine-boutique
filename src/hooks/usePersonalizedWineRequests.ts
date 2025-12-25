@@ -54,14 +54,12 @@ export const usePersonalizedWineRequests = () => {
 export const useCreatePersonalizedWineRequest = () => {
   return useMutation({
     mutationFn: async (formData: PersonalizedWineFormData) => {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("personalized_wine_requests")
-        .insert(formData)
-        .select("tracking_token")
-        .single();
+        .insert(formData);
 
       if (error) throw error;
-      return data;
+      return { success: true };
     },
   });
 };
