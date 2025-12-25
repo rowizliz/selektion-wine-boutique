@@ -3,8 +3,18 @@ import { Link } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
 
-const adminModules = [
+interface AdminModule {
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  href: string;
+  color: string;
+  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending';
+}
+
+const adminModules: AdminModule[] = [
   {
     title: "Quản lý Rượu Vang",
     description: "Thêm, sửa, xóa thông tin rượu vang",
@@ -17,14 +27,16 @@ const adminModules = [
     description: "Xem và xử lý các yêu cầu đặt quà",
     icon: Gift,
     href: "/admin/birthday-gifts",
-    color: "bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400"
+    color: "bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400",
+    badgeKey: 'birthdayGiftsPending'
   },
   {
     title: "Tư Vấn Cá Nhân Hoá",
     description: "Xem và xử lý các yêu cầu tư vấn rượu",
     icon: Sparkles,
     href: "/admin/tu-van",
-    color: "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
+    color: "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400",
+    badgeKey: 'personalizedWinePending'
   },
   {
     title: "Flavor Icons",
@@ -43,6 +55,13 @@ const adminModules = [
 ];
 
 const Admin = () => {
+  const { data: pendingCounts } = usePendingRequestCounts();
+
+  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending') => {
+    if (!badgeKey || !pendingCounts) return 0;
+    return pendingCounts[badgeKey];
+  };
+
   return (
     <>
       <Helmet>
@@ -69,21 +88,29 @@ const Admin = () => {
 
           {/* Module Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {adminModules.map((module) => (
-              <Link key={module.href} to={module.href}>
-                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer hover:border-primary/50">
-                  <CardHeader className="flex flex-row items-center gap-4">
-                    <div className={`p-3 rounded-lg ${module.color}`}>
-                      <module.icon className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">{module.title}</CardTitle>
-                      <CardDescription>{module.description}</CardDescription>
-                    </div>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
+            {adminModules.map((module) => {
+              const badgeCount = getBadgeCount(module.badgeKey);
+              return (
+                <Link key={module.href} to={module.href}>
+                  <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer hover:border-primary/50">
+                    <CardHeader className="flex flex-row items-center gap-4">
+                      <div className={`relative p-3 rounded-lg ${module.color}`}>
+                        <module.icon className="h-6 w-6" />
+                        {badgeCount > 0 && (
+                          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1 animate-pulse">
+                            {badgeCount > 99 ? "99+" : badgeCount}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg">{module.title}</CardTitle>
+                        <CardDescription>{module.description}</CardDescription>
+                      </div>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </main>
