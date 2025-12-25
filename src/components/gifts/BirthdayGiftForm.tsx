@@ -117,7 +117,7 @@ const BirthdayGiftForm = () => {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('birthday_gift_requests')
         .insert({
           sender_name: formData.senderName,
@@ -138,14 +138,12 @@ const BirthdayGiftForm = () => {
           birthday_message: formData.birthdayMessage || null,
           budget: formData.budget || null,
           additional_notes: formData.additionalNotes || null,
-        })
-        .select('tracking_token')
-        .single();
+        });
 
       if (error) throw error;
 
-      // Store tracking token to show to user
-      setTrackingToken(data.tracking_token);
+      // Show success without tracking token (not available for anonymous users)
+      setTrackingToken("success");
 
       // Reset form
       setFormData({
