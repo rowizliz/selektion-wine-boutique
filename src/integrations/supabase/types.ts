@@ -266,6 +266,15 @@ export type Database = {
           tracking_token: string
         }[]
       }
+      get_personalized_wine_request_status: {
+        Args: { p_tracking_token: string }
+        Returns: {
+          created_at: string
+          customer_name: string
+          status: string
+          tracking_token: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
