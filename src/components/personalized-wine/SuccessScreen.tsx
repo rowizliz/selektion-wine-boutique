@@ -71,7 +71,7 @@ const SuccessScreen = ({ trackingToken }: SuccessScreenProps) => {
           className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-in"
           style={{ animationDelay: "0.7s" }}
         >
-          <Link to="/tra-cuu">
+          <Link to="/tra-cuu-tu-van">
             <Button variant="outline" className="w-full sm:w-auto">
               Tra cứu trạng thái
             </Button>
