@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   Heart,
   User,
@@ -16,7 +15,6 @@ import {
   Sparkles,
   Loader2,
   CheckCircle,
-  Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -351,28 +349,22 @@ const BirthdayGiftForm = () => {
               </div>
               <CardTitle className="text-2xl font-serif">Gửi yêu cầu thành công!</CardTitle>
               <CardDescription className="text-base">
-                Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.
+                Chúng tôi đã nhận được yêu cầu của bạn
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="p-4 rounded-xl bg-secondary/50 border">
-                <p className="text-sm text-muted-foreground mb-2">Mã tra cứu của bạn</p>
-                <div className="flex items-center gap-2 justify-center">
-                  <code className="text-sm font-mono bg-background px-3 py-2 rounded-lg border break-all">
-                    {trackingToken}
-                  </code>
-                  <Button variant="outline" size="icon" onClick={handleCopyToken}>
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground mt-3">
-                  Lưu mã này để tra cứu trạng thái yêu cầu của bạn
+                <p className="text-sm text-muted-foreground">
+                  Liên hệ ngay để được tư vấn và chốt đơn nhanh nhất
                 </p>
               </div>
               
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Button asChild>
-                  <Link to="/tra-cuu">Tra cứu yêu cầu</Link>
+              <div className="flex flex-col gap-3">
+                <Button asChild size="lg" className="gap-2">
+                  <a href="https://zalo.me/0906777377" target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="w-5 h-5" />
+                    Kết nối qua Zalo
+                  </a>
                 </Button>
                 <Button variant="outline" onClick={() => setTrackingToken(null)}>
                   Tạo yêu cầu mới
@@ -403,9 +395,6 @@ const BirthdayGiftForm = () => {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Hãy cho chúng tôi biết về người bạn yêu thương. Chúng tôi sẽ chuẩn
             bị một món quà thật ý nghĩa cùng thiệp chúc mừng được thiết kế riêng.
-          </p>
-          <p className="text-sm text-muted-foreground mt-4">
-            Đã gửi yêu cầu? <Link to="/tra-cuu" className="text-primary hover:underline">Tra cứu tại đây</Link>
           </p>
         </div>
 
