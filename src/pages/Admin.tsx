@@ -4,6 +4,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
+import { useNotificationSound } from "@/hooks/useNotificationSound";
 
 interface AdminModule {
   title: string;
@@ -56,6 +57,9 @@ const adminModules: AdminModule[] = [
 
 const Admin = () => {
   const { data: pendingCounts } = usePendingRequestCounts();
+  
+  const totalPending = (pendingCounts?.birthdayGiftsPending ?? 0) + (pendingCounts?.personalizedWinePending ?? 0);
+  useNotificationSound(totalPending > 0);
 
   const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending') => {
     if (!badgeKey || !pendingCounts) return 0;
