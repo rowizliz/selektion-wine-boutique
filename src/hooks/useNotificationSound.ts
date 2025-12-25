@@ -3,10 +3,32 @@ import { useEffect, useRef, useCallback } from 'react';
 export const useNotificationSound = (hasPendingRequests: boolean) => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const beepTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef(false);
+  const hasPendingRef = useRef(hasPendingRequests);
+
+  // Keep ref in sync with prop
+  useEffect(() => {
+    hasPendingRef.current = hasPendingRequests;
+  }, [hasPendingRequests]);
+
+  // Stop all sounds immediately when no pending requests
+  useEffect(() => {
+    if (!hasPendingRequests) {
+      if (beepTimeoutRef.current) {
+        clearTimeout(beepTimeoutRef.current);
+        beepTimeoutRef.current = null;
+      }
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      isPlayingRef.current = false;
+    }
+  }, [hasPendingRequests]);
 
   const playNotificationSound = useCallback(() => {
-    if (isPlayingRef.current) return;
+    if (isPlayingRef.current || !hasPendingRef.current) return;
     
     try {
       // Create or resume AudioContext
@@ -26,7 +48,8 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
       const maxBeeps = 10;
       
       const playBeep = () => {
-        if (beepCount >= maxBeeps || !hasPendingRequests) {
+        // Use ref to get latest value
+        if (beepCount >= maxBeeps || !hasPendingRef.current) {
           isPlayingRef.current = false;
           return;
         }
@@ -58,8 +81,8 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
         beepCount++;
         
         // Schedule next beep after 3 seconds
-        if (beepCount < maxBeeps) {
-          setTimeout(playBeep, 3000);
+        if (beepCount < maxBeeps && hasPendingRef.current) {
+          beepTimeoutRef.current = setTimeout(playBeep, 3000);
         } else {
           isPlayingRef.current = false;
         }
@@ -70,7 +93,7 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
       console.error('Error playing notification sound:', error);
       isPlayingRef.current = false;
     }
-  }, [hasPendingRequests]);
+  }, []);
 
   useEffect(() => {
     if (hasPendingRequests) {
@@ -79,7 +102,7 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
       
       // Set up 5-minute interval
       intervalRef.current = setInterval(() => {
-        if (hasPendingRequests) {
+        if (hasPendingRef.current) {
           playNotificationSound();
         }
       }, 5 * 60 * 1000); // 5 minutes
@@ -96,6 +119,9 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      if (beepTimeoutRef.current) {
+        clearTimeout(beepTimeoutRef.current);
+      }
       if (audioContextRef.current) {
         audioContextRef.current.close();
       }
