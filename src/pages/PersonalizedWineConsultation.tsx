@@ -53,7 +53,7 @@ const initialFormData: FormData = {
 const PersonalizedWineConsultation = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [trackingToken, setTrackingToken] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const stepContentRef = useRef<HTMLDivElement>(null);
   
   const createRequest = useCreatePersonalizedWineRequest();
@@ -107,7 +107,7 @@ const PersonalizedWineConsultation = () => {
 
   const handleSubmit = async () => {
     try {
-      const result = await createRequest.mutateAsync({
+      await createRequest.mutateAsync({
         customer_name: formData.customer_name.trim(),
         phone: formData.phone.replace(/\s/g, ""),
         wine_types: formData.wine_types.length > 0 ? formData.wine_types : undefined,
@@ -122,7 +122,7 @@ const PersonalizedWineConsultation = () => {
         additional_notes: formData.additional_notes.trim() || undefined,
       });
       
-      setTrackingToken(result.tracking_token);
+      setIsSubmitted(true);
     } catch {
       toast.error("Có lỗi xảy ra, vui lòng thử lại");
     }
@@ -182,7 +182,7 @@ const PersonalizedWineConsultation = () => {
   };
 
   // If submitted successfully, show success screen
-  if (trackingToken) {
+  if (isSubmitted) {
     return (
       <>
         <Helmet>
@@ -190,7 +190,7 @@ const PersonalizedWineConsultation = () => {
         </Helmet>
         <Header />
         <main className="pt-20 md:pt-24 min-h-screen bg-background">
-          <SuccessScreen trackingToken={trackingToken} />
+          <SuccessScreen />
         </main>
         <Footer />
       </>
