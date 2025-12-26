@@ -352,14 +352,14 @@ const PublicInvitation = () => {
               <div className="absolute top-40 left-1/5 w-0.5 h-0.5 bg-gold-dark/40 rounded-full animate-float-particle" style={{ animationDelay: '1.5s' }} />
             </div>
 
-            {/* Logo with enhanced glow and scale animation */}
-            <div className="relative mx-auto w-24 h-24 md:w-28 md:h-28 mb-10">
+            {/* Logo with enhanced glow and scale animation - LARGER */}
+            <div className="relative mx-auto w-32 h-32 md:w-40 md:h-40 lg:w-44 lg:h-44 mb-10">
               {/* Pulsing glow ring behind logo */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gold/10 animate-glow-ring" />
+                <div className="w-28 h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full bg-gold/10 animate-glow-ring" />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gold/15 animate-glow-ring" style={{ animationDelay: '1s' }} />
+                <div className="w-24 h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full bg-gold/15 animate-glow-ring" style={{ animationDelay: '1s' }} />
               </div>
               <img 
                 src={logo2} 
@@ -369,7 +369,7 @@ const PublicInvitation = () => {
             </div>
 
             {/* Animated top ornament with staggered reveal */}
-            <div className="overflow-hidden mb-8">
+            <div className="mb-8">
               <div className="flex items-center justify-center gap-4">
                 <div 
                   className="h-px w-12 md:w-24 bg-gradient-to-r from-transparent to-gold-dark/60 origin-right"
@@ -385,10 +385,10 @@ const PublicInvitation = () => {
               </div>
             </div>
 
-            {/* Main Title with shimmer effect */}
-            <div className="overflow-hidden relative">
+            {/* Main Title with shimmer effect - NO OVERFLOW HIDDEN to prevent clipping */}
+            <div className="relative px-4">
               <h1 
-                className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-[0.2em] md:tracking-[0.25em] leading-tight text-foreground/90 relative"
+                className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-[0.15em] md:tracking-[0.2em] leading-normal text-foreground/90 relative pb-2"
                 style={{ 
                   fontWeight: 300,
                   animation: 'slideUp 0.8s ease-out 0.3s forwards, letterSpacing 1.2s ease-out 0.3s forwards',
