@@ -384,7 +384,7 @@ export const ResponseTemplateDialog = ({
 
           {/* Wine Selection Tab */}
           <TabsContent value="wines" className="flex-1 overflow-hidden mt-4">
-            <div className="grid grid-cols-2 gap-4 h-full">
+            <div className="grid grid-cols-2 gap-4 h-[400px]">
               {/* Left: Wine catalog */}
               <div className="flex flex-col border rounded-lg overflow-hidden">
                 <div className="p-3 border-b bg-muted/30 space-y-2">
