@@ -4,8 +4,6 @@ import { Helmet } from "react-helmet-async";
 import { Phone, MessageCircle, MapPin, Wine, ExternalLink, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import logo from "@/assets/logo3.png";
 
 interface WineRecommendation {
@@ -96,99 +94,108 @@ const CustomerWineRecommendation = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
+      <div className="min-h-screen bg-[#faf9f7]">
         {/* Header */}
-        <header className="bg-background/95 backdrop-blur-md border-b sticky top-0 z-10 shadow-sm">
-          <div className="container mx-auto px-4 py-5 flex items-center justify-center">
+        <header className="bg-white border-b border-neutral-200 sticky top-0 z-10">
+          <div className="container mx-auto px-6 py-6 flex items-center justify-center">
             <Link to="/">
-              <img src={logo} alt="SÉLECTION" className="h-14 w-auto" />
+              <img src={logo} alt="SÉLECTION" className="h-16 md:h-20 w-auto" />
             </Link>
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="container mx-auto px-4 py-10 max-w-2xl">
-          {/* Greeting */}
-          <div className="text-center mb-12">
-            <h1 className="text-2xl md:text-3xl font-bold mb-6">
-              Kính gửi Anh/Chị {data.customer_name}
+        <main className="container mx-auto px-6 py-12 max-w-2xl">
+          {/* Greeting Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-8 md:p-10 mb-10">
+            <h1 className="text-2xl md:text-3xl font-serif font-medium text-neutral-800 text-center mb-8">
+              Kính gửi {data.customer_name}
             </h1>
+            
             {data.recommendation_message && (
-              <p className="text-muted-foreground whitespace-pre-line leading-relaxed">
-                {data.recommendation_message}
-              </p>
+              <div className="prose prose-neutral max-w-none">
+                <p className="text-neutral-600 whitespace-pre-line leading-relaxed text-[15px]">
+                  {data.recommendation_message}
+                </p>
+              </div>
             )}
           </div>
 
           {/* Wine Recommendations */}
-          <div className="space-y-5 mb-12">
-            {data.wines.map((wine, index) => (
-              <Card key={wine.id} className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border-0 bg-card">
-                <CardContent className="p-0">
-                  <div className="flex gap-4 p-4">
+          <div className="mb-12">
+            <h2 className="text-lg font-semibold text-neutral-800 mb-6 text-center">
+              Rượu vang gợi ý cho bạn
+            </h2>
+            
+            <div className="space-y-4">
+              {data.wines.map((wine, index) => (
+                <div 
+                  key={wine.id} 
+                  className="bg-white rounded-xl shadow-sm border border-neutral-100 overflow-hidden hover:shadow-md transition-shadow duration-200"
+                >
+                  <div className="flex items-stretch">
                     {/* Wine Image */}
-                    <div className="w-24 shrink-0 flex items-center justify-center">
+                    <div className="w-28 md:w-36 shrink-0 bg-gradient-to-b from-neutral-50 to-neutral-100 flex items-center justify-center p-4">
                       {wine.wine_image_url ? (
                         <img
                           src={wine.wine_image_url}
                           alt={wine.wine_name}
-                          className="w-full h-32 object-contain drop-shadow-lg"
+                          className="w-full h-36 md:h-44 object-contain drop-shadow-md"
                         />
                       ) : (
-                        <div className="w-full h-32 bg-muted/50 rounded-lg flex items-center justify-center">
-                          <Wine className="w-10 h-10 text-muted-foreground" />
-                        </div>
+                        <Wine className="w-12 h-12 text-neutral-300" />
                       )}
                     </div>
                     
                     {/* Wine Info */}
-                    <div className="flex-1 min-w-0">
-                      <span className="inline-block text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full mb-2">
-                        Gợi ý #{index + 1}
-                      </span>
-                      <h3 className="text-base font-bold leading-tight mb-1">
+                    <div className="flex-1 p-5 md:p-6 flex flex-col justify-center">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+                          #{index + 1}
+                        </span>
+                      </div>
+                      
+                      <h3 className="text-lg font-semibold text-neutral-800 leading-snug mb-2">
                         {wine.wine_name}
                       </h3>
-                      <p className="text-lg font-bold text-primary mb-3">
+                      
+                      <p className="text-xl font-bold text-primary mb-4">
                         {wine.wine_price}
                       </p>
                       
                       {wine.recommendation_reason && (
-                        <div className="bg-muted/50 rounded-lg p-2.5 mb-3">
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            <span className="font-semibold text-foreground">💡 </span>
-                            {wine.recommendation_reason}
+                        <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 mb-4">
+                          <p className="text-sm text-neutral-600 leading-relaxed">
+                            <span className="text-amber-600">💡</span> {wine.recommendation_reason}
                           </p>
                         </div>
                       )}
                       
-                      <Button asChild variant="outline" size="sm" className="h-8 text-xs">
+                      <Button asChild variant="outline" size="sm" className="w-fit">
                         <Link to={`/collection/${wine.wine_id}`}>
-                          <ExternalLink className="w-3 h-3 mr-1.5" />
+                          <ExternalLink className="w-4 h-4 mr-2" />
                           Xem chi tiết
                         </Link>
                       </Button>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              ))}
+            </div>
           </div>
 
-          <Separator className="my-10" />
-
           {/* Contact Section */}
-          <div className="text-center">
-            <h2 className="text-xl font-semibold mb-2">Liên hệ đặt hàng</h2>
-            <p className="text-muted-foreground mb-6">
-              SÉLECTION sẵn sàng hỗ trợ bạn 24/7
+          <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-8 text-center">
+            <h2 className="text-xl font-semibold text-neutral-800 mb-2">Liên hệ đặt hàng</h2>
+            <p className="text-neutral-500 mb-6">
+              Đội ngũ SÉLECTION sẵn sàng hỗ trợ bạn
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
               <Button 
                 onClick={handleCall}
                 size="lg" 
-                className="gap-2"
+                className="gap-2 bg-primary hover:bg-primary/90"
               >
                 <Phone className="w-5 h-5" />
                 Gọi 0906.777.377
@@ -197,14 +204,14 @@ const CustomerWineRecommendation = () => {
                 onClick={handleZalo}
                 size="lg" 
                 variant="outline"
-                className="gap-2 border-blue-500 text-blue-600 hover:bg-blue-50"
+                className="gap-2 border-[#0068ff] text-[#0068ff] hover:bg-[#0068ff]/5"
               >
                 <MessageCircle className="w-5 h-5" />
                 Chat Zalo
               </Button>
             </div>
             
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center justify-center gap-2 text-sm text-neutral-500">
               <MapPin className="w-4 h-4" />
               <span>Showroom: 123 ABC, Quận 1, TP.HCM</span>
             </div>
@@ -212,12 +219,12 @@ const CustomerWineRecommendation = () => {
         </main>
 
         {/* Footer */}
-        <footer className="border-t bg-muted/30 py-6 mt-12">
-          <div className="container mx-auto px-4 text-center">
+        <footer className="border-t border-neutral-200 bg-white py-8 mt-12">
+          <div className="container mx-auto px-6 text-center">
             <Link to="/">
-              <img src={logo} alt="SÉLECTION" className="h-8 mx-auto mb-3" />
+              <img src={logo} alt="SÉLECTION" className="h-10 mx-auto mb-4" />
             </Link>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-neutral-400">
               © {new Date().getFullYear()} SÉLECTION - Rượu Vang & Quà Tặng Cao Cấp
             </p>
           </div>
