@@ -341,86 +341,54 @@ const PublicInvitation = () => {
         )}
 
         <div className="relative max-w-3xl mx-auto px-6 py-12 space-y-10">
-          {/* Event Title Section */}
-          <div className="text-center space-y-6 animate-slide-up pt-4">
-            {/* Large Logo gold */}
-            <div className="relative mx-auto w-28 h-28 md:w-36 md:h-36">
+          {/* Event Title Section - Minimalist Luxury */}
+          <div className="text-center pt-8 pb-6">
+            {/* Logo with subtle glow animation */}
+            <div className="relative mx-auto w-24 h-24 md:w-28 md:h-28 mb-10 animate-fade-in">
               <img 
                 src={logo2} 
                 alt="Sélection" 
-                className="relative w-full h-full object-contain drop-shadow-lg"
+                className="relative w-full h-full object-contain animate-glow-breathe"
               />
             </div>
 
-            {/* Luxury Title with elegant frame */}
-            <div className="relative py-8 px-4">
-              {/* Decorative top ornament */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 flex items-center gap-2">
-                <div className="h-px w-8 md:w-16 bg-gradient-to-r from-transparent to-gold-dark/80" />
-                <svg className="w-6 h-6 text-gold-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                  <path d="M12 2L14 8L20 8L15 12L17 18L12 14L7 18L9 12L4 8L10 8L12 2Z" />
-                </svg>
-                <div className="h-px w-8 md:w-16 bg-gradient-to-l from-transparent to-gold-dark/80" />
-              </div>
-
-              {/* Elegant corner flourishes */}
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 w-full max-w-md flex justify-between px-4 md:px-0">
-                <svg className="w-8 h-8 text-gold-dark/60" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="0.75">
-                  <path d="M2 30 Q2 2 30 2" />
-                  <path d="M6 26 Q6 6 26 6" strokeOpacity="0.5" />
-                </svg>
-                <svg className="w-8 h-8 text-gold-dark/60 -scale-x-100" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="0.75">
-                  <path d="M2 30 Q2 2 30 2" />
-                  <path d="M6 26 Q6 6 26 6" strokeOpacity="0.5" />
-                </svg>
-              </div>
-              
-              {/* Main Title */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-[0.15em] leading-tight py-4">
-                <span className="bg-gradient-to-b from-[#2C2417] via-[#4A3F2E] to-[#2C2417] bg-clip-text text-transparent drop-shadow-sm" style={{ WebkitBackgroundClip: 'text' }}>
-                  {invitation?.title}
-                </span>
-              </h1>
-              
-              {/* Elegant bottom ornament with double lines */}
-              <div className="flex items-center justify-center gap-3 mt-2">
-                <div className="flex flex-col items-end gap-1">
-                  <div className="h-px w-20 md:w-32 bg-gradient-to-r from-transparent via-gold-dark/40 to-gold-dark" />
-                  <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent via-gold-dark/20 to-gold-dark/60" />
-                </div>
-                
-                {/* Center diamond ornament */}
-                <div className="relative flex items-center justify-center">
-                  <div className="w-4 h-4 rotate-45 border-2 border-gold-dark bg-gradient-to-br from-gold/30 to-transparent shadow-lg" />
-                  <div className="absolute w-2 h-2 rotate-45 bg-gold-dark/80" />
-                </div>
-                
-                <div className="flex flex-col items-start gap-1">
-                  <div className="h-px w-20 md:w-32 bg-gradient-to-l from-transparent via-gold-dark/40 to-gold-dark" />
-                  <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent via-gold-dark/20 to-gold-dark/60" />
-                </div>
-              </div>
-
-              {/* Bottom corner flourishes */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-full max-w-md flex justify-between px-4 md:px-0">
-                <svg className="w-8 h-8 text-gold-dark/60 -scale-y-100" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="0.75">
-                  <path d="M2 30 Q2 2 30 2" />
-                  <path d="M6 26 Q6 6 26 6" strokeOpacity="0.5" />
-                </svg>
-                <svg className="w-8 h-8 text-gold-dark/60 rotate-180" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="0.75">
-                  <path d="M2 30 Q2 2 30 2" />
-                  <path d="M6 26 Q6 6 26 6" strokeOpacity="0.5" />
-                </svg>
+            {/* Minimal top line */}
+            <div className="overflow-hidden mb-8">
+              <div className="flex items-center justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                <div className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent to-gold-dark/60 animate-[expandWidth_1s_ease-out_0.5s_forwards] origin-right" />
+                <div className="w-1.5 h-1.5 bg-gold-dark/70 rotate-45" />
+                <div className="h-px w-12 md:w-20 bg-gradient-to-l from-transparent to-gold-dark/60 animate-[expandWidth_1s_ease-out_0.5s_forwards] origin-left" />
               </div>
             </div>
 
+            {/* Main Title - Clean with letter spacing animation */}
+            <div className="overflow-hidden">
+              <h1 
+                className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-[0.2em] md:tracking-[0.25em] leading-tight text-foreground/90 animate-[slideUp_0.8s_ease-out_0.3s_forwards] opacity-0"
+                style={{ fontWeight: 300 }}
+              >
+                {invitation?.title}
+              </h1>
+            </div>
+
+            {/* Minimal bottom ornament */}
+            <div className="mt-8 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+              <div className="flex items-center justify-center gap-3">
+                <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent to-gold-dark/50" />
+                <div className="relative">
+                  <div className="w-2 h-2 bg-gold-dark/60 rotate-45" />
+                </div>
+                <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent to-gold-dark/50" />
+              </div>
+            </div>
+
+            {/* Message with elegant fade */}
             {invitation?.message && (
-              <>
-                <OrnamentalDivider />
-                <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed text-lg whitespace-pre-wrap font-serif italic">
+              <div className="mt-10 animate-fade-in" style={{ animationDelay: '0.8s' }}>
+                <p className="text-muted-foreground max-w-md mx-auto leading-relaxed text-base md:text-lg whitespace-pre-wrap font-serif italic tracking-wide">
                   {invitation.message}
                 </p>
-              </>
+              </div>
             )}
           </div>
 
