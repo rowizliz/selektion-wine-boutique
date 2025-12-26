@@ -57,7 +57,7 @@ const rsvpSchema = z.object({
   guest_name: z.string().min(1, "Vui lòng nhập họ tên"),
   phone: z.string().optional(),
   attending: z.enum(["yes", "no"]),
-  guest_count: z.number().min(1).max(10),
+  guest_count: z.number().min(1).max(2, "Tối đa 2 người"),
   note: z.string().optional(),
 });
 
