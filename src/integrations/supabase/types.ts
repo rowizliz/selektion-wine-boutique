@@ -92,6 +92,95 @@ export type Database = {
         }
         Relationships: []
       }
+      event_invitations: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          dress_code: string | null
+          event_date: string
+          id: string
+          location: string
+          location_url: string | null
+          message: string | null
+          pin_code: string
+          title: string
+          updated_at: string
+          url_slug: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          dress_code?: string | null
+          event_date: string
+          id?: string
+          location: string
+          location_url?: string | null
+          message?: string | null
+          pin_code: string
+          title: string
+          updated_at?: string
+          url_slug: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          dress_code?: string | null
+          event_date?: string
+          id?: string
+          location?: string
+          location_url?: string | null
+          message?: string | null
+          pin_code?: string
+          title?: string
+          updated_at?: string
+          url_slug?: string
+        }
+        Relationships: []
+      }
+      invitation_rsvps: {
+        Row: {
+          attending: boolean
+          checked_in_at: string | null
+          created_at: string
+          guest_count: number | null
+          guest_name: string
+          id: string
+          invitation_id: string
+          note: string | null
+          phone: string | null
+        }
+        Insert: {
+          attending?: boolean
+          checked_in_at?: string | null
+          created_at?: string
+          guest_count?: number | null
+          guest_name: string
+          id?: string
+          invitation_id: string
+          note?: string | null
+          phone?: string | null
+        }
+        Update: {
+          attending?: boolean
+          checked_in_at?: string | null
+          created_at?: string
+          guest_count?: number | null
+          guest_name?: string
+          id?: string
+          invitation_id?: string
+          note?: string | null
+          phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitation_rsvps_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "event_invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       personalized_wine_requests: {
         Row: {
           additional_notes: string | null
@@ -317,6 +406,20 @@ export type Database = {
           sender_name: string
           status: string
           tracking_token: string
+        }[]
+      }
+      get_invitation_by_slug_with_pin: {
+        Args: { p_pin_code: string; p_url_slug: string }
+        Returns: {
+          cover_image_url: string
+          dress_code: string
+          event_date: string
+          id: string
+          location: string
+          location_url: string
+          message: string
+          title: string
+          url_slug: string
         }[]
       }
       get_personalized_wine_request_status: {
