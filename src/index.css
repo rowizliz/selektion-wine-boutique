@@ -322,73 +322,74 @@
   animation: twinkle 2s ease-in-out infinite;
 }
 
-/* Floating particle movement */
-@keyframes float-particle {
-  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.6; }
-  25% { transform: translateY(-12px) translateX(6px); opacity: 1; }
-  50% { transform: translateY(-6px) translateX(-6px); opacity: 0.8; }
-  75% { transform: translateY(-18px) translateX(4px); opacity: 0.4; }
-}
+/* ========================================
+   SOPHISTICATED LUXURY ANIMATIONS
+   High-end fashion aesthetic - Celine/Dior inspired
+   ======================================== */
 
-.animate-float-particle {
-  animation: float-particle 4s ease-in-out infinite;
-}
-
-/* Falling sparkle animation */
-@keyframes falling-sparkle {
-  0% {
-    transform: translateY(-100vh) rotate(0deg);
+/* Cinematic Mask Reveal - title appears from center */
+@keyframes reveal-center {
+  0% { 
+    clip-path: inset(0 50% 0 50%); 
     opacity: 0;
   }
-  10% {
+  100% { 
+    clip-path: inset(0 0% 0 0%); 
     opacity: 1;
   }
-  90% {
+}
+
+.animate-reveal-center {
+  animation: reveal-center 1.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+/* Blur to Sharp - elegant focus effect */
+@keyframes blur-sharp {
+  0% { 
+    filter: blur(12px); 
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  100% { 
+    filter: blur(0); 
     opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
+    transform: scale(1);
   }
 }
 
-.animate-falling-sparkle {
-  animation: falling-sparkle 8s linear infinite;
+.animate-blur-sharp {
+  animation: blur-sharp 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* Confetti explosion */
-@keyframes confetti-fall {
+/* Subtle Float - very gentle movement */
+@keyframes subtle-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-subtle-float {
+  animation: subtle-float 6s ease-in-out infinite;
+}
+
+/* Gradient Glow Morph - sophisticated border glow */
+@keyframes glow-morph {
+  0%, 100% { 
+    box-shadow: 0 0 40px rgba(212,175,55,0.08), 0 2px 20px rgba(0,0,0,0.03);
+  }
+  50% { 
+    box-shadow: 0 0 60px rgba(212,175,55,0.15), 0 4px 30px rgba(0,0,0,0.05);
+  }
+}
+
+.animate-glow-morph {
+  animation: glow-morph 4s ease-in-out infinite;
+}
+
+/* Elegant Scale In - no bounce, pure sophistication */
+@keyframes elegant-scale-in {
   0% {
-    transform: translateY(-100%) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
+    transform: scale(0.92);
     opacity: 0;
-  }
-}
-
-@keyframes confetti-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
-}
-
-.animate-confetti {
-  animation: confetti-fall 3s ease-in forwards, confetti-shake 0.5s ease-in-out infinite;
-}
-
-/* Bounce in animation */
-@keyframes bounce-in {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  70% {
-    transform: scale(0.9);
   }
   100% {
     transform: scale(1);
@@ -396,12 +397,114 @@
   }
 }
 
-.animate-bounce-in {
-  animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+.animate-elegant-scale-in {
+  animation: elegant-scale-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-/* Shimmer border animation */
-@keyframes shimmer-border {
+/* Golden Ring Expand - for success states */
+@keyframes ring-expand {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+    border-width: 3px;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+.animate-ring-expand {
+  animation: ring-expand 2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* SVG Stroke Draw - for checkmark */
+@keyframes stroke-draw {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+.animate-stroke-draw {
+  stroke-dasharray: 100;
+  animation: stroke-draw 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Elegant Fade Up - slower, more refined */
+@keyframes elegant-fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-elegant-fade-up {
+  animation: elegant-fade-up 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Line Extend - from center */
+@keyframes line-extend {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.animate-line-extend {
+  animation: line-extend 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Soft Breathe - very subtle scale */
+@keyframes soft-breathe {
+  0%, 100% { 
+    transform: scale(1);
+    filter: drop-shadow(0 0 20px rgba(212,175,55,0.2));
+  }
+  50% { 
+    transform: scale(1.01);
+    filter: drop-shadow(0 0 35px rgba(212,175,55,0.35));
+  }
+}
+
+.animate-soft-breathe {
+  animation: soft-breathe 5s ease-in-out infinite;
+}
+
+/* Stagger Reveal - elegant, no bounce */
+@keyframes stagger-reveal-elegant {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-stagger-reveal-elegant {
+  animation: stagger-reveal-elegant 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Slow elegant shimmer - refined version */
+@keyframes shimmer-elegant {
   0% {
     background-position: -200% 0;
   }
@@ -410,148 +513,54 @@
   }
 }
 
-.animate-shimmer-border {
+.animate-shimmer-elegant {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(212, 175, 55, 0.3) 25%,
-    rgba(212, 175, 55, 0.6) 50%,
-    rgba(212, 175, 55, 0.3) 75%,
+    rgba(212, 175, 55, 0.08) 40%,
+    rgba(212, 175, 55, 0.15) 50%,
+    rgba(212, 175, 55, 0.08) 60%,
     transparent 100%
   );
   background-size: 200% 100%;
-  animation: shimmer-border 2s linear infinite;
+  animation: shimmer-elegant 4s ease-in-out infinite;
 }
 
-/* Card lift animation */
-@keyframes card-lift {
-  0% { transform: translateY(0); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-  100% { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 0 20px rgba(212, 175, 55, 0.2); }
+/* Premium card hover - subtle lift with refined shadow */
+.card-premium {
+  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Pulse ring for CTA button */
-@keyframes cta-pulse-ring {
-  0% {
-    transform: scale(1);
+.card-premium:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px -15px rgba(0, 0, 0, 0.1), 
+              0 0 50px rgba(212, 175, 55, 0.08);
+}
+
+/* Slow rotate - very subtle */
+@keyframes slow-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-slow-rotate {
+  animation: slow-rotate 60s linear infinite;
+}
+
+/* Diamond pulse - elegant ornament */
+@keyframes diamond-pulse {
+  0%, 100% { 
+    opacity: 0.5;
+    transform: rotate(45deg) scale(1);
+  }
+  50% { 
     opacity: 0.8;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
+    transform: rotate(45deg) scale(1.05);
   }
 }
 
-.animate-cta-pulse-ring {
-  animation: cta-pulse-ring 1.5s ease-out infinite;
-}
-
-/* Stagger reveal for cards */
-@keyframes stagger-reveal {
-  0% {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.animate-stagger-reveal {
-  animation: stagger-reveal 0.6s ease-out forwards;
-}
-
-/* Celebration burst */
-@keyframes celebration-burst {
-  0% {
-    transform: scale(0) rotate(0deg);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.5) rotate(180deg);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(2) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-.animate-celebration-burst {
-  animation: celebration-burst 1s ease-out forwards;
-}
-
-/* Success checkmark */
-@keyframes success-check {
-  0% {
-    stroke-dashoffset: 100;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
-/* Light rays rotation */
-@keyframes light-rays {
-  0% {
-    transform: rotate(0deg);
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.6;
-  }
-  100% {
-    transform: rotate(360deg);
-    opacity: 0.3;
-  }
-}
-
-.animate-light-rays {
-  animation: light-rays 20s linear infinite;
-}
-
-/* Hover glow effect */
-@keyframes hover-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
-  }
-  50% {
-    box-shadow: 0 0 20px 5px rgba(212, 175, 55, 0.3);
-  }
-}
-
-/* Typewriter cursor blink */
-@keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-.animate-cursor-blink {
-  animation: cursor-blink 1s step-end infinite;
-}
-
-/* Slow pulse */
-@keyframes pulseSlow {
-  0%, 100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-.animate-pulse-slow {
-  animation: pulseSlow 3s ease-in-out infinite;
-}
-
-/* Gold shine sweep */
-@keyframes shine-sweep {
-  0% { transform: translateX(-100%) skewX(-15deg); }
-  100% { transform: translateX(200%) skewX(-15deg); }
-}
-
-.animate-shine-sweep {
-  animation: shine-sweep 3s ease-in-out infinite;
+.animate-diamond-pulse {
+  animation: diamond-pulse 3s ease-in-out infinite;
 }
 
 /* Scrollbar styling */
