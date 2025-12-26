@@ -19,6 +19,8 @@ export interface PersonalizedWineRequest {
   occasions: string[] | null;
   additional_notes: string | null;
   status: string;
+  recommendation_message: string | null;
+  recommendation_published_at: string | null;
 }
 
 export interface PersonalizedWineFormData {

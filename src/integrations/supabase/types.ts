@@ -104,6 +104,8 @@ export type Database = {
           music_genres: string[] | null
           occasions: string[] | null
           phone: string
+          recommendation_message: string | null
+          recommendation_published_at: string | null
           status: string
           taste_spicy_level: number | null
           taste_sweet_level: number | null
@@ -123,6 +125,8 @@ export type Database = {
           music_genres?: string[] | null
           occasions?: string[] | null
           phone: string
+          recommendation_message?: string | null
+          recommendation_published_at?: string | null
           status?: string
           taste_spicy_level?: number | null
           taste_sweet_level?: number | null
@@ -142,6 +146,8 @@ export type Database = {
           music_genres?: string[] | null
           occasions?: string[] | null
           phone?: string
+          recommendation_message?: string | null
+          recommendation_published_at?: string | null
           status?: string
           taste_spicy_level?: number | null
           taste_sweet_level?: number | null
@@ -172,6 +178,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      wine_recommendations: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          recommendation_reason: string | null
+          request_id: string
+          wine_id: string
+          wine_image_url: string | null
+          wine_name: string
+          wine_price: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          recommendation_reason?: string | null
+          request_id: string
+          wine_id: string
+          wine_image_url?: string | null
+          wine_name: string
+          wine_price: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          recommendation_reason?: string | null
+          request_id?: string
+          wine_id?: string
+          wine_image_url?: string | null
+          wine_name?: string
+          wine_price?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wine_recommendations_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "personalized_wine_requests"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wines: {
         Row: {
@@ -273,6 +323,16 @@ export type Database = {
           customer_name: string
           status: string
           tracking_token: string
+        }[]
+      }
+      get_wine_recommendation_by_token: {
+        Args: { p_tracking_token: string }
+        Returns: {
+          customer_name: string
+          recommendation_message: string
+          recommendation_published_at: string
+          request_id: string
+          wines: Json
         }[]
       }
       has_role: {
