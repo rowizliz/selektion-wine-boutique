@@ -18,6 +18,7 @@ import {
   UtensilsCrossed,
   DollarSign,
   MessageSquare,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +60,7 @@ import {
   useDeletePersonalizedWineRequest,
   PersonalizedWineRequest,
 } from "@/hooks/usePersonalizedWineRequests";
+import { ResponseTemplateDialog } from "@/components/admin/ResponseTemplateDialog";
 
 const statusConfig = {
   pending: { label: "Chờ xử lý", variant: "secondary" as const, icon: Clock },
@@ -72,6 +74,7 @@ const AdminPersonalizedWine = () => {
   const deleteRequest = useDeletePersonalizedWineRequest();
 
   const [selectedRequest, setSelectedRequest] = useState<PersonalizedWineRequest | null>(null);
+  const [templateRequest, setTemplateRequest] = useState<PersonalizedWineRequest | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const handleStatusChange = async (id: string, status: string) => {
@@ -462,6 +465,20 @@ const AdminPersonalizedWine = () => {
                   </p>
                 </div>
               )}
+
+              {/* Generate Template Button */}
+              <div className="pt-4 border-t">
+                <Button
+                  onClick={() => {
+                    setTemplateRequest(selectedRequest);
+                    setSelectedRequest(null);
+                  }}
+                  className="w-full"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Tạo Template Phản Hồi
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>
@@ -487,6 +504,13 @@ const AdminPersonalizedWine = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Response Template Dialog */}
+      <ResponseTemplateDialog
+        open={!!templateRequest}
+        onOpenChange={() => setTemplateRequest(null)}
+        request={templateRequest}
+      />
     </>
   );
 };
