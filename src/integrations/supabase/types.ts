@@ -414,6 +414,7 @@ export type Database = {
       get_invitation_by_slug_with_pin: {
         Args: { p_pin_code: string; p_url_slug: string }
         Returns: {
+          agenda: string
           cover_image_url: string
           dress_code: string
           event_date: string
