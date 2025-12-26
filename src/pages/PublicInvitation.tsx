@@ -275,7 +275,7 @@ const PublicInvitation = () => {
     );
   }
 
-  // RSVP Success Screen - Elegant & Sophisticated
+  // RSVP Success Screen - Light Theme with Confetti
   if (rsvpSubmitted) {
     return (
       <>
@@ -284,64 +284,65 @@ const PublicInvitation = () => {
         </Helmet>
 
         <main className="min-h-screen bg-[#FAF7F2] flex items-center justify-center p-6 relative overflow-hidden">
-          {/* Elegant gradient background */}
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gold/8 via-transparent to-transparent" />
+          {/* Confetti celebration effect */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[...Array(30)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-3 h-3 animate-confetti"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  backgroundColor: ['#D4AF37', '#FFD700', '#B8860B', '#FFC107', '#FFEB3B'][Math.floor(Math.random() * 5)],
+                  animationDelay: `${Math.random() * 2}s`,
+                  animationDuration: `${2 + Math.random() * 2}s`,
+                  transform: `rotate(${Math.random() * 360}deg)`,
+                  borderRadius: Math.random() > 0.5 ? '50%' : '0%',
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gold/10 via-transparent to-transparent" />
           </div>
 
           <div className="w-full max-w-md relative">
-            <div className="relative bg-white/90 backdrop-blur-sm border border-gold-dark/20 p-10 md:p-14 text-center shadow-lg animate-blur-sharp">
-              <DecorativeCorner className="absolute top-2 left-2 text-gold-dark/40" />
-              <DecorativeCorner className="absolute top-2 right-2 text-gold-dark/40 rotate-90" />
-              <DecorativeCorner className="absolute bottom-2 left-2 text-gold-dark/40 -rotate-90" />
-              <DecorativeCorner className="absolute bottom-2 right-2 text-gold-dark/40 rotate-180" />
+            <div className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/30 p-8 md:p-12 text-center shadow-xl">
+              <DecorativeCorner className="absolute top-2 left-2 text-gold-dark/50" />
+              <DecorativeCorner className="absolute top-2 right-2 text-gold-dark/50 rotate-90" />
+              <DecorativeCorner className="absolute bottom-2 left-2 text-gold-dark/50 -rotate-90" />
+              <DecorativeCorner className="absolute bottom-2 right-2 text-gold-dark/50 rotate-180" />
 
-              {/* Elegant expanding rings */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-                <div className="w-24 h-24 rounded-full border border-gold/30 animate-ring-expand" />
-                <div className="absolute w-24 h-24 rounded-full border border-gold/20 animate-ring-expand" style={{ animationDelay: '0.4s' }} />
-                <div className="absolute w-24 h-24 rounded-full border border-gold/10 animate-ring-expand" style={{ animationDelay: '0.8s' }} />
+              {/* Celebration burst effects */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-32 h-32 rounded-full border-2 border-gold/30 animate-celebration-burst" />
+                <div className="absolute w-32 h-32 rounded-full border-2 border-gold/20 animate-celebration-burst" style={{ animationDelay: '0.2s' }} />
+                <div className="absolute w-32 h-32 rounded-full border-2 border-gold/10 animate-celebration-burst" style={{ animationDelay: '0.4s' }} />
               </div>
 
-              {/* Checkmark with stroke animation */}
-              <div className="relative mx-auto w-20 h-20 mb-8 animate-elegant-scale-in">
-                <div className="absolute inset-0 bg-green-500/10 rounded-full blur-2xl" />
-                <div className="relative w-full h-full border border-green-500/40 rounded-full flex items-center justify-center bg-white shadow-sm">
-                  <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none">
-                    <path 
-                      d="M5 13l4 4L19 7" 
-                      stroke="#16a34a" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                      className="animate-stroke-draw"
-                    />
-                  </svg>
+              <div className="relative mx-auto w-24 h-24 mb-6 animate-bounce-in">
+                <div className="absolute inset-0 bg-green-500/20 rounded-full blur-xl animate-pulse" />
+                <div className="relative w-full h-full border-2 border-green-500/50 rounded-full flex items-center justify-center bg-white">
+                  <CheckCircle2 className="h-12 w-12 text-green-600" />
                 </div>
               </div>
 
               <h2 
-                className="text-3xl font-serif text-foreground mb-4 opacity-0 animate-elegant-fade-up"
-                style={{ animationDelay: '0.5s' }}
+                className="text-3xl font-serif text-foreground mb-3 opacity-0 animate-stagger-reveal"
+                style={{ animationDelay: '0.3s' }}
               >
                 Cảm Ơn Quý Khách
               </h2>
-              
-              <div className="opacity-0 animate-elegant-fade-up" style={{ animationDelay: '0.7s' }}>
-                <div className="flex items-center justify-center gap-4 my-6">
-                  <div className="h-px w-12 bg-gradient-to-r from-transparent to-gold-dark/40 animate-line-extend origin-right" style={{ animationDelay: '0.9s' }} />
-                  <div className="w-1.5 h-1.5 bg-gold-dark/60 rotate-45 animate-diamond-pulse" />
-                  <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold-dark/40 animate-line-extend origin-left" style={{ animationDelay: '0.9s' }} />
-                </div>
+              <div className="opacity-0 animate-stagger-reveal" style={{ animationDelay: '0.5s' }}>
+                <OrnamentalDivider />
               </div>
-              
               <p 
-                className="text-muted-foreground leading-relaxed opacity-0 animate-elegant-fade-up"
-                style={{ animationDelay: '0.9s' }}
+                className="text-muted-foreground leading-relaxed opacity-0 animate-stagger-reveal"
+                style={{ animationDelay: '0.7s' }}
               >
                 Phản hồi của quý khách đã được ghi nhận.
                 <br />
-                <span className="text-gold-dark font-medium mt-2 inline-block">Hẹn gặp quý khách tại sự kiện.</span>
+                <span className="text-gold-dark font-medium">Hẹn gặp quý khách tại sự kiện!</span>
               </p>
             </div>
           </div>
@@ -375,76 +376,127 @@ const PublicInvitation = () => {
         )}
 
         <div className="relative max-w-3xl mx-auto px-6 py-12 space-y-10">
-          {/* Event Title Section - Sophisticated Luxury */}
+          {/* Event Title Section - Minimalist Luxury with Rich Animations */}
           <div className="text-center pt-8 pb-6 relative">
-            {/* Subtle ambient glow */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-64 h-64 rounded-full bg-gold/5 blur-3xl animate-soft-breathe" />
+            {/* Falling sparkles background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {[...Array(15)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1.5 h-1.5 bg-gold/40 rounded-full animate-falling-sparkle"
+                  style={{
+                    left: `${10 + Math.random() * 80}%`,
+                    animationDelay: `${Math.random() * 8}s`,
+                    animationDuration: `${6 + Math.random() * 4}s`,
+                  }}
+                />
+              ))}
             </div>
 
-            {/* Logo with elegant glow */}
-            <div className="relative mx-auto w-32 h-32 md:w-40 md:h-40 lg:w-44 lg:h-44 mb-10 animate-blur-sharp">
+            {/* Floating particles */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-10 left-1/4 w-1 h-1 bg-gold/40 rounded-full animate-float-particle" style={{ animationDelay: '0s' }} />
+              <div className="absolute top-20 right-1/4 w-1.5 h-1.5 bg-gold/30 rounded-full animate-float-particle" style={{ animationDelay: '1s' }} />
+              <div className="absolute top-32 left-1/3 w-0.5 h-0.5 bg-gold-dark/50 rounded-full animate-float-particle" style={{ animationDelay: '2s' }} />
+              <div className="absolute top-16 right-1/3 w-1 h-1 bg-gold/35 rounded-full animate-float-particle" style={{ animationDelay: '0.5s' }} />
+              <div className="absolute top-40 left-1/5 w-0.5 h-0.5 bg-gold-dark/40 rounded-full animate-float-particle" style={{ animationDelay: '1.5s' }} />
+            </div>
+
+            {/* Logo with rotating light rays */}
+            <div className="relative mx-auto w-32 h-32 md:w-40 md:h-40 lg:w-44 lg:h-44 mb-10">
+              {/* Rotating light rays behind logo */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 animate-light-rays">
+                  {[...Array(8)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute top-1/2 left-1/2 w-0.5 h-24 md:h-28 bg-gradient-to-t from-gold/40 to-transparent origin-bottom"
+                      style={{
+                        transform: `translate(-50%, -100%) rotate(${i * 45}deg)`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Pulsing glow ring behind logo */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-28 h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full bg-gold/10 animate-glow-ring" />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-24 h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full bg-gold/15 animate-glow-ring" style={{ animationDelay: '1s' }} />
+              </div>
               <img 
                 src={logo2} 
                 alt="Sélection" 
-                className="relative w-full h-full object-contain animate-soft-breathe"
+                className="relative w-full h-full object-contain animate-glow-breathe animate-[scaleIn_0.8s_ease-out_forwards]"
               />
             </div>
 
-            {/* Animated top ornament - refined */}
+            {/* Animated top ornament with staggered reveal */}
             <div className="mb-8">
               <div className="flex items-center justify-center gap-4">
                 <div 
-                  className="h-px w-12 md:w-24 bg-gradient-to-r from-transparent to-gold-dark/50 origin-right opacity-0 animate-line-extend"
-                  style={{ animationDelay: '0.6s' }}
+                  className="h-px w-12 md:w-24 bg-gradient-to-r from-transparent to-gold-dark/60 origin-right"
+                  style={{ animation: 'expandWidth 0.8s ease-out 0.4s forwards', transform: 'scaleX(0)' }}
                 />
                 <div 
-                  className="w-1.5 h-1.5 bg-gold-dark/60 rotate-45 opacity-0 animate-elegant-scale-in animate-diamond-pulse"
-                  style={{ animationDelay: '0.8s' }}
+                  className="w-2 h-2 bg-gold-dark/70 rotate-45 animate-[spinIn_0.5s_ease-out_0.8s_forwards] opacity-0"
                 />
                 <div 
-                  className="h-px w-12 md:w-24 bg-gradient-to-l from-transparent to-gold-dark/50 origin-left opacity-0 animate-line-extend"
-                  style={{ animationDelay: '0.6s' }}
+                  className="h-px w-12 md:w-24 bg-gradient-to-l from-transparent to-gold-dark/60 origin-left"
+                  style={{ animation: 'expandWidth 0.8s ease-out 0.4s forwards', transform: 'scaleX(0)' }}
                 />
               </div>
             </div>
 
-            {/* Main Title with cinematic reveal */}
+            {/* Main Title with shimmer effect - NO OVERFLOW HIDDEN to prevent clipping */}
             <div className="relative px-4">
               <h1 
-                className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-[0.15em] md:tracking-[0.2em] leading-normal text-foreground/90 relative pb-2 opacity-0 animate-reveal-center"
+                className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-[0.15em] md:tracking-[0.2em] leading-normal text-foreground/90 relative pb-2"
                 style={{ 
                   fontWeight: 300,
-                  animationDelay: '0.3s'
+                  animation: 'slideUp 0.8s ease-out 0.3s forwards, letterSpacing 1.2s ease-out 0.3s forwards',
+                  opacity: 0
                 }}
               >
                 {invitation?.title}
-                {/* Subtle shimmer overlay */}
+                {/* Shimmer overlay */}
                 <span 
-                  className="absolute inset-0 animate-shimmer-elegant pointer-events-none"
-                  style={{ animationDelay: '2s' }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-gold/20 to-transparent animate-shimmer pointer-events-none"
+                  style={{ animationDelay: '1.5s' }}
                 />
               </h1>
             </div>
 
-            {/* Animated bottom ornament - refined */}
-            <div className="mt-8 opacity-0 animate-elegant-fade-up" style={{ animationDelay: '1s' }}>
+            {/* Animated bottom ornament */}
+            <div className="mt-8" style={{ animation: 'fadeIn 0.6s ease-out 0.9s forwards', opacity: 0 }}>
               <div className="flex items-center justify-center gap-4">
                 <div 
-                  className="h-px w-16 md:w-28 bg-gradient-to-r from-transparent via-gold-dark/20 to-gold-dark/50"
+                  className="h-px w-16 md:w-28 bg-gradient-to-r from-transparent via-gold-dark/30 to-gold-dark/60 origin-right"
+                  style={{ animation: 'expandWidth 0.6s ease-out 1s forwards', transform: 'scaleX(0)' }}
                 />
-                <div className="w-1.5 h-1.5 bg-gold-dark/50 rotate-45 animate-diamond-pulse" />
+                <div className="relative">
+                  <div 
+                    className="w-2.5 h-2.5 bg-gold-dark/50 rotate-45 animate-pulse-slow"
+                  />
+                  <div 
+                    className="absolute inset-0 w-2.5 h-2.5 bg-gold/30 rotate-45 animate-ping"
+                    style={{ animationDuration: '2s' }}
+                  />
+                </div>
                 <div 
-                  className="h-px w-16 md:w-28 bg-gradient-to-l from-transparent via-gold-dark/20 to-gold-dark/50"
+                  className="h-px w-16 md:w-28 bg-gradient-to-l from-transparent via-gold-dark/30 to-gold-dark/60 origin-left"
+                  style={{ animation: 'expandWidth 0.6s ease-out 1s forwards', transform: 'scaleX(0)' }}
                 />
               </div>
             </div>
 
-            {/* Message with elegant reveal */}
+            {/* Message with typewriter-like reveal */}
             {invitation?.message && (
               <div 
-                className="mt-10 opacity-0 animate-elegant-fade-up"
-                style={{ animationDelay: '1.2s' }}
+                className="mt-10"
+                style={{ animation: 'fadeIn 0.8s ease-out 1.2s forwards, slideUp 0.8s ease-out 1.2s forwards', opacity: 0 }}
               >
                 <p className="text-muted-foreground max-w-md mx-auto leading-relaxed text-base md:text-lg whitespace-pre-wrap font-serif italic tracking-wide">
                   {invitation.message}
@@ -453,16 +505,20 @@ const PublicInvitation = () => {
             )}
           </div>
 
-          {/* Event Details Cards - Premium hover */}
+          {/* Event Details Cards with stagger reveal */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Date & Time Card */}
             <div 
-              className="relative bg-white/90 backdrop-blur-sm border border-gold-dark/15 p-6 card-premium animate-glow-morph shadow-sm opacity-0 animate-stagger-reveal-elegant"
-              style={{ animationDelay: '1.4s' }}
+              className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/20 p-6 group hover:border-gold-dark/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15),0_0_30px_rgba(212,175,55,0.15)] transition-all duration-500 shadow-md opacity-0 animate-stagger-reveal overflow-hidden"
+              style={{ animationDelay: '0.2s' }}
             >
+              {/* Shimmer border on hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-0 animate-shimmer-border" style={{ padding: '1px' }} />
+              </div>
               <div className="flex items-start gap-4 relative z-10">
-                <div className="flex-shrink-0 w-14 h-14 border border-gold-dark/25 rounded-full flex items-center justify-center group-hover:scale-105 transition-all duration-500 bg-white/80">
-                  <CalendarDays className="h-6 w-6 text-gold-dark" />
+                <div className="flex-shrink-0 w-14 h-14 border border-gold-dark/30 rounded-full flex items-center justify-center group-hover:bg-gold/10 group-hover:scale-110 transition-all duration-300 bg-white">
+                  <CalendarDays className="h-6 w-6 text-gold-dark group-hover:animate-pulse" />
                 </div>
                 <div className="space-y-1">
                   <p className="text-gold-dark text-xs tracking-widest uppercase font-medium">Thời Gian</p>
@@ -485,12 +541,16 @@ const PublicInvitation = () => {
 
             {/* Location Card */}
             <div 
-              className="relative bg-white/90 backdrop-blur-sm border border-gold-dark/15 p-6 card-premium animate-glow-morph shadow-sm opacity-0 animate-stagger-reveal-elegant"
-              style={{ animationDelay: '1.6s' }}
+              className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/20 p-6 group hover:border-gold-dark/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15),0_0_30px_rgba(212,175,55,0.15)] transition-all duration-500 shadow-md opacity-0 animate-stagger-reveal overflow-hidden"
+              style={{ animationDelay: '0.35s' }}
             >
+              {/* Shimmer border on hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-0 animate-shimmer-border" style={{ padding: '1px' }} />
+              </div>
               <div className="flex items-start gap-4 relative z-10">
-                <div className="flex-shrink-0 w-14 h-14 border border-gold-dark/25 rounded-full flex items-center justify-center group-hover:scale-105 transition-all duration-500 bg-white/80">
-                  <MapPin className="h-6 w-6 text-gold-dark" />
+                <div className="flex-shrink-0 w-14 h-14 border border-gold-dark/30 rounded-full flex items-center justify-center group-hover:bg-gold/10 group-hover:scale-110 transition-all duration-300 bg-white">
+                  <MapPin className="h-6 w-6 text-gold-dark group-hover:animate-pulse" />
                 </div>
                 <div className="space-y-1 flex-1">
                   <p className="text-gold-dark text-xs tracking-widest uppercase font-medium">Địa Điểm</p>
@@ -502,10 +562,10 @@ const PublicInvitation = () => {
                       href={invitation.location_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-gold-dark text-sm hover:text-gold transition-colors duration-300 group/link font-medium"
+                      className="inline-flex items-center gap-1.5 text-gold-dark text-sm hover:text-gold transition-colors group/link font-medium"
                     >
                       Xem bản đồ
-                      <ExternalLink className="h-3.5 w-3.5 group-hover/link:translate-x-0.5 transition-transform duration-300" />
+                      <ExternalLink className="h-3.5 w-3.5 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
                     </a>
                   )}
                 </div>
@@ -515,16 +575,16 @@ const PublicInvitation = () => {
 
           {/* Event Agenda / Program */}
           {invitation?.agenda && (
-            <div className="opacity-0 animate-elegant-fade-up" style={{ animationDelay: "1.7s" }}>
-              <div className="relative bg-white/90 backdrop-blur-sm border border-gold-dark/15 p-8 shadow-sm">
+            <div className="animate-slide-up" style={{ animationDelay: "0.25s" }}>
+              <div className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/20 p-8 shadow-md">
                 {/* Corner decorations */}
-                <DecorativeCorner className="absolute top-2 left-2 text-gold-dark/30 w-10 h-10" />
-                <DecorativeCorner className="absolute top-2 right-2 text-gold-dark/30 rotate-90 w-10 h-10" />
-                <DecorativeCorner className="absolute bottom-2 left-2 text-gold-dark/30 -rotate-90 w-10 h-10" />
-                <DecorativeCorner className="absolute bottom-2 right-2 text-gold-dark/30 rotate-180 w-10 h-10" />
+                <DecorativeCorner className="absolute top-2 left-2 text-gold-dark/40 w-10 h-10" />
+                <DecorativeCorner className="absolute top-2 right-2 text-gold-dark/40 rotate-90 w-10 h-10" />
+                <DecorativeCorner className="absolute bottom-2 left-2 text-gold-dark/40 -rotate-90 w-10 h-10" />
+                <DecorativeCorner className="absolute bottom-2 right-2 text-gold-dark/40 rotate-180 w-10 h-10" />
 
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 border border-gold-dark/25 rounded-full flex items-center justify-center bg-white/80">
+                  <div className="w-12 h-12 border border-gold-dark/30 rounded-full flex items-center justify-center bg-white">
                     <ListOrdered className="h-5 w-5 text-gold-dark" />
                   </div>
                   <div>
@@ -533,11 +593,11 @@ const PublicInvitation = () => {
                   </div>
                 </div>
 
-                <div className="pl-4 border-l border-gold-dark/20 space-y-4">
+                <div className="pl-4 border-l-2 border-gold-dark/30 space-y-4">
                   {invitation.agenda.split('\n').filter(line => line.trim()).map((line, index) => (
                     <div key={index} className="relative flex items-start gap-4 group">
-                      <div className="absolute -left-[0.95rem] top-2 w-2 h-2 rounded-full bg-white border border-gold-dark/50 group-hover:bg-gold-dark/30 transition-colors duration-300" />
-                      <p className="text-foreground/85 leading-relaxed font-serif">{line}</p>
+                      <div className="absolute -left-[1.4rem] top-2 w-3 h-3 rounded-full bg-white border-2 border-gold-dark group-hover:bg-gold-dark transition-colors" />
+                      <p className="text-foreground/90 leading-relaxed font-serif">{line}</p>
                     </div>
                   ))}
                 </div>
@@ -547,10 +607,10 @@ const PublicInvitation = () => {
 
           {/* Dress Code */}
           {invitation?.dress_code && (
-            <div className="opacity-0 animate-elegant-fade-up" style={{ animationDelay: "1.75s" }}>
-              <div className="relative bg-white/90 backdrop-blur-sm border border-gold-dark/15 p-6 text-center shadow-sm">
+            <div className="animate-slide-up" style={{ animationDelay: "0.3s" }}>
+              <div className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/20 p-6 text-center shadow-md">
                 <div className="flex items-center justify-center gap-4">
-                  <div className="w-12 h-12 border border-gold-dark/25 rounded-full flex items-center justify-center bg-white/80">
+                  <div className="w-12 h-12 border border-gold-dark/30 rounded-full flex items-center justify-center bg-white">
                     <Shirt className="h-5 w-5 text-gold-dark" />
                   </div>
                   <div className="text-left">
@@ -563,23 +623,19 @@ const PublicInvitation = () => {
           )}
 
           {/* RSVP Form */}
-          <div className="opacity-0 animate-elegant-fade-up" style={{ animationDelay: "1.8s" }}>
-            <div className="relative bg-white/90 backdrop-blur-sm border border-gold-dark/15 p-8 shadow-sm">
+          <div className="animate-slide-up" style={{ animationDelay: "0.4s" }}>
+            <div className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/20 p-8 shadow-md">
               {/* Corner decorations */}
-              <DecorativeCorner className="absolute top-2 left-2 text-gold-dark/30 w-10 h-10" />
-              <DecorativeCorner className="absolute top-2 right-2 text-gold-dark/30 rotate-90 w-10 h-10" />
-              <DecorativeCorner className="absolute bottom-2 left-2 text-gold-dark/30 -rotate-90 w-10 h-10" />
-              <DecorativeCorner className="absolute bottom-2 right-2 text-gold-dark/30 rotate-180 w-10 h-10" />
+              <DecorativeCorner className="absolute top-2 left-2 text-gold-dark/40 w-10 h-10" />
+              <DecorativeCorner className="absolute top-2 right-2 text-gold-dark/40 rotate-90 w-10 h-10" />
+              <DecorativeCorner className="absolute bottom-2 left-2 text-gold-dark/40 -rotate-90 w-10 h-10" />
+              <DecorativeCorner className="absolute bottom-2 right-2 text-gold-dark/40 rotate-180 w-10 h-10" />
 
               <div className="text-center mb-8">
                 <h2 className="text-2xl md:text-3xl font-serif text-foreground">
                   Xác Nhận Tham Dự
                 </h2>
-                <div className="flex items-center justify-center gap-4 mt-4">
-                  <div className="h-px w-12 bg-gradient-to-r from-transparent to-gold-dark/40" />
-                  <div className="w-1.5 h-1.5 bg-gold-dark/50 rotate-45" />
-                  <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold-dark/40" />
-                </div>
+                <OrnamentalDivider />
               </div>
 
               <Form {...rsvpForm}>
@@ -717,12 +773,17 @@ const PublicInvitation = () => {
                     )}
                   />
 
-                  {/* CTA Button - Elegant, no pulse rings */}
-                  <div className="relative pt-2">
+                  {/* CTA Button with pulse rings */}
+                  <div className="relative">
+                    {/* Pulse rings */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="absolute w-full h-14 rounded bg-gold/20 animate-cta-pulse-ring" />
+                      <div className="absolute w-full h-14 rounded bg-gold/15 animate-cta-pulse-ring" style={{ animationDelay: '0.5s' }} />
+                    </div>
                     <Button
                       type="submit"
                       disabled={submitRSVP.isPending}
-                      className="relative w-full bg-gold-dark hover:bg-gold text-white border-0 tracking-widest uppercase text-sm h-14 transition-all duration-500 shadow-sm hover:shadow-[0_8px_30px_-8px_rgba(212,175,55,0.4)] hover:scale-[1.01]"
+                      className="relative w-full bg-gold-dark hover:bg-gold text-white border-0 tracking-widest uppercase text-sm h-14 transition-all duration-300 shadow-md hover:shadow-[0_10px_30px_-10px_rgba(212,175,55,0.5)] hover:scale-[1.02]"
                     >
                       {submitRSVP.isPending && (
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -736,11 +797,11 @@ const PublicInvitation = () => {
           </div>
 
           {/* Footer */}
-          <div className="text-center pb-8 opacity-0 animate-elegant-fade-up" style={{ animationDelay: "2s" }}>
+          <div className="text-center pb-8 animate-fade-in" style={{ animationDelay: "0.5s" }}>
             <img 
               src={logo2} 
               alt="Sélection Wine" 
-              className="h-12 mx-auto opacity-50 hover:opacity-70 transition-opacity duration-500"
+              className="h-12 mx-auto opacity-60"
             />
           </div>
         </div>
