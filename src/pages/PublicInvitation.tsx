@@ -342,7 +342,7 @@ const PublicInvitation = () => {
 
         <div className="relative max-w-3xl mx-auto px-6 py-12 space-y-10">
           {/* Event Title Section */}
-          <div className="text-center space-y-6 animate-slide-up">
+          <div className="text-center space-y-8 animate-slide-up">
             {/* Large Logo gold */}
             <div className="relative mx-auto w-28 h-28 md:w-36 md:h-36">
               <img 
@@ -352,9 +352,31 @@ const PublicInvitation = () => {
               />
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-foreground tracking-wide leading-tight">
-              {invitation?.title}
-            </h1>
+            {/* Elegant Title with decorative lines */}
+            <div className="relative">
+              {/* Top decorative line */}
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-gold-dark/60 to-gold-dark" />
+                <div className="w-2 h-2 rotate-45 border border-gold-dark/60" />
+                <div className="h-px w-12 md:w-20 bg-gradient-to-l from-transparent via-gold-dark/60 to-gold-dark" />
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-foreground tracking-wider leading-tight font-medium">
+                <span className="bg-gradient-to-r from-foreground via-gold-dark to-foreground bg-clip-text" style={{ WebkitBackgroundClip: 'text' }}>
+                  {invitation?.title}
+                </span>
+              </h1>
+              
+              {/* Bottom decorative line with diamond */}
+              <div className="flex items-center justify-center gap-3 mt-4">
+                <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent to-gold-dark/70" />
+                <div className="relative">
+                  <div className="w-3 h-3 rotate-45 border border-gold-dark bg-gold/20" />
+                  <div className="absolute inset-0 w-3 h-3 rotate-45 bg-gold-dark/30 blur-sm" />
+                </div>
+                <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent to-gold-dark/70" />
+              </div>
+            </div>
 
             <OrnamentalDivider />
 
