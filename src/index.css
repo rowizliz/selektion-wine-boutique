@@ -194,6 +194,16 @@
   }
 }
 
+/* Expand width animation for lines */
+@keyframes expandWidth {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 /* Shimmer horizontal effect */
 @keyframes shimmer {
   0% {
