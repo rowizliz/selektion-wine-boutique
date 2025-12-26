@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Phone, MessageCircle, MapPin, Wine, ExternalLink, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import FlavorNotes from "@/components/wine/FlavorNotes";
 import logo from "@/assets/logo3.png";
 
 interface WineRecommendation {
@@ -14,6 +15,16 @@ interface WineRecommendation {
   wine_image_url: string | null;
   recommendation_reason: string | null;
   display_order: number;
+}
+
+interface WineDetails {
+  id: string;
+  sweetness: number | null;
+  body: number | null;
+  tannin: number | null;
+  acidity: number | null;
+  flavor_notes: string[] | null;
+  category: string;
 }
 
 interface RecommendationData {
@@ -49,6 +60,36 @@ const CustomerWineRecommendation = () => {
     },
     enabled: !!slug,
   });
+
+  // Fetch wine details for characteristics
+  const wineIds = data?.wines.map(w => w.wine_id) || [];
+  const { data: wineDetails } = useQuery({
+    queryKey: ["wine-details", wineIds],
+    queryFn: async () => {
+      if (wineIds.length === 0) return [];
+      const { data, error } = await supabase
+        .from("wines")
+        .select("id, sweetness, body, tannin, acidity, flavor_notes, category")
+        .in("id", wineIds);
+      
+      if (error) throw error;
+      return data as WineDetails[];
+    },
+    enabled: wineIds.length > 0,
+  });
+
+  const getWineDetails = (wineId: string) => {
+    return wineDetails?.find(w => w.id === wineId);
+  };
+
+  const getCharacteristicLabel = (key: string, category: string) => {
+    const labels: Record<string, Record<string, string>> = {
+      red: { sweetness: "Độ ngọt", body: "Độ đậm", tannin: "Độ chát", acidity: "Độ chua" },
+      white: { sweetness: "Độ ngọt", body: "Độ đậm", tannin: "Độ chát", acidity: "Độ chua" },
+      sparkling: { sweetness: "Độ ngọt", body: "Độ đậm", tannin: "Độ sủi", acidity: "Độ chua" },
+    };
+    return labels[category]?.[key] || key;
+  };
 
   if (isLoading) {
     return (
@@ -124,59 +165,96 @@ const CustomerWineRecommendation = () => {
             </h2>
             
             <div className="space-y-4">
-              {data.wines.map((wine, index) => (
-                <div 
-                  key={wine.id} 
-                  className="bg-white rounded-xl shadow-sm border border-neutral-100 overflow-hidden hover:shadow-md transition-shadow duration-200"
-                >
-                  <div className="flex items-stretch">
-                    {/* Wine Image */}
-                    <div className="w-28 md:w-36 shrink-0 bg-gradient-to-b from-neutral-50 to-neutral-100 flex items-center justify-center p-4">
-                      {wine.wine_image_url ? (
-                        <img
-                          src={wine.wine_image_url}
-                          alt={wine.wine_name}
-                          className="w-full h-36 md:h-44 object-contain drop-shadow-md"
-                        />
-                      ) : (
-                        <Wine className="w-12 h-12 text-neutral-300" />
-                      )}
-                    </div>
-                    
-                    {/* Wine Info */}
-                    <div className="flex-1 p-5 md:p-6 flex flex-col justify-center">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-                          #{index + 1}
-                        </span>
+              {data.wines.map((wine, index) => {
+                const details = getWineDetails(wine.wine_id);
+                const characteristics = details ? [
+                  { key: "sweetness", value: details.sweetness },
+                  { key: "body", value: details.body },
+                  { key: details.category === "sparkling" ? "tannin" : "tannin", value: details.tannin },
+                  { key: "acidity", value: details.acidity },
+                ].filter(c => c.value !== null) : [];
+
+                return (
+                  <div 
+                    key={wine.id} 
+                    className="bg-white rounded-xl shadow-sm border border-neutral-100 overflow-hidden hover:shadow-md transition-shadow duration-200"
+                  >
+                    <div className="flex items-stretch">
+                      {/* Wine Image - White background */}
+                      <div className="w-28 md:w-36 shrink-0 bg-white flex items-center justify-center p-4 border-r border-neutral-100">
+                        {wine.wine_image_url ? (
+                          <img
+                            src={wine.wine_image_url}
+                            alt={wine.wine_name}
+                            className="w-full h-40 md:h-48 object-contain"
+                          />
+                        ) : (
+                          <Wine className="w-12 h-12 text-neutral-300" />
+                        )}
                       </div>
                       
-                      <h3 className="text-lg font-semibold text-neutral-800 leading-snug mb-2">
-                        {wine.wine_name}
-                      </h3>
-                      
-                      <p className="text-xl font-bold text-primary mb-4">
-                        {wine.wine_price}
-                      </p>
-                      
-                      {wine.recommendation_reason && (
-                        <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 mb-4">
-                          <p className="text-sm text-neutral-600 leading-relaxed">
-                            <span className="text-amber-600">💡</span> {wine.recommendation_reason}
-                          </p>
+                      {/* Wine Info */}
+                      <div className="flex-1 p-5 md:p-6 flex flex-col justify-center">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+                            #{index + 1}
+                          </span>
                         </div>
-                      )}
-                      
-                      <Button asChild variant="outline" size="sm" className="w-fit">
-                        <Link to={`/collection/${wine.wine_id}`}>
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Xem chi tiết
-                        </Link>
-                      </Button>
+                        
+                        <h3 className="text-lg font-semibold text-neutral-800 leading-snug mb-2">
+                          {wine.wine_name}
+                        </h3>
+                        
+                        <p className="text-xl font-bold text-primary mb-4">
+                          {wine.wine_price}
+                        </p>
+
+                        {/* Wine Characteristics */}
+                        {characteristics.length > 0 && (
+                          <div className="grid grid-cols-2 gap-2 mb-4">
+                            {characteristics.map((char) => (
+                              <div key={char.key} className="flex items-center gap-2">
+                                <span className="text-xs text-neutral-500">
+                                  {getCharacteristicLabel(char.key, details?.category || "red")}:
+                                </span>
+                                <div className="flex-1 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+                                  <div 
+                                    className="h-full bg-primary/70 rounded-full"
+                                    style={{ width: `${((char.value || 0) / 9) * 100}%` }}
+                                  />
+                                </div>
+                                <span className="text-xs text-neutral-400 w-6">{char.value}/9</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Flavor Notes */}
+                        {details?.flavor_notes && details.flavor_notes.length > 0 && (
+                          <div className="mb-4">
+                            <FlavorNotes notes={details.flavor_notes.slice(0, 4)} className="gap-1.5" />
+                          </div>
+                        )}
+                        
+                        {wine.recommendation_reason && (
+                          <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 mb-4">
+                            <p className="text-sm text-neutral-600 leading-relaxed">
+                              <span className="text-amber-600">💡</span> {wine.recommendation_reason}
+                            </p>
+                          </div>
+                        )}
+                        
+                        <Button asChild variant="outline" size="sm" className="w-fit">
+                          <Link to={`/collection/${wine.wine_id}`}>
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Xem chi tiết
+                          </Link>
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
