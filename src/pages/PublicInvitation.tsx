@@ -15,8 +15,8 @@ import {
   CheckCircle2,
   Shirt,
   Sparkles,
-  Wine,
   Clock,
+  ListOrdered,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +34,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubmitRSVP } from "@/hooks/useInvitations";
+import logo3 from "@/assets/logo3.png";
 
 interface InvitationData {
   id: string;
@@ -43,6 +44,7 @@ interface InvitationData {
   location_url: string | null;
   dress_code: string | null;
   message: string | null;
+  agenda: string | null;
   cover_image_url: string | null;
   url_slug: string;
 }
@@ -213,12 +215,14 @@ const PublicInvitation = () => {
               <DecorativeCorner className="absolute bottom-2 right-2 text-gold/40 rotate-180" />
 
               <div className="text-center space-y-6">
-                {/* Lock icon with glow */}
-                <div className="relative mx-auto w-20 h-20">
+                {/* Logo with glow */}
+                <div className="relative mx-auto w-24 h-24">
                   <div className="absolute inset-0 bg-gold/20 rounded-full blur-xl animate-pulse" />
-                  <div className="relative w-full h-full border border-gold/50 rounded-full flex items-center justify-center">
-                    <Lock className="h-8 w-8 text-gold" />
-                  </div>
+                  <img 
+                    src={logo3} 
+                    alt="Sélection" 
+                    className="relative w-full h-full object-contain animate-glow-breathe"
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -340,9 +344,14 @@ const PublicInvitation = () => {
         <div className="relative max-w-3xl mx-auto px-6 py-12 space-y-12">
           {/* Event Title Section */}
           <div className="text-center space-y-6 animate-slide-up">
-            {/* Small ornament */}
-            <div className="flex justify-center">
-              <Wine className="h-8 w-8 text-gold" />
+            {/* Logo gold */}
+            <div className="relative mx-auto w-20 h-20">
+              <div className="absolute inset-0 bg-gold/20 rounded-full blur-xl animate-pulse" />
+              <img 
+                src={logo3} 
+                alt="Sélection" 
+                className="relative w-full h-full object-contain animate-glow-breathe"
+              />
             </div>
 
             <h1 className="text-4xl md:text-6xl font-serif text-background tracking-wide leading-tight">
@@ -411,6 +420,38 @@ const PublicInvitation = () => {
               </div>
             </div>
           </div>
+
+          {/* Event Agenda / Program */}
+          {invitation?.agenda && (
+            <div className="animate-slide-up" style={{ animationDelay: "0.25s" }}>
+              <div className="relative bg-background/5 backdrop-blur-sm border border-gold/20 p-8">
+                {/* Corner decorations */}
+                <DecorativeCorner className="absolute top-2 left-2 text-gold/30 w-10 h-10" />
+                <DecorativeCorner className="absolute top-2 right-2 text-gold/30 rotate-90 w-10 h-10" />
+                <DecorativeCorner className="absolute bottom-2 left-2 text-gold/30 -rotate-90 w-10 h-10" />
+                <DecorativeCorner className="absolute bottom-2 right-2 text-gold/30 rotate-180 w-10 h-10" />
+
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 border border-gold/30 rounded-full flex items-center justify-center">
+                    <ListOrdered className="h-5 w-5 text-gold" />
+                  </div>
+                  <div>
+                    <p className="text-gold/70 text-xs tracking-widest uppercase">Chương Trình</p>
+                    <h3 className="text-background font-serif text-xl">Nội Dung Sự Kiện</h3>
+                  </div>
+                </div>
+
+                <div className="pl-4 border-l-2 border-gold/30 space-y-4">
+                  {invitation.agenda.split('\n').filter(line => line.trim()).map((line, index) => (
+                    <div key={index} className="relative flex items-start gap-4 group">
+                      <div className="absolute -left-[1.4rem] top-2 w-3 h-3 rounded-full bg-foreground border-2 border-gold group-hover:bg-gold transition-colors" />
+                      <p className="text-background/90 leading-relaxed font-serif">{line}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Dress Code */}
           {invitation?.dress_code && (
@@ -597,9 +638,11 @@ const PublicInvitation = () => {
 
           {/* Footer */}
           <div className="text-center pb-8 animate-fade-in" style={{ animationDelay: "0.5s" }}>
-            <p className="text-background/40 text-sm tracking-widest uppercase">
-              Sélection Wine
-            </p>
+            <img 
+              src={logo3} 
+              alt="Sélection Wine" 
+              className="h-10 mx-auto opacity-40"
+            />
           </div>
         </div>
       </main>

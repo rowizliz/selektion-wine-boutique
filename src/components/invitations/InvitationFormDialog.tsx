@@ -45,6 +45,7 @@ const formSchema = z.object({
   location_url: z.string().optional(),
   dress_code: z.string().optional(),
   message: z.string().optional(),
+  agenda: z.string().optional(),
   cover_image_url: z.string().optional(),
   pin_code: z.string().min(4, "PIN phải có ít nhất 4 ký tự"),
   url_slug: z.string().min(1, "Vui lòng nhập slug URL"),
@@ -77,6 +78,7 @@ const InvitationFormDialog = ({
       location_url: "",
       dress_code: "",
       message: "",
+      agenda: "",
       cover_image_url: "",
       pin_code: generatePIN(),
       url_slug: "",
@@ -94,6 +96,7 @@ const InvitationFormDialog = ({
         location_url: invitation.location_url || "",
         dress_code: invitation.dress_code || "",
         message: invitation.message || "",
+        agenda: invitation.agenda || "",
         cover_image_url: invitation.cover_image_url || "",
         pin_code: invitation.pin_code,
         url_slug: invitation.url_slug,
@@ -107,6 +110,7 @@ const InvitationFormDialog = ({
         location_url: "",
         dress_code: "",
         message: "",
+        agenda: "",
         cover_image_url: "",
         pin_code: generatePIN(),
         url_slug: "",
@@ -136,6 +140,7 @@ const InvitationFormDialog = ({
         location_url: values.location_url || undefined,
         dress_code: values.dress_code || undefined,
         message: values.message || undefined,
+        agenda: values.agenda || undefined,
         cover_image_url: values.cover_image_url || undefined,
         pin_code: values.pin_code,
         url_slug: values.url_slug,
@@ -293,6 +298,29 @@ const InvitationFormDialog = ({
                     <Textarea
                       placeholder="Lời mời, thông tin thêm về sự kiện..."
                       rows={3}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="agenda"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nội dung sự kiện (tùy chọn)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="VD:
+16:00 - Đón khách
+16:30 - Khai mạc
+17:00 - Thưởng thức rượu vang
+18:00 - Tiệc nhẹ
+19:00 - Kết thúc"
+                      rows={5}
                       {...field}
                     />
                   </FormControl>

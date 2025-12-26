@@ -94,6 +94,7 @@ export type Database = {
       }
       event_invitations: {
         Row: {
+          agenda: string | null
           cover_image_url: string | null
           created_at: string
           dress_code: string | null
@@ -108,6 +109,7 @@ export type Database = {
           url_slug: string
         }
         Insert: {
+          agenda?: string | null
           cover_image_url?: string | null
           created_at?: string
           dress_code?: string | null
@@ -122,6 +124,7 @@ export type Database = {
           url_slug: string
         }
         Update: {
+          agenda?: string | null
           cover_image_url?: string | null
           created_at?: string
           dress_code?: string | null

@@ -9,6 +9,7 @@ export interface Invitation {
   location_url: string | null;
   dress_code: string | null;
   message: string | null;
+  agenda: string | null;
   cover_image_url: string | null;
   pin_code: string;
   url_slug: string;
@@ -35,6 +36,7 @@ export interface CreateInvitationInput {
   location_url?: string;
   dress_code?: string;
   message?: string;
+  agenda?: string;
   cover_image_url?: string;
   pin_code: string;
   url_slug: string;
