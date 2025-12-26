@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { PersonalizedWineRequest } from "@/hooks/usePersonalizedWineRequests";
 import { useSaveWineRecommendations } from "@/hooks/useWineRecommendations";
 import { wines, Wine as WineType } from "@/data/wines";
@@ -285,16 +287,44 @@ export const ResponseTemplateDialog = ({
   
   const saveRecommendations = useSaveWineRecommendations();
 
+  // Fetch existing wine recommendations for this request
+  const { data: existingRecommendations } = useQuery({
+    queryKey: ["wine-recommendations", request?.id],
+    queryFn: async () => {
+      if (!request?.id) return null;
+      const { data, error } = await supabase
+        .from("wine_recommendations")
+        .select("*")
+        .eq("request_id", request.id)
+        .order("display_order", { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!request?.id && open,
+  });
+
   // Auto-select recommended wines when dialog opens
   useEffect(() => {
     if (open && request) {
-      const recommended = getWineRecommendations(request, 3);
-      setSelectedWines(recommended);
-      setTemplateText(generateTemplate(request, recommended));
-      setGeneratedLink(null);
+      // If there are existing recommendations, load them
+      if (existingRecommendations && existingRecommendations.length > 0) {
+        const savedWines = existingRecommendations
+          .map(rec => wines.find(w => w.id === rec.wine_id))
+          .filter((w): w is WineType => w !== undefined);
+        setSelectedWines(savedWines);
+        setTemplateText(request.recommendation_message || generateTemplate(request, savedWines));
+        setGeneratedLink(request.url_slug ? `https://selection.com.vn/tuvan/${request.url_slug}` : null);
+      } else {
+        // Generate new recommendations
+        const recommended = getWineRecommendations(request, 3);
+        setSelectedWines(recommended);
+        setTemplateText(generateTemplate(request, recommended));
+        setGeneratedLink(null);
+      }
       setIsTemplateEdited(false);
     }
-  }, [open, request]);
+  }, [open, request, existingRecommendations]);
 
   // Only regenerate template if user hasn't manually edited it
   const handleRegenerateTemplate = () => {
