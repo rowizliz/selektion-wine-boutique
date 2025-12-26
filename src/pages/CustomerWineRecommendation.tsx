@@ -213,7 +213,7 @@ const CustomerWineRecommendation = () => {
             
             <div className="flex items-center justify-center gap-2 text-sm text-neutral-500">
               <MapPin className="w-4 h-4" />
-              <span>Showroom: 123 ABC, Quận 1, TP.HCM</span>
+              <span>Nam Phú Hotel, 127/15 Hoàng Diệu 2, Linh Xuân, TP. Hồ Chí Minh</span>
             </div>
           </div>
         </main>
