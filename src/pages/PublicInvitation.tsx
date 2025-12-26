@@ -275,7 +275,7 @@ const PublicInvitation = () => {
     );
   }
 
-  // RSVP Success Screen - Light Theme
+  // RSVP Success Screen - Light Theme with Confetti
   if (rsvpSubmitted) {
     return (
       <>
@@ -284,27 +284,62 @@ const PublicInvitation = () => {
         </Helmet>
 
         <main className="min-h-screen bg-[#FAF7F2] flex items-center justify-center p-6 relative overflow-hidden">
+          {/* Confetti celebration effect */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[...Array(30)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-3 h-3 animate-confetti"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  backgroundColor: ['#D4AF37', '#FFD700', '#B8860B', '#FFC107', '#FFEB3B'][Math.floor(Math.random() * 5)],
+                  animationDelay: `${Math.random() * 2}s`,
+                  animationDuration: `${2 + Math.random() * 2}s`,
+                  transform: `rotate(${Math.random() * 360}deg)`,
+                  borderRadius: Math.random() > 0.5 ? '50%' : '0%',
+                }}
+              />
+            ))}
+          </div>
+
           <div className="absolute inset-0 opacity-30">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gold/10 via-transparent to-transparent" />
           </div>
 
-          <div className="w-full max-w-md relative animate-fade-in">
+          <div className="w-full max-w-md relative">
             <div className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/30 p-8 md:p-12 text-center shadow-xl">
               <DecorativeCorner className="absolute top-2 left-2 text-gold-dark/50" />
               <DecorativeCorner className="absolute top-2 right-2 text-gold-dark/50 rotate-90" />
               <DecorativeCorner className="absolute bottom-2 left-2 text-gold-dark/50 -rotate-90" />
               <DecorativeCorner className="absolute bottom-2 right-2 text-gold-dark/50 rotate-180" />
 
-              <div className="relative mx-auto w-24 h-24 mb-6">
+              {/* Celebration burst effects */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-32 h-32 rounded-full border-2 border-gold/30 animate-celebration-burst" />
+                <div className="absolute w-32 h-32 rounded-full border-2 border-gold/20 animate-celebration-burst" style={{ animationDelay: '0.2s' }} />
+                <div className="absolute w-32 h-32 rounded-full border-2 border-gold/10 animate-celebration-burst" style={{ animationDelay: '0.4s' }} />
+              </div>
+
+              <div className="relative mx-auto w-24 h-24 mb-6 animate-bounce-in">
                 <div className="absolute inset-0 bg-green-500/20 rounded-full blur-xl animate-pulse" />
                 <div className="relative w-full h-full border-2 border-green-500/50 rounded-full flex items-center justify-center bg-white">
                   <CheckCircle2 className="h-12 w-12 text-green-600" />
                 </div>
               </div>
 
-              <h2 className="text-3xl font-serif text-foreground mb-3">Cảm Ơn Quý Khách</h2>
-              <OrnamentalDivider />
-              <p className="text-muted-foreground leading-relaxed">
+              <h2 
+                className="text-3xl font-serif text-foreground mb-3 opacity-0 animate-stagger-reveal"
+                style={{ animationDelay: '0.3s' }}
+              >
+                Cảm Ơn Quý Khách
+              </h2>
+              <div className="opacity-0 animate-stagger-reveal" style={{ animationDelay: '0.5s' }}>
+                <OrnamentalDivider />
+              </div>
+              <p 
+                className="text-muted-foreground leading-relaxed opacity-0 animate-stagger-reveal"
+                style={{ animationDelay: '0.7s' }}
+              >
                 Phản hồi của quý khách đã được ghi nhận.
                 <br />
                 <span className="text-gold-dark font-medium">Hẹn gặp quý khách tại sự kiện!</span>
@@ -343,7 +378,22 @@ const PublicInvitation = () => {
         <div className="relative max-w-3xl mx-auto px-6 py-12 space-y-10">
           {/* Event Title Section - Minimalist Luxury with Rich Animations */}
           <div className="text-center pt-8 pb-6 relative">
-            {/* Floating particles background */}
+            {/* Falling sparkles background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {[...Array(15)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1.5 h-1.5 bg-gold/40 rounded-full animate-falling-sparkle"
+                  style={{
+                    left: `${10 + Math.random() * 80}%`,
+                    animationDelay: `${Math.random() * 8}s`,
+                    animationDuration: `${6 + Math.random() * 4}s`,
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Floating particles */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               <div className="absolute top-10 left-1/4 w-1 h-1 bg-gold/40 rounded-full animate-float-particle" style={{ animationDelay: '0s' }} />
               <div className="absolute top-20 right-1/4 w-1.5 h-1.5 bg-gold/30 rounded-full animate-float-particle" style={{ animationDelay: '1s' }} />
@@ -352,8 +402,23 @@ const PublicInvitation = () => {
               <div className="absolute top-40 left-1/5 w-0.5 h-0.5 bg-gold-dark/40 rounded-full animate-float-particle" style={{ animationDelay: '1.5s' }} />
             </div>
 
-            {/* Logo with enhanced glow and scale animation - LARGER */}
+            {/* Logo with rotating light rays */}
             <div className="relative mx-auto w-32 h-32 md:w-40 md:h-40 lg:w-44 lg:h-44 mb-10">
+              {/* Rotating light rays behind logo */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 animate-light-rays">
+                  {[...Array(8)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute top-1/2 left-1/2 w-0.5 h-24 md:h-28 bg-gradient-to-t from-gold/40 to-transparent origin-bottom"
+                      style={{
+                        transform: `translate(-50%, -100%) rotate(${i * 45}deg)`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
               {/* Pulsing glow ring behind logo */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-28 h-28 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full bg-gold/10 animate-glow-ring" />
@@ -440,13 +505,20 @@ const PublicInvitation = () => {
             )}
           </div>
 
-          {/* Event Details Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+          {/* Event Details Cards with stagger reveal */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Date & Time Card */}
-            <div className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/20 p-6 group hover:border-gold-dark/40 hover:shadow-lg transition-all duration-500 shadow-md">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-14 h-14 border border-gold-dark/30 rounded-full flex items-center justify-center group-hover:bg-gold/10 transition-colors duration-300 bg-white">
-                  <CalendarDays className="h-6 w-6 text-gold-dark" />
+            <div 
+              className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/20 p-6 group hover:border-gold-dark/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15),0_0_30px_rgba(212,175,55,0.15)] transition-all duration-500 shadow-md opacity-0 animate-stagger-reveal overflow-hidden"
+              style={{ animationDelay: '0.2s' }}
+            >
+              {/* Shimmer border on hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-0 animate-shimmer-border" style={{ padding: '1px' }} />
+              </div>
+              <div className="flex items-start gap-4 relative z-10">
+                <div className="flex-shrink-0 w-14 h-14 border border-gold-dark/30 rounded-full flex items-center justify-center group-hover:bg-gold/10 group-hover:scale-110 transition-all duration-300 bg-white">
+                  <CalendarDays className="h-6 w-6 text-gold-dark group-hover:animate-pulse" />
                 </div>
                 <div className="space-y-1">
                   <p className="text-gold-dark text-xs tracking-widest uppercase font-medium">Thời Gian</p>
@@ -468,10 +540,17 @@ const PublicInvitation = () => {
             </div>
 
             {/* Location Card */}
-            <div className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/20 p-6 group hover:border-gold-dark/40 hover:shadow-lg transition-all duration-500 shadow-md">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-14 h-14 border border-gold-dark/30 rounded-full flex items-center justify-center group-hover:bg-gold/10 transition-colors duration-300 bg-white">
-                  <MapPin className="h-6 w-6 text-gold-dark" />
+            <div 
+              className="relative bg-white/80 backdrop-blur-sm border border-gold-dark/20 p-6 group hover:border-gold-dark/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15),0_0_30px_rgba(212,175,55,0.15)] transition-all duration-500 shadow-md opacity-0 animate-stagger-reveal overflow-hidden"
+              style={{ animationDelay: '0.35s' }}
+            >
+              {/* Shimmer border on hover */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-0 animate-shimmer-border" style={{ padding: '1px' }} />
+              </div>
+              <div className="flex items-start gap-4 relative z-10">
+                <div className="flex-shrink-0 w-14 h-14 border border-gold-dark/30 rounded-full flex items-center justify-center group-hover:bg-gold/10 group-hover:scale-110 transition-all duration-300 bg-white">
+                  <MapPin className="h-6 w-6 text-gold-dark group-hover:animate-pulse" />
                 </div>
                 <div className="space-y-1 flex-1">
                   <p className="text-gold-dark text-xs tracking-widest uppercase font-medium">Địa Điểm</p>
@@ -694,16 +773,24 @@ const PublicInvitation = () => {
                     )}
                   />
 
-                  <Button
-                    type="submit"
-                    disabled={submitRSVP.isPending}
-                    className="w-full bg-gold-dark hover:bg-gold text-white border-0 tracking-widest uppercase text-sm h-14 transition-all duration-300 shadow-md"
-                  >
-                    {submitRSVP.isPending && (
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    )}
-                    Gửi Phản Hồi
-                  </Button>
+                  {/* CTA Button with pulse rings */}
+                  <div className="relative">
+                    {/* Pulse rings */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="absolute w-full h-14 rounded bg-gold/20 animate-cta-pulse-ring" />
+                      <div className="absolute w-full h-14 rounded bg-gold/15 animate-cta-pulse-ring" style={{ animationDelay: '0.5s' }} />
+                    </div>
+                    <Button
+                      type="submit"
+                      disabled={submitRSVP.isPending}
+                      className="relative w-full bg-gold-dark hover:bg-gold text-white border-0 tracking-widest uppercase text-sm h-14 transition-all duration-300 shadow-md hover:shadow-[0_10px_30px_-10px_rgba(212,175,55,0.5)] hover:scale-[1.02]"
+                    >
+                      {submitRSVP.isPending && (
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      )}
+                      Gửi Phản Hồi
+                    </Button>
+                  </div>
                 </form>
               </Form>
             </div>
