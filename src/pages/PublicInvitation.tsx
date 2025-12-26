@@ -34,7 +34,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubmitRSVP } from "@/hooks/useInvitations";
-import logo3 from "@/assets/logo3.png";
+import logo2 from "@/assets/logo2.png";
 
 interface InvitationData {
   id: string;
@@ -219,7 +219,7 @@ const PublicInvitation = () => {
                 <div className="relative mx-auto w-24 h-24">
                   <div className="absolute inset-0 bg-gold/20 rounded-full blur-xl animate-pulse" />
                   <img 
-                    src={logo3} 
+                    src={logo2} 
                     alt="Sélection" 
                     className="relative w-full h-full object-contain animate-glow-breathe"
                   />
@@ -348,7 +348,7 @@ const PublicInvitation = () => {
             <div className="relative mx-auto w-20 h-20">
               <div className="absolute inset-0 bg-gold/20 rounded-full blur-xl animate-pulse" />
               <img 
-                src={logo3} 
+                src={logo2} 
                 alt="Sélection" 
                 className="relative w-full h-full object-contain animate-glow-breathe"
               />
@@ -639,7 +639,7 @@ const PublicInvitation = () => {
           {/* Footer */}
           <div className="text-center pb-8 animate-fade-in" style={{ animationDelay: "0.5s" }}>
             <img 
-              src={logo3} 
+              src={logo2} 
               alt="Sélection Wine" 
               className="h-10 mx-auto opacity-40"
             />
