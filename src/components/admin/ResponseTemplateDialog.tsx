@@ -646,6 +646,18 @@ export const ResponseTemplateDialog = ({
               </Button>
             ) : (
               <>
+                <Button 
+                  variant="outline" 
+                  onClick={handleSaveAndGenerateLink}
+                  disabled={saveRecommendations.isPending}
+                >
+                  {saveRecommendations.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4 mr-2" />
+                  )}
+                  Cập nhật
+                </Button>
                 <Button variant="outline" onClick={handleCopyLink}>
                   <Copy className="w-4 h-4 mr-2" />
                   Sao chép link
