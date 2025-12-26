@@ -476,21 +476,21 @@ const AdminPersonalizedWine = () => {
               )}
 
               {/* Published Link */}
-              {selectedRequest.recommendation_published_at && (
+              {selectedRequest.recommendation_published_at && selectedRequest.url_slug && (
                 <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
                   <h3 className="font-semibold flex items-center gap-2 mb-3 text-green-700 dark:text-green-400">
                     <Link2 className="w-4 h-4" /> Đã gửi gợi ý rượu
                   </h3>
                   <div className="flex items-center gap-2">
                     <code className="flex-1 text-sm truncate text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-2 py-1 rounded">
-                      {`${window.location.origin}/tu-van/${selectedRequest.tracking_token}`}
+                      {`https://selection.com.vn/tuvan/${selectedRequest.url_slug}`}
                     </code>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => {
                         navigator.clipboard.writeText(
-                          `${window.location.origin}/tu-van/${selectedRequest.tracking_token}`
+                          `https://selection.com.vn/tuvan/${selectedRequest.url_slug}`
                         );
                         toast.success("Đã sao chép link!");
                       }}
@@ -503,7 +503,7 @@ const AdminPersonalizedWine = () => {
                       asChild
                     >
                       <a
-                        href={`/tu-van/${selectedRequest.tracking_token}`}
+                        href={`/tuvan/${selectedRequest.url_slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

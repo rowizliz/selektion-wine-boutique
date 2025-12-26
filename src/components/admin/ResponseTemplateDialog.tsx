@@ -325,9 +325,9 @@ export const ResponseTemplateDialog = ({
     }
 
     try {
-      await saveRecommendations.mutateAsync({
+      const result = await saveRecommendations.mutateAsync({
         requestId: request.id,
-        trackingToken: request.tracking_token,
+        customerName: request.customer_name,
         message: templateText,
         wines: selectedWines.map((wine, index) => ({
           wine_id: wine.id,
@@ -339,7 +339,22 @@ export const ResponseTemplateDialog = ({
         })),
       });
 
-      const link = `${window.location.origin}/tu-van/${request.tracking_token}`;
+      // Generate URL-friendly slug
+      const generateSlug = (name: string): string => {
+        return name
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/đ/g, "d")
+          .replace(/Đ/g, "d")
+          .replace(/[^a-z0-9\s-]/g, "")
+          .trim()
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-");
+      };
+
+      const slug = `${generateSlug(request.customer_name)}-${request.id.slice(0, 8)}`;
+      const link = `https://selection.com.vn/tuvan/${slug}`;
       setGeneratedLink(link);
       toast.success("Đã lưu gợi ý và tạo link thành công!");
     } catch (error) {

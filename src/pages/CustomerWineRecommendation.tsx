@@ -27,13 +27,13 @@ interface RecommendationData {
 }
 
 const CustomerWineRecommendation = () => {
-  const { token } = useParams<{ token: string }>();
+  const { slug } = useParams<{ slug: string }>();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["wine-recommendation", token],
+    queryKey: ["wine-recommendation", slug],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_wine_recommendation_by_token", {
-        p_tracking_token: token,
+      const { data, error } = await supabase.rpc("get_wine_recommendation_by_slug", {
+        p_url_slug: slug,
       });
 
       if (error) throw error;
@@ -49,7 +49,7 @@ const CustomerWineRecommendation = () => {
       };
       return result;
     },
-    enabled: !!token,
+    enabled: !!slug,
   });
 
   if (isLoading) {

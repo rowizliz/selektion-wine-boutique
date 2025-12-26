@@ -12,16 +12,34 @@ interface WineRecommendationInput {
 
 interface SaveRecommendationsParams {
   requestId: string;
-  trackingToken: string;
+  customerName: string;
   message: string;
   wines: WineRecommendationInput[];
 }
+
+// Generate URL-friendly slug from customer name
+const generateSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "d")
+    .replace(/[^a-z0-9\s-]/g, "") // Remove special chars
+    .trim()
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-"); // Remove duplicate hyphens
+};
 
 export const useSaveWineRecommendations = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ requestId, message, wines }: SaveRecommendationsParams) => {
+    mutationFn: async ({ requestId, customerName, message, wines }: SaveRecommendationsParams) => {
+      // Generate slug from customer name
+      const baseSlug = generateSlug(customerName);
+      const slug = `${baseSlug}-${requestId.slice(0, 8)}`;
+
       // Delete existing recommendations for this request
       const { error: deleteError } = await supabase
         .from("wine_recommendations")
@@ -44,19 +62,20 @@ export const useSaveWineRecommendations = () => {
         if (insertError) throw insertError;
       }
 
-      // Update request with message and publish timestamp
+      // Update request with message, slug and publish timestamp
       const { error: updateError } = await supabase
         .from("personalized_wine_requests")
         .update({
           recommendation_message: message,
           recommendation_published_at: new Date().toISOString(),
+          url_slug: slug,
           status: "completed",
         })
         .eq("id", requestId);
 
       if (updateError) throw updateError;
 
-      return { success: true };
+      return { success: true, slug };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["personalized-wine-requests"] });
