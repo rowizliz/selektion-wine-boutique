@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Copy, MessageCircle, Wine, RefreshCw } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { Copy, MessageCircle, Wine, Plus, X, Search, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,7 +8,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { PersonalizedWineRequest } from "@/hooks/usePersonalizedWineRequests";
 import { wines, Wine as WineType } from "@/data/wines";
@@ -189,65 +192,6 @@ const getWineRecommendations = (
   return scoredWines.slice(0, count).map((sw) => sw.wine);
 };
 
-// Get reason why wine is recommended
-const getRecommendationReason = (
-  wine: WineType,
-  request: PersonalizedWineRequest
-): string => {
-  const reasons: string[] = [];
-
-  // Budget
-  const { min, max } = getBudgetRange(request.budget_range);
-  const winePrice = parsePrice(wine.price);
-  if (winePrice >= min && winePrice <= max) {
-    reasons.push("phù hợp ngân sách");
-  }
-
-  // Wine type
-  const wineTypes = request.wine_types || [];
-  if (wineTypes.length > 0) {
-    if (wine.category === "red" && wineTypes.some((t) => t.toLowerCase().includes("đỏ") || t.toLowerCase().includes("red"))) {
-      reasons.push("đúng sở thích vang đỏ");
-    }
-    if (wine.category === "white" && wineTypes.some((t) => t.toLowerCase().includes("trắng") || t.toLowerCase().includes("white"))) {
-      reasons.push("đúng sở thích vang trắng");
-    }
-    if (wine.category === "sparkling" && wineTypes.some((t) => t.toLowerCase().includes("sủi") || t.toLowerCase().includes("sparkling"))) {
-      reasons.push("đúng sở thích vang sủi");
-    }
-  }
-
-  // Style
-  const styles = request.wine_styles || [];
-  if (styles.some((s) => s.toLowerCase().includes("elegant") || s.toLowerCase().includes("thanh"))) {
-    if (wine.characteristics && wine.characteristics.body <= 6) {
-      reasons.push("phong cách thanh lịch");
-    }
-  }
-  if (styles.some((s) => s.toLowerCase().includes("bold") || s.toLowerCase().includes("đậm"))) {
-    if (wine.characteristics && wine.characteristics.body >= 6) {
-      reasons.push("phong cách đậm đà");
-    }
-  }
-
-  // Pairing
-  const cuisines = request.cuisine_types || [];
-  if (cuisines.length > 0 && wine.pairing) {
-    reasons.push("kết hợp tốt với ẩm thực yêu thích");
-  }
-
-  // Occasions
-  const occasions = request.occasions || [];
-  if (occasions.some((o) => o.toLowerCase().includes("romantic")) && wine.category === "sparkling") {
-    reasons.push("lãng mạn cho dịp đặc biệt");
-  }
-  if (occasions.some((o) => o.toLowerCase().includes("gift")) && parsePrice(wine.price) >= 1000000) {
-    reasons.push("sang trọng phù hợp làm quà");
-  }
-
-  return reasons.length > 0 ? reasons.slice(0, 2).join(", ") : "chất lượng tốt trong tầm giá";
-};
-
 // Format arrays for display
 const formatArray = (arr: string[] | null): string => {
   if (!arr || arr.length === 0) return "Chưa xác định";
@@ -257,7 +201,7 @@ const formatArray = (arr: string[] | null): string => {
 // Generate template
 const generateTemplate = (
   request: PersonalizedWineRequest,
-  recommendedWines: WineType[]
+  selectedWines: WineType[]
 ): string => {
   const customerName = request.customer_name;
   const wineTypes = formatArray(request.wine_types);
@@ -284,11 +228,9 @@ SÉLECTION xin đề xuất các chai rượu phù hợp:
 
 `;
 
-  recommendedWines.forEach((wine, index) => {
-    const reason = getRecommendationReason(wine, request);
+  selectedWines.forEach((wine, index) => {
     template += `🍷 ${index + 1}. ${wine.name} - ${wine.price}
    Xuất xứ: ${wine.origin}
-   → ${reason}
 
 `;
   });
@@ -301,27 +243,68 @@ SÉLECTION - Rượu Vang & Quà Tặng`;
   return template;
 };
 
+// Category labels
+const categoryLabels: Record<string, string> = {
+  red: "Vang Đỏ",
+  white: "Vang Trắng",
+  sparkling: "Vang Sủi",
+};
+
 export const ResponseTemplateDialog = ({
   open,
   onOpenChange,
   request,
 }: ResponseTemplateDialogProps) => {
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [selectedWines, setSelectedWines] = useState<WineType[]>([]);
+  const [templateText, setTemplateText] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
-  const recommendedWines = useMemo(() => {
-    if (!request) return [];
-    return getWineRecommendations(request, 3);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [request, refreshKey]);
+  // Auto-select recommended wines when dialog opens
+  useEffect(() => {
+    if (open && request) {
+      const recommended = getWineRecommendations(request, 3);
+      setSelectedWines(recommended);
+    }
+  }, [open, request]);
 
-  const template = useMemo(() => {
-    if (!request) return "";
-    return generateTemplate(request, recommendedWines);
-  }, [request, recommendedWines]);
+  // Update template when selected wines change
+  useEffect(() => {
+    if (request) {
+      setTemplateText(generateTemplate(request, selectedWines));
+    }
+  }, [request, selectedWines]);
+
+  // Filter wines for selection
+  const filteredWines = useMemo(() => {
+    return wines.filter((wine) => {
+      const matchesSearch =
+        searchQuery === "" ||
+        wine.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        wine.origin.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        categoryFilter === "all" || wine.category === categoryFilter;
+      return matchesSearch && matchesCategory;
+    });
+  }, [searchQuery, categoryFilter]);
+
+  const handleAddWine = (wine: WineType) => {
+    if (!selectedWines.find((w) => w.id === wine.id)) {
+      setSelectedWines([...selectedWines, wine]);
+    }
+  };
+
+  const handleRemoveWine = (wineId: string) => {
+    setSelectedWines(selectedWines.filter((w) => w.id !== wineId));
+  };
+
+  const isWineSelected = (wineId: string) => {
+    return selectedWines.some((w) => w.id === wineId);
+  };
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(template);
+      await navigator.clipboard.writeText(templateText);
       toast.success("Đã sao chép template!");
     } catch {
       toast.error("Không thể sao chép");
@@ -329,23 +312,24 @@ export const ResponseTemplateDialog = ({
   };
 
   const handleZalo = () => {
-    const encoded = encodeURIComponent(template);
     const zaloUrl = `https://zalo.me/${request?.phone?.replace(/^0/, "84")}`;
     window.open(zaloUrl, "_blank");
-    // Also copy to clipboard for easy paste
-    navigator.clipboard.writeText(template);
+    navigator.clipboard.writeText(templateText);
     toast.success("Đã sao chép template và mở Zalo!");
   };
 
-  const handleRefresh = () => {
-    setRefreshKey((k) => k + 1);
+  const handleResetToSuggested = () => {
+    if (request) {
+      const recommended = getWineRecommendations(request, 3);
+      setSelectedWines(recommended);
+    }
   };
 
   if (!request) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Wine className="w-5 h-5 text-primary" />
@@ -353,69 +337,177 @@ export const ResponseTemplateDialog = ({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          {/* Recommended wines preview */}
-          <div className="p-4 rounded-lg bg-muted/50">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-sm">Rượu được đề xuất</h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleRefresh}
-                className="h-7 text-xs"
-              >
-                <RefreshCw className="w-3 h-3 mr-1" />
-                Đề xuất khác
-              </Button>
-            </div>
-            <div className="grid gap-2">
-              {recommendedWines.map((wine) => (
-                <div
-                  key={wine.id}
-                  className="flex items-center gap-3 p-2 rounded bg-background/50"
-                >
-                  <img
-                    src={wine.image}
-                    alt={wine.name}
-                    className="w-10 h-14 object-cover rounded"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{wine.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {wine.origin}
-                    </p>
+        <Tabs defaultValue="wines" className="flex-1 overflow-hidden flex flex-col">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="wines">Chọn Rượu</TabsTrigger>
+            <TabsTrigger value="template">Nội dung phản hồi</TabsTrigger>
+          </TabsList>
+
+          {/* Wine Selection Tab */}
+          <TabsContent value="wines" className="flex-1 overflow-hidden mt-4">
+            <div className="grid grid-cols-2 gap-4 h-full">
+              {/* Left: Wine catalog */}
+              <div className="flex flex-col border rounded-lg overflow-hidden">
+                <div className="p-3 border-b bg-muted/30 space-y-2">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Tìm rượu..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9 h-9"
+                    />
                   </div>
-                  <Badge variant="secondary" className="shrink-0">
-                    {wine.price}
-                  </Badge>
+                  <div className="flex gap-1">
+                    <Button
+                      variant={categoryFilter === "all" ? "default" : "outline"}
+                      size="sm"
+                      className="h-7 text-xs"
+                      onClick={() => setCategoryFilter("all")}
+                    >
+                      Tất cả
+                    </Button>
+                    {Object.entries(categoryLabels).map(([key, label]) => (
+                      <Button
+                        key={key}
+                        variant={categoryFilter === key ? "default" : "outline"}
+                        size="sm"
+                        className="h-7 text-xs"
+                        onClick={() => setCategoryFilter(key)}
+                      >
+                        {label}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-              ))}
+                <ScrollArea className="flex-1">
+                  <div className="p-2 space-y-1">
+                    {filteredWines.map((wine) => (
+                      <div
+                        key={wine.id}
+                        className={`flex items-center gap-2 p-2 rounded cursor-pointer transition-colors ${
+                          isWineSelected(wine.id)
+                            ? "bg-primary/10 border border-primary/30"
+                            : "hover:bg-muted/50"
+                        }`}
+                        onClick={() =>
+                          isWineSelected(wine.id)
+                            ? handleRemoveWine(wine.id)
+                            : handleAddWine(wine)
+                        }
+                      >
+                        <img
+                          src={wine.image}
+                          alt={wine.name}
+                          className="w-8 h-11 object-cover rounded"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">
+                            {wine.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {wine.price}
+                          </p>
+                        </div>
+                        {isWineSelected(wine.id) ? (
+                          <Check className="w-4 h-4 text-primary shrink-0" />
+                        ) : (
+                          <Plus className="w-4 h-4 text-muted-foreground shrink-0" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
+
+              {/* Right: Selected wines */}
+              <div className="flex flex-col border rounded-lg overflow-hidden">
+                <div className="p-3 border-b bg-muted/30 flex items-center justify-between">
+                  <h3 className="font-semibold text-sm">
+                    Rượu đã chọn ({selectedWines.length})
+                  </h3>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs"
+                    onClick={handleResetToSuggested}
+                  >
+                    Đề xuất AI
+                  </Button>
+                </div>
+                <ScrollArea className="flex-1">
+                  <div className="p-2 space-y-2">
+                    {selectedWines.length === 0 ? (
+                      <p className="text-sm text-muted-foreground text-center py-8">
+                        Chưa chọn rượu nào
+                      </p>
+                    ) : (
+                      selectedWines.map((wine, index) => (
+                        <div
+                          key={wine.id}
+                          className="flex items-center gap-3 p-2 rounded bg-muted/30"
+                        >
+                          <span className="text-xs font-medium text-muted-foreground w-5">
+                            {index + 1}.
+                          </span>
+                          <img
+                            src={wine.image}
+                            alt={wine.name}
+                            className="w-10 h-14 object-cover rounded"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">
+                              {wine.name}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {wine.origin}
+                            </p>
+                          </div>
+                          <Badge variant="secondary" className="shrink-0">
+                            {wine.price}
+                          </Badge>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 shrink-0"
+                            onClick={() => handleRemoveWine(wine.id)}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
             </div>
-          </div>
+          </TabsContent>
 
-          {/* Template content */}
-          <div>
-            <label className="text-sm font-medium mb-2 block">
-              Nội dung phản hồi
-            </label>
-            <Textarea
-              value={template}
-              readOnly
-              className="min-h-[350px] font-mono text-sm resize-none"
-            />
-          </div>
+          {/* Template Tab */}
+          <TabsContent value="template" className="flex-1 overflow-hidden mt-4 flex flex-col">
+            <div className="flex-1 flex flex-col">
+              <label className="text-sm font-medium mb-2 block">
+                Nội dung phản hồi (có thể chỉnh sửa)
+              </label>
+              <Textarea
+                value={templateText}
+                onChange={(e) => setTemplateText(e.target.value)}
+                className="flex-1 min-h-[350px] font-mono text-sm resize-none"
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
 
-          {/* Actions */}
-          <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={handleCopy}>
-              <Copy className="w-4 h-4 mr-2" />
-              Sao chép
-            </Button>
-            <Button onClick={handleZalo} className="bg-blue-500 hover:bg-blue-600">
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Mở Zalo
-            </Button>
-          </div>
+        {/* Actions */}
+        <div className="flex gap-2 justify-end pt-4 border-t">
+          <Button variant="outline" onClick={handleCopy}>
+            <Copy className="w-4 h-4 mr-2" />
+            Sao chép
+          </Button>
+          <Button onClick={handleZalo} className="bg-blue-500 hover:bg-blue-600">
+            <MessageCircle className="w-4 h-4 mr-2" />
+            Mở Zalo
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
