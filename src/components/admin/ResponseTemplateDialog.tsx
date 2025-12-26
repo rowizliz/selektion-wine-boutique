@@ -261,6 +261,7 @@ export const ResponseTemplateDialog = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
+  const [isTemplateEdited, setIsTemplateEdited] = useState(false);
   
   const saveRecommendations = useSaveWineRecommendations();
 
@@ -269,16 +270,19 @@ export const ResponseTemplateDialog = ({
     if (open && request) {
       const recommended = getWineRecommendations(request, 3);
       setSelectedWines(recommended);
-      setGeneratedLink(null); // Reset link when dialog opens
+      setTemplateText(generateTemplate(request, recommended));
+      setGeneratedLink(null);
+      setIsTemplateEdited(false);
     }
   }, [open, request]);
 
-  // Update template when selected wines change
-  useEffect(() => {
+  // Only regenerate template if user hasn't manually edited it
+  const handleRegenerateTemplate = () => {
     if (request) {
       setTemplateText(generateTemplate(request, selectedWines));
+      setIsTemplateEdited(false);
     }
-  }, [request, selectedWines]);
+  };
 
   // Filter wines for selection
   const filteredWines = useMemo(() => {
@@ -545,9 +549,20 @@ export const ResponseTemplateDialog = ({
               </label>
               <Textarea
                 value={templateText}
-                onChange={(e) => setTemplateText(e.target.value)}
+                onChange={(e) => {
+                  setTemplateText(e.target.value);
+                  setIsTemplateEdited(true);
+                }}
                 className="flex-1 min-h-[350px] font-mono text-sm resize-none"
               />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="mt-2 self-start"
+                onClick={handleRegenerateTemplate}
+              >
+                Tạo lại template từ rượu đã chọn
+              </Button>
             </div>
           </TabsContent>
         </Tabs>
