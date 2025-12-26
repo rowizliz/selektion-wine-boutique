@@ -108,10 +108,6 @@ const CustomerWineRecommendation = () => {
         <main className="container mx-auto px-6 py-12 max-w-2xl">
           {/* Greeting Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-8 md:p-10 mb-10">
-            <h1 className="text-2xl md:text-3xl font-serif font-medium text-neutral-800 text-center mb-8">
-              Kính gửi Anh/Chị {data.customer_name}
-            </h1>
-            
             {data.recommendation_message && (
               <div className="prose prose-neutral max-w-none">
                 <p className="text-neutral-600 whitespace-pre-line leading-relaxed text-[15px]">
