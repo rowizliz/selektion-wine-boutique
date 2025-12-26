@@ -96,85 +96,75 @@ const CustomerWineRecommendation = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
         {/* Header */}
-        <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-10">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-center">
+        <header className="bg-background/95 backdrop-blur-md border-b sticky top-0 z-10 shadow-sm">
+          <div className="container mx-auto px-4 py-5 flex items-center justify-center">
             <Link to="/">
-              <img src={logo} alt="SÉLECTION" className="h-10" />
+              <img src={logo} alt="SÉLECTION" className="h-14 w-auto" />
             </Link>
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="container mx-auto px-4 py-8 max-w-3xl">
+        <main className="container mx-auto px-4 py-10 max-w-2xl">
           {/* Greeting */}
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 text-primary mb-4">
-              <Wine className="w-5 h-5" />
-              <span className="text-sm font-medium uppercase tracking-wider">Gợi ý dành riêng cho bạn</span>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+          <div className="text-center mb-12">
+            <h1 className="text-2xl md:text-3xl font-bold mb-6">
               Kính gửi Anh/Chị {data.customer_name}
             </h1>
             {data.recommendation_message && (
-              <p className="text-muted-foreground whitespace-pre-line max-w-xl mx-auto">
+              <p className="text-muted-foreground whitespace-pre-line leading-relaxed">
                 {data.recommendation_message}
               </p>
             )}
           </div>
 
           {/* Wine Recommendations */}
-          <div className="space-y-6 mb-12">
-            <h2 className="text-xl font-semibold text-center">
-              Những chai rượu phù hợp với bạn
-            </h2>
-            
+          <div className="space-y-5 mb-12">
             {data.wines.map((wine, index) => (
-              <Card key={wine.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <Card key={wine.id} className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border-0 bg-card">
                 <CardContent className="p-0">
-                  <div className="flex flex-col md:flex-row">
+                  <div className="flex gap-4 p-4">
                     {/* Wine Image */}
-                    <div className="md:w-32 shrink-0 bg-muted/30 flex items-center justify-center p-4">
+                    <div className="w-24 shrink-0 flex items-center justify-center">
                       {wine.wine_image_url ? (
                         <img
                           src={wine.wine_image_url}
                           alt={wine.wine_name}
-                          className="w-20 h-28 md:w-full md:h-auto object-contain"
+                          className="w-full h-32 object-contain drop-shadow-lg"
                         />
                       ) : (
-                        <Wine className="w-16 h-16 text-muted-foreground" />
+                        <div className="w-full h-32 bg-muted/50 rounded-lg flex items-center justify-center">
+                          <Wine className="w-10 h-10 text-muted-foreground" />
+                        </div>
                       )}
                     </div>
                     
                     {/* Wine Info */}
-                    <div className="flex-1 p-4 md:p-6">
-                      <div className="flex items-start justify-between gap-4 mb-3">
-                        <div>
-                          <span className="text-xs font-medium text-primary">
-                            Gợi ý #{index + 1}
-                          </span>
-                          <h3 className="text-lg font-semibold mt-1">
-                            {wine.wine_name}
-                          </h3>
-                        </div>
-                        <span className="text-lg font-bold text-primary shrink-0">
-                          {wine.wine_price}
-                        </span>
-                      </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="inline-block text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full mb-2">
+                        Gợi ý #{index + 1}
+                      </span>
+                      <h3 className="text-base font-bold leading-tight mb-1">
+                        {wine.wine_name}
+                      </h3>
+                      <p className="text-lg font-bold text-primary mb-3">
+                        {wine.wine_price}
+                      </p>
                       
                       {wine.recommendation_reason && (
-                        <div className="bg-primary/5 rounded-lg p-3 mb-4">
-                          <p className="text-sm text-muted-foreground">
-                            <span className="font-medium text-foreground">💡 Vì sao phù hợp với bạn: </span>
+                        <div className="bg-muted/50 rounded-lg p-2.5 mb-3">
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            <span className="font-semibold text-foreground">💡 </span>
                             {wine.recommendation_reason}
                           </p>
                         </div>
                       )}
                       
-                      <Button asChild variant="outline" size="sm">
+                      <Button asChild variant="outline" size="sm" className="h-8 text-xs">
                         <Link to={`/collection/${wine.wine_id}`}>
-                          <ExternalLink className="w-4 h-4 mr-2" />
+                          <ExternalLink className="w-3 h-3 mr-1.5" />
                           Xem chi tiết
                         </Link>
                       </Button>
