@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles } from "lucide-react";
+import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
@@ -38,6 +38,13 @@ const adminModules: AdminModule[] = [
     href: "/admin/tu-van",
     color: "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400",
     badgeKey: 'personalizedWinePending'
+  },
+  {
+    title: "Thiệp Mời Online",
+    description: "Tạo thiệp mời sự kiện với RSVP",
+    icon: Mail,
+    href: "/admin/invitations",
+    color: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
   },
   {
     title: "Flavor Icons",

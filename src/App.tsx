@@ -21,8 +21,10 @@ import AdminWines from "./pages/AdminWines";
 import AdminImportWines from "./pages/AdminImportWines";
 import AdminBirthdayGifts from "./pages/AdminBirthdayGifts";
 import AdminPersonalizedWine from "./pages/AdminPersonalizedWine";
+import AdminInvitations from "./pages/AdminInvitations";
 import PersonalizedWineConsultation from "./pages/PersonalizedWineConsultation";
 import CustomerWineRecommendation from "./pages/CustomerWineRecommendation";
+import PublicInvitation from "./pages/PublicInvitation";
 
 const queryClient = new QueryClient();
 
@@ -48,8 +50,10 @@ const App = () => (
             <Route path="/admin/flavor-icons" element={<AdminRoute><AdminFlavorIcons /></AdminRoute>} />
             <Route path="/admin/birthday-gifts" element={<AdminRoute><AdminBirthdayGifts /></AdminRoute>} />
             <Route path="/admin/tu-van" element={<AdminRoute><AdminPersonalizedWine /></AdminRoute>} />
+            <Route path="/admin/invitations" element={<AdminRoute><AdminInvitations /></AdminRoute>} />
             <Route path="/tu-van-ca-nhan" element={<PersonalizedWineConsultation />} />
             <Route path="/tuvan/:slug" element={<CustomerWineRecommendation />} />
+            <Route path="/thiep/:slug" element={<PublicInvitation />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
