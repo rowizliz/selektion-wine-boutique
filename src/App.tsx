@@ -22,6 +22,7 @@ import AdminImportWines from "./pages/AdminImportWines";
 import AdminBirthdayGifts from "./pages/AdminBirthdayGifts";
 import AdminPersonalizedWine from "./pages/AdminPersonalizedWine";
 import PersonalizedWineConsultation from "./pages/PersonalizedWineConsultation";
+import CustomerWineRecommendation from "./pages/CustomerWineRecommendation";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/admin/birthday-gifts" element={<AdminRoute><AdminBirthdayGifts /></AdminRoute>} />
             <Route path="/admin/tu-van" element={<AdminRoute><AdminPersonalizedWine /></AdminRoute>} />
             <Route path="/tu-van-ca-nhan" element={<PersonalizedWineConsultation />} />
+            <Route path="/tu-van/:token" element={<CustomerWineRecommendation />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

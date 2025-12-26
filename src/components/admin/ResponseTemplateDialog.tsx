@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Copy, MessageCircle, Wine, Plus, X, Search, Check } from "lucide-react";
+import { Copy, MessageCircle, Wine, Plus, X, Search, Check, Link2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { PersonalizedWineRequest } from "@/hooks/usePersonalizedWineRequests";
+import { useSaveWineRecommendations } from "@/hooks/useWineRecommendations";
 import { wines, Wine as WineType } from "@/data/wines";
 
 interface ResponseTemplateDialogProps {
@@ -259,12 +260,16 @@ export const ResponseTemplateDialog = ({
   const [templateText, setTemplateText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [generatedLink, setGeneratedLink] = useState<string | null>(null);
+  
+  const saveRecommendations = useSaveWineRecommendations();
 
   // Auto-select recommended wines when dialog opens
   useEffect(() => {
     if (open && request) {
       const recommended = getWineRecommendations(request, 3);
       setSelectedWines(recommended);
+      setGeneratedLink(null); // Reset link when dialog opens
     }
   }, [open, request]);
 
@@ -302,20 +307,54 @@ export const ResponseTemplateDialog = ({
     return selectedWines.some((w) => w.id === wineId);
   };
 
-  const handleCopy = async () => {
+  const handleCopyLink = async () => {
+    if (generatedLink) {
+      try {
+        await navigator.clipboard.writeText(generatedLink);
+        toast.success("Đã sao chép link!");
+      } catch {
+        toast.error("Không thể sao chép");
+      }
+    }
+  };
+
+  const handleSaveAndGenerateLink = async () => {
+    if (!request || selectedWines.length === 0) {
+      toast.error("Vui lòng chọn ít nhất 1 chai rượu");
+      return;
+    }
+
     try {
-      await navigator.clipboard.writeText(templateText);
-      toast.success("Đã sao chép template!");
-    } catch {
-      toast.error("Không thể sao chép");
+      await saveRecommendations.mutateAsync({
+        requestId: request.id,
+        trackingToken: request.tracking_token,
+        message: templateText,
+        wines: selectedWines.map((wine, index) => ({
+          wine_id: wine.id,
+          wine_name: wine.name,
+          wine_price: wine.price,
+          wine_image_url: wine.image,
+          recommendation_reason: null, // Can be enhanced later with AI
+          display_order: index,
+        })),
+      });
+
+      const link = `${window.location.origin}/tu-van/${request.tracking_token}`;
+      setGeneratedLink(link);
+      toast.success("Đã lưu gợi ý và tạo link thành công!");
+    } catch (error) {
+      console.error("Error saving recommendations:", error);
+      toast.error("Có lỗi xảy ra khi lưu");
     }
   };
 
   const handleZalo = () => {
     const zaloUrl = `https://zalo.me/${request?.phone?.replace(/^0/, "84")}`;
     window.open(zaloUrl, "_blank");
-    navigator.clipboard.writeText(templateText);
-    toast.success("Đã sao chép template và mở Zalo!");
+    if (generatedLink) {
+      navigator.clipboard.writeText(generatedLink);
+      toast.success("Đã sao chép link và mở Zalo!");
+    }
   };
 
   const handleResetToSuggested = () => {
@@ -499,15 +538,45 @@ export const ResponseTemplateDialog = ({
         </Tabs>
 
         {/* Actions */}
-        <div className="flex gap-2 justify-end pt-4 border-t">
-          <Button variant="outline" onClick={handleCopy}>
-            <Copy className="w-4 h-4 mr-2" />
-            Sao chép
-          </Button>
-          <Button onClick={handleZalo} className="bg-blue-500 hover:bg-blue-600">
-            <MessageCircle className="w-4 h-4 mr-2" />
-            Mở Zalo
-          </Button>
+        <div className="flex flex-col gap-3 pt-4 border-t">
+          {generatedLink && (
+            <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
+              <Link2 className="w-4 h-4 text-green-600 shrink-0" />
+              <code className="flex-1 text-sm truncate text-green-700 dark:text-green-400">
+                {generatedLink}
+              </code>
+              <Button variant="outline" size="sm" onClick={handleCopyLink}>
+                <Copy className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+          
+          <div className="flex gap-2 justify-end">
+            {!generatedLink ? (
+              <Button 
+                onClick={handleSaveAndGenerateLink}
+                disabled={saveRecommendations.isPending || selectedWines.length === 0}
+              >
+                {saveRecommendations.isPending ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Link2 className="w-4 h-4 mr-2" />
+                )}
+                Lưu & Tạo Link
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline" onClick={handleCopyLink}>
+                  <Copy className="w-4 h-4 mr-2" />
+                  Sao chép link
+                </Button>
+                <Button onClick={handleZalo} className="bg-blue-500 hover:bg-blue-600">
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Mở Zalo
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
