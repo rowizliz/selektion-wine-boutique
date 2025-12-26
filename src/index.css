@@ -204,6 +204,28 @@
   }
 }
 
+/* Spin in animation for ornaments */
+@keyframes spinIn {
+  from {
+    opacity: 0;
+    transform: rotate(0deg) scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(45deg) scale(1);
+  }
+}
+
+/* Letter spacing animation */
+@keyframes letterSpacing {
+  from {
+    letter-spacing: 0.5em;
+  }
+  to {
+    letter-spacing: 0.2em;
+  }
+}
+
 /* Shimmer horizontal effect */
 @keyframes shimmer {
   0% {

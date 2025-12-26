@@ -341,50 +341,98 @@ const PublicInvitation = () => {
         )}
 
         <div className="relative max-w-3xl mx-auto px-6 py-12 space-y-10">
-          {/* Event Title Section - Minimalist Luxury */}
-          <div className="text-center pt-8 pb-6">
-            {/* Logo with subtle glow animation */}
-            <div className="relative mx-auto w-24 h-24 md:w-28 md:h-28 mb-10 animate-fade-in">
+          {/* Event Title Section - Minimalist Luxury with Rich Animations */}
+          <div className="text-center pt-8 pb-6 relative">
+            {/* Floating particles background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-10 left-1/4 w-1 h-1 bg-gold/40 rounded-full animate-float-particle" style={{ animationDelay: '0s' }} />
+              <div className="absolute top-20 right-1/4 w-1.5 h-1.5 bg-gold/30 rounded-full animate-float-particle" style={{ animationDelay: '1s' }} />
+              <div className="absolute top-32 left-1/3 w-0.5 h-0.5 bg-gold-dark/50 rounded-full animate-float-particle" style={{ animationDelay: '2s' }} />
+              <div className="absolute top-16 right-1/3 w-1 h-1 bg-gold/35 rounded-full animate-float-particle" style={{ animationDelay: '0.5s' }} />
+              <div className="absolute top-40 left-1/5 w-0.5 h-0.5 bg-gold-dark/40 rounded-full animate-float-particle" style={{ animationDelay: '1.5s' }} />
+            </div>
+
+            {/* Logo with enhanced glow and scale animation */}
+            <div className="relative mx-auto w-24 h-24 md:w-28 md:h-28 mb-10">
+              {/* Pulsing glow ring behind logo */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-gold/10 animate-glow-ring" />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gold/15 animate-glow-ring" style={{ animationDelay: '1s' }} />
+              </div>
               <img 
                 src={logo2} 
                 alt="Sélection" 
-                className="relative w-full h-full object-contain animate-glow-breathe"
+                className="relative w-full h-full object-contain animate-glow-breathe animate-[scaleIn_0.8s_ease-out_forwards]"
               />
             </div>
 
-            {/* Minimal top line */}
+            {/* Animated top ornament with staggered reveal */}
             <div className="overflow-hidden mb-8">
-              <div className="flex items-center justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                <div className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent to-gold-dark/60 animate-[expandWidth_1s_ease-out_0.5s_forwards] origin-right" />
-                <div className="w-1.5 h-1.5 bg-gold-dark/70 rotate-45" />
-                <div className="h-px w-12 md:w-20 bg-gradient-to-l from-transparent to-gold-dark/60 animate-[expandWidth_1s_ease-out_0.5s_forwards] origin-left" />
+              <div className="flex items-center justify-center gap-4">
+                <div 
+                  className="h-px w-12 md:w-24 bg-gradient-to-r from-transparent to-gold-dark/60 origin-right"
+                  style={{ animation: 'expandWidth 0.8s ease-out 0.4s forwards', transform: 'scaleX(0)' }}
+                />
+                <div 
+                  className="w-2 h-2 bg-gold-dark/70 rotate-45 animate-[spinIn_0.5s_ease-out_0.8s_forwards] opacity-0"
+                />
+                <div 
+                  className="h-px w-12 md:w-24 bg-gradient-to-l from-transparent to-gold-dark/60 origin-left"
+                  style={{ animation: 'expandWidth 0.8s ease-out 0.4s forwards', transform: 'scaleX(0)' }}
+                />
               </div>
             </div>
 
-            {/* Main Title - Clean with letter spacing animation */}
-            <div className="overflow-hidden">
+            {/* Main Title with shimmer effect */}
+            <div className="overflow-hidden relative">
               <h1 
-                className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-[0.2em] md:tracking-[0.25em] leading-tight text-foreground/90 animate-[slideUp_0.8s_ease-out_0.3s_forwards] opacity-0"
-                style={{ fontWeight: 300 }}
+                className="text-4xl md:text-5xl lg:text-6xl font-serif tracking-[0.2em] md:tracking-[0.25em] leading-tight text-foreground/90 relative"
+                style={{ 
+                  fontWeight: 300,
+                  animation: 'slideUp 0.8s ease-out 0.3s forwards, letterSpacing 1.2s ease-out 0.3s forwards',
+                  opacity: 0
+                }}
               >
                 {invitation?.title}
+                {/* Shimmer overlay */}
+                <span 
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-gold/20 to-transparent animate-shimmer pointer-events-none"
+                  style={{ animationDelay: '1.5s' }}
+                />
               </h1>
             </div>
 
-            {/* Minimal bottom ornament */}
-            <div className="mt-8 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              <div className="flex items-center justify-center gap-3">
-                <div className="h-px w-16 md:w-24 bg-gradient-to-r from-transparent to-gold-dark/50" />
+            {/* Animated bottom ornament */}
+            <div className="mt-8" style={{ animation: 'fadeIn 0.6s ease-out 0.9s forwards', opacity: 0 }}>
+              <div className="flex items-center justify-center gap-4">
+                <div 
+                  className="h-px w-16 md:w-28 bg-gradient-to-r from-transparent via-gold-dark/30 to-gold-dark/60 origin-right"
+                  style={{ animation: 'expandWidth 0.6s ease-out 1s forwards', transform: 'scaleX(0)' }}
+                />
                 <div className="relative">
-                  <div className="w-2 h-2 bg-gold-dark/60 rotate-45" />
+                  <div 
+                    className="w-2.5 h-2.5 bg-gold-dark/50 rotate-45 animate-pulse-slow"
+                  />
+                  <div 
+                    className="absolute inset-0 w-2.5 h-2.5 bg-gold/30 rotate-45 animate-ping"
+                    style={{ animationDuration: '2s' }}
+                  />
                 </div>
-                <div className="h-px w-16 md:w-24 bg-gradient-to-l from-transparent to-gold-dark/50" />
+                <div 
+                  className="h-px w-16 md:w-28 bg-gradient-to-l from-transparent via-gold-dark/30 to-gold-dark/60 origin-left"
+                  style={{ animation: 'expandWidth 0.6s ease-out 1s forwards', transform: 'scaleX(0)' }}
+                />
               </div>
             </div>
 
-            {/* Message with elegant fade */}
+            {/* Message with typewriter-like reveal */}
             {invitation?.message && (
-              <div className="mt-10 animate-fade-in" style={{ animationDelay: '0.8s' }}>
+              <div 
+                className="mt-10"
+                style={{ animation: 'fadeIn 0.8s ease-out 1.2s forwards, slideUp 0.8s ease-out 1.2s forwards', opacity: 0 }}
+              >
                 <p className="text-muted-foreground max-w-md mx-auto leading-relaxed text-base md:text-lg whitespace-pre-wrap font-serif italic tracking-wide">
                   {invitation.message}
                 </p>
