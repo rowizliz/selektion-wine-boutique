@@ -23,6 +23,26 @@ interface ResponseTemplateDialogProps {
   request: PersonalizedWineRequest | null;
 }
 
+// Convert bundled asset path to public URL path
+const getPublicImageUrl = (bundledPath: string | null): string | null => {
+  if (!bundledPath) return null;
+  
+  // Extract filename from bundled path (e.g., "/assets/terres-rares-fixed-abc123.jpg" -> "terres-rares-fixed.jpg")
+  const match = bundledPath.match(/\/([^/]+)-fixed[^.]*\.jpg$/);
+  if (match) {
+    const baseName = match[1];
+    return `/wines/${baseName}-fixed.jpg`;
+  }
+  
+  // Fallback: try to extract any filename
+  const fallbackMatch = bundledPath.match(/\/([^/]+)$/);
+  if (fallbackMatch) {
+    return `/wines/${fallbackMatch[1].replace(/-[a-zA-Z0-9]+\.jpg$/, '.jpg')}`;
+  }
+  
+  return bundledPath;
+};
+
 // Parse price string to number for comparison
 const parsePrice = (priceStr: string): number => {
   const cleaned = priceStr.replace(/[^\d]/g, "");
@@ -337,7 +357,7 @@ export const ResponseTemplateDialog = ({
           wine_id: wine.id,
           wine_name: wine.name,
           wine_price: wine.price,
-          wine_image_url: wine.image,
+          wine_image_url: getPublicImageUrl(wine.image),
           recommendation_reason: null, // Can be enhanced later with AI
           display_order: index,
         })),
