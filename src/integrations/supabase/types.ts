@@ -111,6 +111,7 @@ export type Database = {
           taste_sweet_level: number | null
           tracking_token: string
           updated_at: string
+          url_slug: string | null
           wine_styles: string[] | null
           wine_types: string[] | null
         }
@@ -132,6 +133,7 @@ export type Database = {
           taste_sweet_level?: number | null
           tracking_token?: string
           updated_at?: string
+          url_slug?: string | null
           wine_styles?: string[] | null
           wine_types?: string[] | null
         }
@@ -153,6 +155,7 @@ export type Database = {
           taste_sweet_level?: number | null
           tracking_token?: string
           updated_at?: string
+          url_slug?: string | null
           wine_styles?: string[] | null
           wine_types?: string[] | null
         }
@@ -323,6 +326,16 @@ export type Database = {
           customer_name: string
           status: string
           tracking_token: string
+        }[]
+      }
+      get_wine_recommendation_by_slug: {
+        Args: { p_url_slug: string }
+        Returns: {
+          customer_name: string
+          recommendation_message: string
+          recommendation_published_at: string
+          request_id: string
+          wines: Json
         }[]
       }
       get_wine_recommendation_by_token: {

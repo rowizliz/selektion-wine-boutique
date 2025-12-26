@@ -21,6 +21,7 @@ export interface PersonalizedWineRequest {
   status: string;
   recommendation_message: string | null;
   recommendation_published_at: string | null;
+  url_slug: string | null;
 }
 
 export interface PersonalizedWineFormData {
