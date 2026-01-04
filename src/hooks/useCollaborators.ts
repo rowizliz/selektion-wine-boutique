@@ -352,7 +352,19 @@ export function useCreateCollaboratorOrder() {
 export function useUpdateCollaboratorOrderStatus() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, status, commission_amount }: { id: string; status: string; commission_amount?: number }) => {
+    mutationFn: async ({ 
+      id, 
+      status, 
+      commission_amount,
+      collaborator_id,
+      add_to_wallet = false,
+    }: { 
+      id: string; 
+      status: string; 
+      commission_amount?: number;
+      collaborator_id?: string;
+      add_to_wallet?: boolean;
+    }) => {
       const updateData: { status: string; commission_amount?: number } = { status };
       if (commission_amount !== undefined) {
         updateData.commission_amount = commission_amount;
@@ -362,9 +374,31 @@ export function useUpdateCollaboratorOrderStatus() {
         .update(updateData)
         .eq("id", id);
       if (error) throw error;
+
+      // Add commission to wallet when order is approved
+      if (status === "approved" && add_to_wallet && collaborator_id && commission_amount) {
+        const { data: collab, error: fetchError } = await supabase
+          .from("collaborators")
+          .select("wallet_balance")
+          .eq("id", collaborator_id)
+          .single();
+
+        if (fetchError) throw fetchError;
+
+        const newBalance = (collab?.wallet_balance || 0) + commission_amount;
+        
+        const { error: walletError } = await supabase
+          .from("collaborators")
+          .update({ wallet_balance: newBalance })
+          .eq("id", collaborator_id);
+
+        if (walletError) throw walletError;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["collaborator-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["collaborators"] });
+      queryClient.invalidateQueries({ queryKey: ["current-collaborator"] });
     },
   });
 }
@@ -381,7 +415,9 @@ export function useUpdateCollaboratorOrder() {
       notes, 
       status,
       commission_amount,
-      total_amount
+      total_amount,
+      collaborator_id,
+      previous_status,
     }: { 
       id: string; 
       customer_name?: string;
@@ -391,6 +427,8 @@ export function useUpdateCollaboratorOrder() {
       status?: string;
       commission_amount?: number;
       total_amount?: number;
+      collaborator_id?: string;
+      previous_status?: string;
     }) => {
       const updateData: Record<string, any> = {};
       if (customer_name !== undefined) updateData.customer_name = customer_name;
@@ -406,10 +444,32 @@ export function useUpdateCollaboratorOrder() {
         .update(updateData)
         .eq("id", id);
       if (error) throw error;
+
+      // Add commission to wallet when status changes from non-approved to approved
+      if (status === "approved" && previous_status !== "approved" && collaborator_id && commission_amount) {
+        const { data: collab, error: fetchError } = await supabase
+          .from("collaborators")
+          .select("wallet_balance")
+          .eq("id", collaborator_id)
+          .single();
+
+        if (fetchError) throw fetchError;
+
+        const newBalance = (collab?.wallet_balance || 0) + commission_amount;
+        
+        const { error: walletError } = await supabase
+          .from("collaborators")
+          .update({ wallet_balance: newBalance })
+          .eq("id", collaborator_id);
+
+        if (walletError) throw walletError;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["collaborator-orders"] });
       queryClient.invalidateQueries({ queryKey: ["accumulated-quantity"] });
+      queryClient.invalidateQueries({ queryKey: ["collaborators"] });
+      queryClient.invalidateQueries({ queryKey: ["current-collaborator"] });
     },
   });
 }
