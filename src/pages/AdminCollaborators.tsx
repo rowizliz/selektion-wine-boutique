@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Plus, Pencil, Trash2, UserCheck, UserX, Settings } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, UserCheck, UserX, Settings, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -61,6 +61,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { AdminWithdrawals } from "@/components/admin/AdminWithdrawals";
 
 const AdminCollaborators = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -306,6 +307,7 @@ const AdminCollaborators = () => {
             <TabsList>
               <TabsTrigger value="collaborators">Danh sách CTV</TabsTrigger>
               <TabsTrigger value="orders">Đơn hàng CTV</TabsTrigger>
+              <TabsTrigger value="withdrawals">Yêu cầu rút tiền</TabsTrigger>
               <TabsTrigger value="commission">Bậc hoa hồng</TabsTrigger>
             </TabsList>
 
@@ -332,6 +334,7 @@ const AdminCollaborators = () => {
                           <TableHead>Email</TableHead>
                           <TableHead>SĐT</TableHead>
                           <TableHead>Giảm giá</TableHead>
+                          <TableHead>Số dư ví</TableHead>
                           <TableHead>Trạng thái</TableHead>
                           <TableHead className="text-right">Thao tác</TableHead>
                         </TableRow>
@@ -343,6 +346,9 @@ const AdminCollaborators = () => {
                             <TableCell>{collab.email}</TableCell>
                             <TableCell>{collab.phone || "-"}</TableCell>
                             <TableCell>{collab.discount_percent}%</TableCell>
+                            <TableCell className="font-semibold text-primary">
+                              {formatPrice(collab.wallet_balance)}
+                            </TableCell>
                             <TableCell>
                               {collab.is_active ? (
                                 <Badge variant="default">Hoạt động</Badge>
@@ -472,6 +478,11 @@ const AdminCollaborators = () => {
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Withdrawals Tab */}
+            <TabsContent value="withdrawals">
+              <AdminWithdrawals />
             </TabsContent>
 
             {/* Commission Tiers Tab */}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Package, DollarSign, ShoppingCart, Plus, Minus } from "lucide-react";
+import { Package, DollarSign, ShoppingCart, Plus, Minus, Wallet, CreditCard, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -34,6 +34,9 @@ import {
   useAccumulatedQuantity,
 } from "@/hooks/useCollaborators";
 import { useWines } from "@/hooks/useWines";
+import { BankInfoDialog } from "@/components/collaborator/BankInfoDialog";
+import { WithdrawalDialog } from "@/components/collaborator/WithdrawalDialog";
+import { WithdrawalHistory } from "@/components/collaborator/WithdrawalHistory";
 
 interface CartItem {
   wine_id: string;
@@ -50,6 +53,8 @@ const CollaboratorPortal = () => {
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [enlargedWine, setEnlargedWine] = useState<{ name: string; image_url: string | null } | null>(null);
+  const [isBankInfoOpen, setIsBankInfoOpen] = useState(false);
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -258,7 +263,7 @@ const CollaboratorPortal = () => {
           </header>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">Tổng doanh số</CardTitle>
@@ -286,12 +291,34 @@ const CollaboratorPortal = () => {
                 <div className="text-2xl font-bold">{approvedOrders.length}</div>
               </CardContent>
             </Card>
+            <Card className="bg-primary/5 border-primary/20">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Số dư ví</CardTitle>
+                <Wallet className="h-4 w-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-primary">
+                  {formatPrice(collaborator.wallet_balance)}
+                </div>
+                <div className="flex gap-2 mt-2">
+                  <Button size="sm" variant="outline" onClick={() => setIsBankInfoOpen(true)}>
+                    <Landmark className="h-3 w-3 mr-1" />
+                    Ngân hàng
+                  </Button>
+                  <Button size="sm" onClick={() => setIsWithdrawOpen(true)}>
+                    <CreditCard className="h-3 w-3 mr-1" />
+                    Rút tiền
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           <Tabs defaultValue="products" className="space-y-4">
             <TabsList>
               <TabsTrigger value="products">Bảng giá</TabsTrigger>
               <TabsTrigger value="orders">Đơn hàng của tôi</TabsTrigger>
+              <TabsTrigger value="withdrawals">Lịch sử rút tiền</TabsTrigger>
               <TabsTrigger value="commission">Bậc hoa hồng</TabsTrigger>
             </TabsList>
 
@@ -442,6 +469,49 @@ const CollaboratorPortal = () => {
               </Card>
             </TabsContent>
 
+            {/* Withdrawals Tab */}
+            <TabsContent value="withdrawals">
+              <Card>
+                <CardHeader className="flex-row items-center justify-between">
+                  <CardTitle>Lịch sử rút tiền</CardTitle>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setIsBankInfoOpen(true)}>
+                      <Landmark className="h-4 w-4 mr-2" />
+                      Cập nhật ngân hàng
+                    </Button>
+                    <Button onClick={() => setIsWithdrawOpen(true)}>
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Yêu cầu rút tiền
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {/* Bank Info Summary */}
+                  {collaborator.bank_account_number && (
+                    <div className="mb-4 p-4 bg-muted/50 rounded-lg flex items-center gap-4">
+                      {collaborator.qr_code_url && (
+                        <img
+                          src={collaborator.qr_code_url}
+                          alt="QR Code"
+                          className="h-16 w-16 rounded border object-contain"
+                        />
+                      )}
+                      <div>
+                        <p className="font-medium">{collaborator.bank_name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          STK: {collaborator.bank_account_number}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {collaborator.bank_account_holder}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  <WithdrawalHistory collaboratorId={collaborator.id} />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             {/* Commission Tiers Tab */}
             <TabsContent value="commission">
               <Card>
@@ -572,6 +642,24 @@ const CollaboratorPortal = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Bank Info Dialog */}
+      {collaborator && (
+        <BankInfoDialog
+          open={isBankInfoOpen}
+          onOpenChange={setIsBankInfoOpen}
+          collaborator={collaborator}
+        />
+      )}
+
+      {/* Withdrawal Dialog */}
+      {collaborator && (
+        <WithdrawalDialog
+          open={isWithdrawOpen}
+          onOpenChange={setIsWithdrawOpen}
+          collaborator={collaborator}
+        />
+      )}
     </>
   );
 };
