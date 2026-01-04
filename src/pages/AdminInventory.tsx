@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useInventory } from "@/hooks/useInventory";
 import { useOrders, calculateOrderFinancials } from "@/hooks/useOrders";
-import { useActiveProfile, InventoryProfile } from "@/hooks/useInventoryProfiles";
+import { useActiveProfile, useInventoryProfiles, InventoryProfile } from "@/hooks/useInventoryProfiles";
 import InventoryTable from "@/components/inventory/InventoryTable";
 import OrdersTable from "@/components/inventory/OrdersTable";
 import AddInventoryDialog from "@/components/inventory/AddInventoryDialog";
@@ -25,15 +25,21 @@ function formatCurrency(amount: number) {
 const AdminInventory = () => {
   const [selectedProfile, setSelectedProfile] = useState<InventoryProfile | null>(null);
   const { data: activeProfile, isLoading: profileLoading } = useActiveProfile();
+  const { data: profiles } = useInventoryProfiles();
 
   // Set selected profile when active profile loads
   useEffect(() => {
-    if (activeProfile && !selectedProfile) {
-      setSelectedProfile(activeProfile);
+    if (!selectedProfile) {
+      if (activeProfile) {
+        setSelectedProfile(activeProfile);
+      } else if (profiles && profiles.length > 0) {
+        // Fallback to first profile if no active one
+        setSelectedProfile(profiles[0]);
+      }
     }
-  }, [activeProfile, selectedProfile]);
+  }, [activeProfile, profiles, selectedProfile]);
 
-  const profileId = selectedProfile?.id;
+  const profileId = selectedProfile?.id ?? null;
 
   const { data: inventory, isLoading: inventoryLoading } = useInventory(profileId);
   const { data: orders, isLoading: ordersLoading } = useOrders(profileId);
