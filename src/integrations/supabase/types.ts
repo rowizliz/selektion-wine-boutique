@@ -193,8 +193,65 @@ export type Database = {
           },
         ]
       }
+      collaborator_profile_updates: {
+        Row: {
+          admin_notes: string | null
+          collaborator_id: string
+          created_at: string
+          id: string
+          processed_at: string | null
+          processed_by: string | null
+          requested_avatar_url: string | null
+          requested_bank_account_holder: string | null
+          requested_bank_account_number: string | null
+          requested_bank_name: string | null
+          requested_name: string | null
+          requested_qr_code_url: string | null
+          status: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          collaborator_id: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_avatar_url?: string | null
+          requested_bank_account_holder?: string | null
+          requested_bank_account_number?: string | null
+          requested_bank_name?: string | null
+          requested_name?: string | null
+          requested_qr_code_url?: string | null
+          status?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          collaborator_id?: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_avatar_url?: string | null
+          requested_bank_account_holder?: string | null
+          requested_bank_account_number?: string | null
+          requested_bank_name?: string | null
+          requested_name?: string | null
+          requested_qr_code_url?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collaborator_profile_updates_collaborator_id_fkey"
+            columns: ["collaborator_id"]
+            isOneToOne: false
+            referencedRelation: "collaborators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collaborators: {
         Row: {
+          avatar_url: string | null
           bank_account_holder: string | null
           bank_account_number: string | null
           bank_name: string | null
@@ -211,6 +268,7 @@ export type Database = {
           wallet_balance: number
         }
         Insert: {
+          avatar_url?: string | null
           bank_account_holder?: string | null
           bank_account_number?: string | null
           bank_name?: string | null
@@ -227,6 +285,7 @@ export type Database = {
           wallet_balance?: number
         }
         Update: {
+          avatar_url?: string | null
           bank_account_holder?: string | null
           bank_account_number?: string | null
           bank_name?: string | null

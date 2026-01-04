@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Package, DollarSign, ShoppingCart, Plus, Minus, Wallet, CreditCard, Landmark } from "lucide-react";
+import { Package, DollarSign, ShoppingCart, Plus, Minus, Wallet, CreditCard, Landmark, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,6 +37,7 @@ import { useWines } from "@/hooks/useWines";
 import { BankInfoDialog } from "@/components/collaborator/BankInfoDialog";
 import { WithdrawalDialog } from "@/components/collaborator/WithdrawalDialog";
 import { WithdrawalHistory } from "@/components/collaborator/WithdrawalHistory";
+import { ProfileSettingsDialog } from "@/components/collaborator/ProfileSettingsDialog";
 
 interface CartItem {
   wine_id: string;
@@ -55,6 +56,7 @@ const CollaboratorPortal = () => {
   const [enlargedWine, setEnlargedWine] = useState<{ name: string; image_url: string | null } | null>(null);
   const [isBankInfoOpen, setIsBankInfoOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+  const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -260,9 +262,19 @@ const CollaboratorPortal = () => {
                 </p>
               )}
             </div>
-            <Button variant="outline" size="sm" onClick={() => supabase.auth.signOut()} className="self-start sm:self-auto">
-              Đăng xuất
-            </Button>
+            <div className="flex gap-2 self-start sm:self-auto">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsProfileSettingsOpen(true)}
+                className="h-8 w-8 sm:h-9 sm:w-9"
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => supabase.auth.signOut()}>
+                Đăng xuất
+              </Button>
+            </div>
           </header>
 
           {/* Stats */}
@@ -678,6 +690,15 @@ const CollaboratorPortal = () => {
         <WithdrawalDialog
           open={isWithdrawOpen}
           onOpenChange={setIsWithdrawOpen}
+          collaborator={collaborator}
+        />
+      )}
+
+      {/* Profile Settings Dialog */}
+      {collaborator && (
+        <ProfileSettingsDialog
+          open={isProfileSettingsOpen}
+          onOpenChange={setIsProfileSettingsOpen}
           collaborator={collaborator}
         />
       )}

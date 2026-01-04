@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users } from "lucide-react";
+import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
@@ -29,6 +29,13 @@ const adminModules: AdminModule[] = [
     icon: Users,
     href: "/admin/collaborators",
     color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
+  },
+  {
+    title: "Duyệt Profile CTV",
+    description: "Xử lý yêu cầu cập nhật hồ sơ CTV",
+    icon: UserCog,
+    href: "/admin/profile-updates",
+    color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400"
   },
   {
     title: "Quản lý Rượu Vang",
