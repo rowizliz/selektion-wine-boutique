@@ -31,6 +31,7 @@ interface OrderItemForm {
 interface CreateOrderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  profileId?: string;
 }
 
 function parsePrice(priceStr: string): number {
@@ -38,8 +39,8 @@ function parsePrice(priceStr: string): number {
   return parseInt(num, 10) || 0;
 }
 
-const CreateOrderDialog = ({ open, onOpenChange }: CreateOrderDialogProps) => {
-  const { data: inventory } = useInventory();
+const CreateOrderDialog = ({ open, onOpenChange, profileId }: CreateOrderDialogProps) => {
+  const { data: inventory } = useInventory(profileId);
   const createOrder = useCreateOrder();
 
   const [customerName, setCustomerName] = useState("");
@@ -91,6 +92,7 @@ const CreateOrderDialog = ({ open, onOpenChange }: CreateOrderDialogProps) => {
       order_type: orderType,
       notes: notes || undefined,
       discount,
+      profile_id: profileId,
       items,
     });
 

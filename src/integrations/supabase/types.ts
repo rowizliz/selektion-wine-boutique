@@ -144,6 +144,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          profile_id: string | null
           purchase_price: number
           quantity_in_stock: number
           updated_at: string
@@ -152,6 +153,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          profile_id?: string | null
           purchase_price?: number
           quantity_in_stock?: number
           updated_at?: string
@@ -160,12 +162,20 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          profile_id?: string | null
           purchase_price?: number
           quantity_in_stock?: number
           updated_at?: string
           wine_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "inventory_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inventory_wine_id_fkey"
             columns: ["wine_id"]
@@ -174,6 +184,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      inventory_profiles: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean
+          name: string
+          start_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          start_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          start_date?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       invitation_rsvps: {
         Row: {
@@ -276,6 +319,7 @@ export type Database = {
           id: string
           notes: string | null
           order_type: string
+          profile_id: string | null
           status: string
           updated_at: string
         }
@@ -287,6 +331,7 @@ export type Database = {
           id?: string
           notes?: string | null
           order_type?: string
+          profile_id?: string | null
           status?: string
           updated_at?: string
         }
@@ -298,10 +343,19 @@ export type Database = {
           id?: string
           notes?: string | null
           order_type?: string
+          profile_id?: string | null
           status?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       personalized_wine_requests: {
         Row: {

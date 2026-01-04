@@ -5,6 +5,7 @@ import { toast } from "sonner";
 export interface InventoryItem {
   id: string;
   wine_id: string;
+  profile_id: string | null;
   quantity_in_stock: number;
   purchase_price: number;
   created_at: string;
@@ -18,11 +19,11 @@ export interface InventoryItem {
   };
 }
 
-export function useInventory() {
+export function useInventory(profileId?: string) {
   return useQuery({
-    queryKey: ["inventory"],
+    queryKey: ["inventory", profileId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("inventory")
         .select(`
           *,
@@ -30,9 +31,16 @@ export function useInventory() {
         `)
         .order("updated_at", { ascending: false });
 
+      if (profileId) {
+        query = query.eq("profile_id", profileId);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
       return data as InventoryItem[];
     },
+    enabled: profileId !== undefined,
   });
 }
 
@@ -44,15 +52,45 @@ export function useUpsertInventory() {
       wine_id: string;
       quantity_in_stock: number;
       purchase_price: number;
+      profile_id?: string;
     }) => {
-      const { data, error } = await supabase
+      // Check if inventory exists for this wine in this profile
+      let query = supabase
         .from("inventory")
-        .upsert(item, { onConflict: "wine_id" })
-        .select()
-        .single();
+        .select("id")
+        .eq("wine_id", item.wine_id);
 
-      if (error) throw error;
-      return data;
+      if (item.profile_id) {
+        query = query.eq("profile_id", item.profile_id);
+      }
+
+      const { data: existing } = await query.maybeSingle();
+
+      if (existing) {
+        // Update existing
+        const { data, error } = await supabase
+          .from("inventory")
+          .update({
+            quantity_in_stock: item.quantity_in_stock,
+            purchase_price: item.purchase_price,
+          })
+          .eq("id", existing.id)
+          .select()
+          .single();
+
+        if (error) throw error;
+        return data;
+      } else {
+        // Insert new
+        const { data, error } = await supabase
+          .from("inventory")
+          .insert(item)
+          .select()
+          .single();
+
+        if (error) throw error;
+        return data;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["inventory"] });

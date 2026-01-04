@@ -21,16 +21,17 @@ export interface Order {
   status: "pending" | "confirmed" | "completed" | "cancelled";
   notes: string | null;
   discount: number;
+  profile_id: string | null;
   created_at: string;
   updated_at: string;
   order_items?: OrderItem[];
 }
 
-export function useOrders() {
+export function useOrders(profileId?: string) {
   return useQuery({
-    queryKey: ["orders"],
+    queryKey: ["orders", profileId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("orders")
         .select(`
           *,
@@ -38,9 +39,16 @@ export function useOrders() {
         `)
         .order("created_at", { ascending: false });
 
+      if (profileId) {
+        query = query.eq("profile_id", profileId);
+      }
+
+      const { data, error } = await query;
+
       if (error) throw error;
       return data as Order[];
     },
+    enabled: profileId !== undefined,
   });
 }
 
@@ -54,6 +62,7 @@ export function useCreateOrder() {
       order_type: "sale" | "gift";
       notes?: string;
       discount?: number;
+      profile_id?: string;
       items: {
         wine_id: string;
         wine_name: string;
@@ -71,6 +80,7 @@ export function useCreateOrder() {
           order_type: order.order_type,
           notes: order.notes,
           discount: order.discount ?? 0,
+          profile_id: order.profile_id,
         })
         .select()
         .single();
