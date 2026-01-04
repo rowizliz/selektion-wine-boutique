@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { Package, DollarSign, ShoppingCart, Plus, Minus, Wallet, CreditCard, Landmark, Settings } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -245,22 +246,30 @@ const CollaboratorPortal = () => {
         <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6">
           {/* Header */}
           <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="min-w-0">
-              <h1 className="text-xl sm:text-2xl font-serif truncate">Xin chào, {collaborator.name}</h1>
-              <p className="text-muted-foreground text-xs sm:text-sm">
-                <span className="font-medium">Giảm giá: {currentDiscountPercent}%</span>
-                <span className="hidden sm:inline ml-2">
-                  (Tích lũy: {accumulatedQuantity} + Giỏ: {currentCartQuantity} = {totalQuantityInSession} SP)
-                </span>
-              </p>
-              <p className="text-muted-foreground text-xs sm:hidden">
-                Tích lũy: {totalQuantityInSession} SP
-              </p>
-              {sessionEnd && (
-                <p className="text-xs text-muted-foreground">
-                  Phiên kết thúc: {new Date(sessionEnd).toLocaleDateString("vi-VN")}
+            <div className="flex items-center gap-3 min-w-0">
+              <Avatar className="h-12 w-12 sm:h-14 sm:w-14 border-2 border-primary/20">
+                <AvatarImage src={collaborator.avatar_url || ""} alt={collaborator.name} />
+                <AvatarFallback className="text-lg font-medium bg-primary/10 text-primary">
+                  {collaborator.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-serif truncate">Xin chào, {collaborator.name}</h1>
+                <p className="text-muted-foreground text-xs sm:text-sm">
+                  <span className="font-medium">Giảm giá: {currentDiscountPercent}%</span>
+                  <span className="hidden sm:inline ml-2">
+                    (Tích lũy: {accumulatedQuantity} + Giỏ: {currentCartQuantity} = {totalQuantityInSession} SP)
+                  </span>
                 </p>
-              )}
+                <p className="text-muted-foreground text-xs sm:hidden">
+                  Tích lũy: {totalQuantityInSession} SP
+                </p>
+                {sessionEnd && (
+                  <p className="text-xs text-muted-foreground">
+                    Phiên kết thúc: {new Date(sessionEnd).toLocaleDateString("vi-VN")}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="flex gap-2 self-start sm:self-auto">
               <Button
