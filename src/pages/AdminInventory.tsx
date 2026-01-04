@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Package, TrendingUp, TrendingDown, DollarSign, ShoppingCart, Gift, Plus } from "lucide-react";
+import { ArrowLeft, Package, TrendingUp, TrendingDown, DollarSign, ShoppingCart, Gift, Plus, Percent } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -60,7 +60,7 @@ const AdminInventory = () => {
           </header>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -116,14 +116,29 @@ const AdminInventory = () => {
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Percent className="h-4 w-4" />
+                  Chiết Khấu
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold text-orange-600">
+                  {formatCurrency(financials?.totalDiscount ?? 0)}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" />
                   Doanh Thu
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-2xl font-bold text-green-600">
-                  {formatCurrency(financials?.totalRevenue ?? 0)}
+                  {formatCurrency(financials?.netRevenue ?? 0)}
                 </p>
+                <p className="text-xs text-muted-foreground">sau chiết khấu</p>
               </CardContent>
             </Card>
 
