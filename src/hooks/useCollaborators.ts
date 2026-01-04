@@ -223,6 +223,61 @@ export function useCollaboratorOrders(collaboratorId?: string) {
   });
 }
 
+// Get accumulated quantity within 20-day session for a collaborator
+export function useAccumulatedQuantity(collaboratorId?: string) {
+  return useQuery({
+    queryKey: ["accumulated-quantity", collaboratorId],
+    enabled: !!collaboratorId,
+    queryFn: async () => {
+      if (!collaboratorId) return { quantity: 0, sessionStart: null, sessionEnd: null };
+
+      // Calculate 20 days ago
+      const twentyDaysAgo = new Date();
+      twentyDaysAgo.setDate(twentyDaysAgo.getDate() - 20);
+
+      const { data, error } = await supabase
+        .from("collaborator_orders")
+        .select(`
+          created_at,
+          collaborator_order_items (quantity)
+        `)
+        .eq("collaborator_id", collaboratorId)
+        .in("status", ["pending", "approved"]) // Count pending and approved orders
+        .gte("created_at", twentyDaysAgo.toISOString())
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+
+      // Calculate total quantity from orders in the session
+      let totalQuantity = 0;
+      let sessionStart: string | null = null;
+
+      if (data && data.length > 0) {
+        sessionStart = data[0].created_at;
+        
+        data.forEach(order => {
+          const items = order.collaborator_order_items as { quantity: number }[];
+          totalQuantity += items.reduce((sum, item) => sum + item.quantity, 0);
+        });
+      }
+
+      // Calculate session end (20 days from first order in session)
+      let sessionEnd: Date | null = null;
+      if (sessionStart) {
+        sessionEnd = new Date(sessionStart);
+        sessionEnd.setDate(sessionEnd.getDate() + 20);
+      }
+
+      return {
+        quantity: totalQuantity,
+        sessionStart,
+        sessionEnd: sessionEnd?.toISOString() || null,
+        ordersInSession: data?.length || 0,
+      };
+    },
+  });
+}
+
 // Create collaborator order
 export function useCreateCollaboratorOrder() {
   const queryClient = useQueryClient();

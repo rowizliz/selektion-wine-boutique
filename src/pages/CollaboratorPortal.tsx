@@ -31,6 +31,7 @@ import {
   useCollaboratorOrders,
   useCreateCollaboratorOrder,
   useCommissionTiers,
+  useAccumulatedQuantity,
 } from "@/hooks/useCollaborators";
 import { useWines } from "@/hooks/useWines";
 
@@ -58,6 +59,7 @@ const CollaboratorPortal = () => {
   const { data: collaborator, isLoading: loadingCollaborator } = useCurrentCollaborator();
   const { data: orders } = useCollaboratorOrders(collaborator?.id);
   const { data: commissionTiers } = useCommissionTiers();
+  const { data: accumulatedData } = useAccumulatedQuantity(collaborator?.id);
   const { data: wines } = useWines();
   const createOrder = useCreateCollaboratorOrder();
 
@@ -118,7 +120,11 @@ const CollaboratorPortal = () => {
     return parseInt(priceStr.replace(/[^\d]/g, "")) || 0;
   };
 
-  // Get discount percent based on cart quantity from commission tiers
+  // Get accumulated quantity from previous orders in 20-day session
+  const accumulatedQuantity = accumulatedData?.quantity || 0;
+  const sessionEnd = accumulatedData?.sessionEnd;
+  
+  // Get discount percent based on total quantity (accumulated + current cart)
   const getDiscountPercentByQuantity = (quantity: number): number => {
     if (!commissionTiers || commissionTiers.length === 0) {
       return collaborator.discount_percent; // Fallback to personal discount
@@ -135,9 +141,12 @@ const CollaboratorPortal = () => {
     return matchingTier?.commission_percent || collaborator.discount_percent;
   };
 
-  // Current discount based on cart quantity
+  // Current cart quantity
   const currentCartQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const currentDiscountPercent = getDiscountPercentByQuantity(currentCartQuantity);
+  
+  // Total quantity = accumulated from previous orders + current cart
+  const totalQuantityInSession = accumulatedQuantity + currentCartQuantity;
+  const currentDiscountPercent = getDiscountPercentByQuantity(totalQuantityInSession);
 
   const getCollaboratorPrice = (originalPrice: number) => {
     return originalPrice * (1 - currentDiscountPercent / 100);
@@ -231,13 +240,16 @@ const CollaboratorPortal = () => {
             <div>
               <h1 className="text-2xl font-serif">Xin chào, {collaborator.name}</h1>
               <p className="text-muted-foreground text-sm">
-                Giảm giá hiện tại: {currentDiscountPercent}%
-                {cartQuantity > 0 && (
-                  <span className="ml-2 text-primary">
-                    ({cartQuantity} sản phẩm trong giỏ)
-                  </span>
-                )}
+                Giảm giá hiện tại: {currentDiscountPercent}% 
+                <span className="ml-2">
+                  (Tích lũy: {accumulatedQuantity} + Giỏ: {currentCartQuantity} = {totalQuantityInSession} SP)
+                </span>
               </p>
+              {sessionEnd && (
+                <p className="text-xs text-muted-foreground">
+                  Phiên tích lũy kết thúc: {new Date(sessionEnd).toLocaleDateString("vi-VN")}
+                </p>
+              )}
             </div>
             <Button variant="outline" onClick={() => supabase.auth.signOut()}>
               Đăng xuất
