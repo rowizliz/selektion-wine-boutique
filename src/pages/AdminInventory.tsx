@@ -60,82 +60,99 @@ const AdminInventory = () => {
           </header>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Package className="h-4 w-4" />
-                  Tổng Tồn Kho
+              <CardHeader className="pb-2 px-3 pt-3">
+                <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                  <Package className="h-3 w-3" />
+                  Tồn Kho
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{totalStock}</p>
+              <CardContent className="px-3 pb-3">
+                <p className="text-xl font-bold">{totalStock}</p>
                 <p className="text-xs text-muted-foreground">chai</p>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <DollarSign className="h-4 w-4" />
+              <CardHeader className="pb-2 px-3 pt-3">
+                <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                  <DollarSign className="h-3 w-3" />
                   Giá Trị Kho
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{formatCurrency(totalInventoryValue)}</p>
+              <CardContent className="px-3 pb-3">
+                <p className="text-xl font-bold truncate" title={formatCurrency(totalInventoryValue)}>
+                  {formatCurrency(totalInventoryValue)}
+                </p>
                 <p className="text-xs text-muted-foreground">giá nhập</p>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <ShoppingCart className="h-4 w-4" />
+              <CardHeader className="pb-2 px-3 pt-3">
+                <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                  <ShoppingCart className="h-3 w-3" />
                   Đơn Bán
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{financials?.salesCount ?? 0}</p>
+              <CardContent className="px-3 pb-3">
+                <p className="text-xl font-bold">{financials?.salesCount ?? 0}</p>
                 <p className="text-xs text-muted-foreground">đơn hàng</p>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Gift className="h-4 w-4" />
+              <CardHeader className="pb-2 px-3 pt-3">
+                <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                  <Gift className="h-3 w-3" />
                   Đơn Tặng
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold">{financials?.giftCount ?? 0}</p>
+              <CardContent className="px-3 pb-3">
+                <p className="text-xl font-bold">{financials?.giftCount ?? 0}</p>
                 <p className="text-xs text-muted-foreground">đơn tặng</p>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Percent className="h-4 w-4" />
+              <CardHeader className="pb-2 px-3 pt-3">
+                <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                  <TrendingDown className="h-3 w-3" />
+                  Tổng Nhập
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="px-3 pb-3">
+                <p className="text-xl font-bold text-blue-600 truncate" title={formatCurrency(financials?.totalCost ?? 0)}>
+                  {formatCurrency(financials?.totalCost ?? 0)}
+                </p>
+                <p className="text-xs text-muted-foreground">giá vốn bán</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2 px-3 pt-3">
+                <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                  <Percent className="h-3 w-3" />
                   Chiết Khấu
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold text-orange-600">
+              <CardContent className="px-3 pb-3">
+                <p className="text-xl font-bold text-orange-600 truncate" title={formatCurrency(financials?.totalDiscount ?? 0)}>
                   {formatCurrency(financials?.totalDiscount ?? 0)}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
+              <CardHeader className="pb-2 px-3 pt-3">
+                <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                  <TrendingUp className="h-3 w-3" />
                   Doanh Thu
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold text-green-600">
+              <CardContent className="px-3 pb-3">
+                <p className="text-xl font-bold text-green-600 truncate" title={formatCurrency(financials?.netRevenue ?? 0)}>
                   {formatCurrency(financials?.netRevenue ?? 0)}
                 </p>
                 <p className="text-xs text-muted-foreground">sau chiết khấu</p>
@@ -143,21 +160,22 @@ const AdminInventory = () => {
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <CardHeader className="pb-2 px-3 pt-3">
+                <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                   {(financials?.profit ?? 0) >= 0 ? (
-                    <TrendingUp className="h-4 w-4" />
+                    <TrendingUp className="h-3 w-3" />
                   ) : (
-                    <TrendingDown className="h-4 w-4" />
+                    <TrendingDown className="h-3 w-3" />
                   )}
                   Lợi Nhuận
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-3 pb-3">
                 <p
-                  className={`text-2xl font-bold ${
+                  className={`text-xl font-bold truncate ${
                     (financials?.profit ?? 0) >= 0 ? "text-green-600" : "text-red-600"
                   }`}
+                  title={formatCurrency(financials?.profit ?? 0)}
                 >
                   {formatCurrency(financials?.profit ?? 0)}
                 </p>
