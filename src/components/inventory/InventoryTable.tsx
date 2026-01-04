@@ -113,7 +113,7 @@ const InventoryTable = ({ inventory, isLoading }: InventoryTableProps) => {
                         <img
                           src={item.wine.image_url}
                           alt={item.wine.name}
-                          className="w-10 h-14 object-cover rounded"
+                          className="w-12 h-16 object-contain"
                         />
                       )}
                       <span className="font-medium">{item.wine?.name}</span>
