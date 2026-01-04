@@ -11,6 +11,11 @@ export interface Collaborator {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  bank_name: string | null;
+  bank_account_number: string | null;
+  bank_account_holder: string | null;
+  qr_code_url: string | null;
+  wallet_balance: number;
 }
 
 export interface CommissionTier {
