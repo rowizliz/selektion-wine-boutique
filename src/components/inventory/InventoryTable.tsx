@@ -11,6 +11,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
 import { Edit2, Save, X } from "lucide-react";
 import { InventoryItem, useUpsertInventory } from "@/hooks/useInventory";
 
@@ -35,6 +39,7 @@ function parsePrice(priceStr: string): number {
 const InventoryTable = ({ inventory, isLoading }: InventoryTableProps) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValues, setEditValues] = useState({ quantity: 0, price: 0 });
+  const [selectedImage, setSelectedImage] = useState<{ url: string; name: string } | null>(null);
   const upsertInventory = useUpsertInventory();
 
   const handleEdit = (item: InventoryItem) => {
@@ -83,7 +88,22 @@ const InventoryTable = ({ inventory, isLoading }: InventoryTableProps) => {
   }
 
   return (
-    <Card>
+    <>
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent className="sm:max-w-md flex items-center justify-center p-8">
+          {selectedImage && (
+            <div className="text-center">
+              <img
+                src={selectedImage.url}
+                alt={selectedImage.name}
+                className="max-h-[70vh] object-contain mx-auto"
+              />
+              <p className="mt-4 font-medium text-lg">{selectedImage.name}</p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      <Card>
       <CardContent className="p-0">
         <Table>
           <TableHeader>
@@ -113,7 +133,8 @@ const InventoryTable = ({ inventory, isLoading }: InventoryTableProps) => {
                         <img
                           src={item.wine.image_url}
                           alt={item.wine.name}
-                          className="w-12 h-16 object-contain"
+                          className="w-12 h-16 object-contain cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => setSelectedImage({ url: item.wine!.image_url!, name: item.wine!.name })}
                         />
                       )}
                       <span className="font-medium">{item.wine?.name}</span>
@@ -211,6 +232,7 @@ const InventoryTable = ({ inventory, isLoading }: InventoryTableProps) => {
         </Table>
       </CardContent>
     </Card>
+    </>
   );
 };
 
