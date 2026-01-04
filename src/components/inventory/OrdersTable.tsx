@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -16,10 +17,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Order, useUpdateOrderStatus, useDeleteOrder } from "@/hooks/useOrders";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import EditOrderDialog from "./EditOrderDialog";
 
 interface OrdersTableProps {
   orders: Order[];
@@ -51,6 +53,7 @@ const statusLabels: Record<Order["status"], string> = {
 const OrdersTable = ({ orders, isLoading }: OrdersTableProps) => {
   const updateStatus = useUpdateOrderStatus();
   const deleteOrder = useDeleteOrder();
+  const [editingOrder, setEditingOrder] = useState<Order | null>(null);
 
   const handleStatusChange = (orderId: string, status: Order["status"]) => {
     updateStatus.mutate({ orderId, status });
@@ -60,6 +63,10 @@ const OrdersTable = ({ orders, isLoading }: OrdersTableProps) => {
     if (confirm("Bạn có chắc muốn xóa đơn hàng này?")) {
       deleteOrder.mutate(orderId);
     }
+  };
+
+  const handleEdit = (order: Order) => {
+    setEditingOrder(order);
   };
 
   if (isLoading) {
@@ -197,13 +204,26 @@ const OrdersTable = ({ orders, isLoading }: OrdersTableProps) => {
                     </DropdownMenu>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => handleDelete(order.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      {order.status === "pending" && (
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => handleEdit(order)}
+                          title="Sửa đơn hàng"
+                        >
+                          <Pencil className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                      )}
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleDelete(order.id)}
+                        title="Xóa đơn hàng"
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               );
@@ -211,6 +231,12 @@ const OrdersTable = ({ orders, isLoading }: OrdersTableProps) => {
           </TableBody>
         </Table>
       </CardContent>
+
+      <EditOrderDialog
+        order={editingOrder}
+        open={!!editingOrder}
+        onOpenChange={(open) => !open && setEditingOrder(null)}
+      />
     </Card>
   );
 };
