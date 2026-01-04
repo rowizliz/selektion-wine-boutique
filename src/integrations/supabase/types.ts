@@ -192,6 +192,9 @@ export type Database = {
       }
       collaborators: {
         Row: {
+          bank_account_holder: string | null
+          bank_account_number: string | null
+          bank_name: string | null
           created_at: string
           discount_percent: number
           email: string
@@ -199,10 +202,15 @@ export type Database = {
           is_active: boolean
           name: string
           phone: string | null
+          qr_code_url: string | null
           updated_at: string
           user_id: string | null
+          wallet_balance: number
         }
         Insert: {
+          bank_account_holder?: string | null
+          bank_account_number?: string | null
+          bank_name?: string | null
           created_at?: string
           discount_percent?: number
           email: string
@@ -210,10 +218,15 @@ export type Database = {
           is_active?: boolean
           name: string
           phone?: string | null
+          qr_code_url?: string | null
           updated_at?: string
           user_id?: string | null
+          wallet_balance?: number
         }
         Update: {
+          bank_account_holder?: string | null
+          bank_account_number?: string | null
+          bank_name?: string | null
           created_at?: string
           discount_percent?: number
           email?: string
@@ -221,8 +234,10 @@ export type Database = {
           is_active?: boolean
           name?: string
           phone?: string | null
+          qr_code_url?: string | null
           updated_at?: string
           user_id?: string | null
+          wallet_balance?: number
         }
         Relationships: []
       }
@@ -729,6 +744,50 @@ export type Database = {
           vintage?: string | null
         }
         Relationships: []
+      }
+      withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          collaborator_id: string
+          created_at: string
+          id: string
+          processed_at: string | null
+          processed_by: string | null
+          status: string
+          transfer_proof_url: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          collaborator_id: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          transfer_proof_url?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          collaborator_id?: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          transfer_proof_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "withdrawal_requests_collaborator_id_fkey"
+            columns: ["collaborator_id"]
+            isOneToOne: false
+            referencedRelation: "collaborators"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
