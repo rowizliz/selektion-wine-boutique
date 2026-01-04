@@ -105,6 +105,10 @@ const CreateOrderDialog = ({ open, onOpenChange }: CreateOrderDialogProps) => {
 
   const availableInventory = inventory?.filter((i) => i.quantity_in_stock > 0) ?? [];
 
+  // Calculate totals
+  const subtotal = items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0);
+  const finalTotal = Math.max(0, subtotal - discount);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -169,65 +173,88 @@ const CreateOrderDialog = ({ open, onOpenChange }: CreateOrderDialogProps) => {
               {items.map((item, index) => {
                 const invItem = inventory?.find((i) => i.wine_id === item.wine_id);
                 const maxQty = invItem?.quantity_in_stock ?? 1;
+                const itemTotal = item.unit_price * item.quantity;
 
                 return (
                   <div
                     key={index}
-                    className="flex items-center gap-2 p-3 border rounded-lg"
+                    className="p-3 border rounded-lg space-y-2"
                   >
-                    <Select
-                      value={item.wine_id}
-                      onValueChange={(v) => handleItemChange(index, v)}
-                    >
-                      <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Chọn sản phẩm..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableInventory.map((inv) => (
-                          <SelectItem key={inv.wine_id} value={inv.wine_id}>
-                            {inv.wine?.name} (còn {inv.quantity_in_stock})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={item.wine_id}
+                        onValueChange={(v) => handleItemChange(index, v)}
+                      >
+                        <SelectTrigger className="flex-1">
+                          <SelectValue placeholder="Chọn sản phẩm..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableInventory.map((inv) => (
+                            <SelectItem key={inv.wine_id} value={inv.wine_id}>
+                              {inv.wine?.name} (còn {inv.quantity_in_stock})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
 
-                    <Input
-                      type="number"
-                      min="1"
-                      max={maxQty}
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleQuantityChange(index, Number(e.target.value))
-                      }
-                      className="w-20"
-                    />
+                      <Input
+                        type="number"
+                        min="1"
+                        max={maxQty}
+                        value={item.quantity}
+                        onChange={(e) =>
+                          handleQuantityChange(index, Number(e.target.value))
+                        }
+                        className="w-20"
+                      />
 
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleRemoveItem(index)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemoveItem(index)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                    {item.wine_id && (
+                      <div className="flex justify-between text-sm text-muted-foreground px-1">
+                        <span>Đơn giá: {item.unit_price.toLocaleString("vi-VN")} đ</span>
+                        <span className="font-medium text-foreground">
+                          Thành tiền: {itemTotal.toLocaleString("vi-VN")} đ
+                        </span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Chiết Khấu (đ)</Label>
-              <Input
-                type="number"
-                min="0"
-                value={discount}
-                onChange={(e) => setDiscount(Number(e.target.value))}
-                placeholder="0"
-              />
+          {/* Order Summary */}
+          {items.length > 0 && (
+            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Tổng tiền hàng:</span>
+                <span>{subtotal.toLocaleString("vi-VN")} đ</span>
+              </div>
+              <div className="flex justify-between text-sm items-center gap-2">
+                <span>Chiết khấu:</span>
+                <Input
+                  type="number"
+                  min="0"
+                  max={subtotal}
+                  value={discount}
+                  onChange={(e) => setDiscount(Number(e.target.value))}
+                  className="w-32 h-8 text-right"
+                />
+              </div>
+              <div className="flex justify-between font-semibold text-lg border-t pt-2">
+                <span>Thành tiền:</span>
+                <span className="text-primary">{finalTotal.toLocaleString("vi-VN")} đ</span>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="space-y-2">
             <Label>Ghi Chú</Label>

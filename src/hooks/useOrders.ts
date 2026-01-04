@@ -158,12 +158,40 @@ export function useDeleteOrder() {
 
   return useMutation({
     mutationFn: async (orderId: string) => {
+      // First, get order items to restore inventory
+      const { data: orderItems, error: itemsError } = await supabase
+        .from("order_items")
+        .select("wine_id, quantity")
+        .eq("order_id", orderId);
+
+      if (itemsError) throw itemsError;
+
+      // Restore inventory quantities
+      for (const item of orderItems || []) {
+        if (item.wine_id) {
+          const { data: inv } = await supabase
+            .from("inventory")
+            .select("quantity_in_stock")
+            .eq("wine_id", item.wine_id)
+            .maybeSingle();
+
+          if (inv) {
+            await supabase
+              .from("inventory")
+              .update({ quantity_in_stock: inv.quantity_in_stock + item.quantity })
+              .eq("wine_id", item.wine_id);
+          }
+        }
+      }
+
+      // Now delete the order (order_items will be cascade deleted)
       const { error } = await supabase.from("orders").delete().eq("id", orderId);
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
-      toast.success("Đã xóa đơn hàng");
+      queryClient.invalidateQueries({ queryKey: ["inventory"] });
+      toast.success("Đã xóa đơn hàng và khôi phục số lượng kho");
     },
     onError: (error) => {
       toast.error("Lỗi: " + error.message);
