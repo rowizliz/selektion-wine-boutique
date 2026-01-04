@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Plus, Pencil, Trash2, UserCheck, UserX, Settings, Wallet } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, UserCheck, UserX, Settings, Wallet, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -66,6 +66,7 @@ import { AdminWithdrawals } from "@/components/admin/AdminWithdrawals";
 const AdminCollaborators = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingCollaborator, setEditingCollaborator] = useState<Collaborator | null>(null);
+  const [viewingCollaborator, setViewingCollaborator] = useState<Collaborator | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isAddTierDialogOpen, setIsAddTierDialogOpen] = useState(false);
   const [editingTier, setEditingTier] = useState<CommissionTier | null>(null);
@@ -343,7 +344,12 @@ const AdminCollaborators = () => {
                       <TableBody>
                         {collaborators.map((collab) => (
                           <TableRow key={collab.id}>
-                            <TableCell className="font-medium">{collab.name}</TableCell>
+                            <TableCell 
+                              className="font-medium cursor-pointer hover:text-primary hover:underline"
+                              onClick={() => setViewingCollaborator(collab)}
+                            >
+                              {collab.name}
+                            </TableCell>
                             <TableCell>{collab.email}</TableCell>
                             <TableCell>{collab.phone || "-"}</TableCell>
                             <TableCell>{collab.discount_percent}%</TableCell>
@@ -862,6 +868,113 @@ const AdminCollaborators = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* View Collaborator Profile Dialog */}
+      <Dialog open={!!viewingCollaborator} onOpenChange={() => setViewingCollaborator(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Hồ sơ Cộng Tác Viên</DialogTitle>
+          </DialogHeader>
+          {viewingCollaborator && (
+            <div className="space-y-4">
+              {/* Basic Info */}
+              <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-semibold">{viewingCollaborator.name}</h3>
+                    <p className="text-sm text-muted-foreground">{viewingCollaborator.email}</p>
+                  </div>
+                  <Badge variant={viewingCollaborator.is_active ? "default" : "secondary"}>
+                    {viewingCollaborator.is_active ? "Hoạt động" : "Vô hiệu"}
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Số điện thoại</p>
+                    <p className="font-medium">{viewingCollaborator.phone || "-"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Giảm giá</p>
+                    <p className="font-medium">{viewingCollaborator.discount_percent}%</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Wallet */}
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Số dư ví</p>
+                    <p className="text-2xl font-bold text-primary">
+                      {formatPrice(viewingCollaborator.wallet_balance)}
+                    </p>
+                  </div>
+                  <Wallet className="h-8 w-8 text-primary/50" />
+                </div>
+              </div>
+
+              {/* Bank Info */}
+              <div className="border rounded-lg p-4 space-y-3">
+                <h4 className="font-medium flex items-center gap-2">
+                  <Landmark className="h-4 w-4" />
+                  Thông tin ngân hàng
+                </h4>
+                {viewingCollaborator.bank_account_number ? (
+                  <div className="flex gap-4">
+                    {viewingCollaborator.qr_code_url && (
+                      <img
+                        src={viewingCollaborator.qr_code_url}
+                        alt="QR Code"
+                        className="h-20 w-20 rounded border object-contain"
+                      />
+                    )}
+                    <div className="space-y-1">
+                      <p className="font-medium">{viewingCollaborator.bank_name}</p>
+                      <p className="text-sm">STK: {viewingCollaborator.bank_account_number}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {viewingCollaborator.bank_account_holder}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">Chưa cập nhật thông tin ngân hàng</p>
+                )}
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="border rounded-lg p-3 text-center">
+                  <p className="text-xs text-muted-foreground">Ngày tham gia</p>
+                  <p className="font-medium">
+                    {new Date(viewingCollaborator.created_at).toLocaleDateString("vi-VN")}
+                  </p>
+                </div>
+                <div className="border rounded-lg p-3 text-center">
+                  <p className="text-xs text-muted-foreground">Cập nhật lần cuối</p>
+                  <p className="font-medium">
+                    {new Date(viewingCollaborator.updated_at).toLocaleDateString("vi-VN")}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewingCollaborator(null)}>
+              Đóng
+            </Button>
+            <Button onClick={() => {
+              if (viewingCollaborator) {
+                openEditDialog(viewingCollaborator);
+                setViewingCollaborator(null);
+              }
+            }}>
+              <Pencil className="h-4 w-4 mr-2" />
+              Chỉnh sửa
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
