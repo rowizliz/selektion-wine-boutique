@@ -433,7 +433,18 @@ const CollaboratorPortal = () => {
                 <CardHeader>
                   <CardTitle>Bậc Hoa Hồng</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                  {/* Info note */}
+                  <div className="bg-muted/50 border rounded-lg p-4 text-sm">
+                    <p className="font-medium mb-2">📌 Lưu ý về tích lũy hoa hồng:</p>
+                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                      <li>Số lượng sản phẩm được <strong>cộng dồn</strong> qua các đơn hàng</li>
+                      <li>Phiên tích lũy có hiệu lực trong <strong>30 ngày</strong> kể từ đơn hàng đầu tiên</li>
+                      <li>Sau 30 ngày, phiên mới sẽ bắt đầu và số lượng tích lũy được đặt lại về 0</li>
+                      <li>Mức giảm giá được áp dụng theo bậc cao nhất mà bạn đạt được</li>
+                    </ul>
+                  </div>
+
                   <Table>
                     <TableHeader>
                       <TableRow>
