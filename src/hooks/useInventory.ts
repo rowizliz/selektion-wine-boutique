@@ -19,7 +19,7 @@ export interface InventoryItem {
   };
 }
 
-export function useInventory(profileId?: string) {
+export function useInventory(profileId?: string | null) {
   return useQuery({
     queryKey: ["inventory", profileId],
     queryFn: async () => {
@@ -40,7 +40,6 @@ export function useInventory(profileId?: string) {
       if (error) throw error;
       return data as InventoryItem[];
     },
-    enabled: profileId !== undefined,
   });
 }
 

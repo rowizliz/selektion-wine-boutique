@@ -27,7 +27,7 @@ export interface Order {
   order_items?: OrderItem[];
 }
 
-export function useOrders(profileId?: string) {
+export function useOrders(profileId?: string | null) {
   return useQuery({
     queryKey: ["orders", profileId],
     queryFn: async () => {
@@ -48,7 +48,6 @@ export function useOrders(profileId?: string) {
       if (error) throw error;
       return data as Order[];
     },
-    enabled: profileId !== undefined,
   });
 }
 
