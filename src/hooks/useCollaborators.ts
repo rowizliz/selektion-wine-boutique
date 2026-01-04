@@ -223,7 +223,7 @@ export function useCollaboratorOrders(collaboratorId?: string) {
   });
 }
 
-// Get accumulated quantity within 20-day session for a collaborator
+// Get accumulated quantity within 30-day session for a collaborator
 export function useAccumulatedQuantity(collaboratorId?: string) {
   return useQuery({
     queryKey: ["accumulated-quantity", collaboratorId],
@@ -231,9 +231,9 @@ export function useAccumulatedQuantity(collaboratorId?: string) {
     queryFn: async () => {
       if (!collaboratorId) return { quantity: 0, sessionStart: null, sessionEnd: null };
 
-      // Calculate 20 days ago
-      const twentyDaysAgo = new Date();
-      twentyDaysAgo.setDate(twentyDaysAgo.getDate() - 20);
+      // Calculate 30 days ago
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
       const { data, error } = await supabase
         .from("collaborator_orders")
@@ -243,7 +243,7 @@ export function useAccumulatedQuantity(collaboratorId?: string) {
         `)
         .eq("collaborator_id", collaboratorId)
         .in("status", ["pending", "approved"]) // Count pending and approved orders
-        .gte("created_at", twentyDaysAgo.toISOString())
+        .gte("created_at", thirtyDaysAgo.toISOString())
         .order("created_at", { ascending: true });
 
       if (error) throw error;
@@ -261,11 +261,11 @@ export function useAccumulatedQuantity(collaboratorId?: string) {
         });
       }
 
-      // Calculate session end (20 days from first order in session)
+      // Calculate session end (30 days from first order in session)
       let sessionEnd: Date | null = null;
       if (sessionStart) {
         sessionEnd = new Date(sessionStart);
-        sessionEnd.setDate(sessionEnd.getDate() + 20);
+        sessionEnd.setDate(sessionEnd.getDate() + 30);
       }
 
       return {
