@@ -16,6 +16,7 @@ export interface Collaborator {
   bank_account_holder: string | null;
   qr_code_url: string | null;
   wallet_balance: number;
+  avatar_url: string | null;
 }
 
 export interface CommissionTier {
