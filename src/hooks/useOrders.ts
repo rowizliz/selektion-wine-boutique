@@ -20,6 +20,7 @@ export interface Order {
   order_type: "sale" | "gift";
   status: "pending" | "confirmed" | "completed" | "cancelled";
   notes: string | null;
+  discount: number;
   created_at: string;
   updated_at: string;
   order_items?: OrderItem[];
@@ -52,6 +53,7 @@ export function useCreateOrder() {
       customer_phone?: string;
       order_type: "sale" | "gift";
       notes?: string;
+      discount?: number;
       items: {
         wine_id: string;
         wine_name: string;
@@ -68,6 +70,7 @@ export function useCreateOrder() {
           customer_phone: order.customer_phone,
           order_type: order.order_type,
           notes: order.notes,
+          discount: order.discount ?? 0,
         })
         .select()
         .single();
@@ -172,6 +175,7 @@ export function useDeleteOrder() {
 export function calculateOrderFinancials(orders: Order[]) {
   let totalRevenue = 0;
   let totalCost = 0;
+  let totalDiscount = 0;
   let salesCount = 0;
   let giftCount = 0;
 
@@ -184,6 +188,8 @@ export function calculateOrderFinancials(orders: Order[]) {
       giftCount++;
     }
 
+    totalDiscount += order.discount ?? 0;
+
     order.order_items?.forEach((item) => {
       totalRevenue += item.unit_price * item.quantity;
       totalCost += item.purchase_price * item.quantity;
@@ -192,8 +198,10 @@ export function calculateOrderFinancials(orders: Order[]) {
 
   return {
     totalRevenue,
+    totalDiscount,
+    netRevenue: totalRevenue - totalDiscount,
     totalCost,
-    profit: totalRevenue - totalCost,
+    profit: totalRevenue - totalDiscount - totalCost,
     salesCount,
     giftCount,
     totalOrders: salesCount + giftCount,

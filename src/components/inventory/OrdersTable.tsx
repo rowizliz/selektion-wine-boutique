@@ -97,6 +97,7 @@ const OrdersTable = ({ orders, isLoading }: OrdersTableProps) => {
               <TableHead>Loại</TableHead>
               <TableHead>Sản Phẩm</TableHead>
               <TableHead className="text-right">Doanh Thu</TableHead>
+              <TableHead className="text-right">Chiết Khấu</TableHead>
               <TableHead className="text-right">Giá Vốn</TableHead>
               <TableHead className="text-right">Lợi Nhuận</TableHead>
               <TableHead>Trạng Thái</TableHead>
@@ -104,7 +105,7 @@ const OrdersTable = ({ orders, isLoading }: OrdersTableProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.map((order) => {
+          {orders.map((order) => {
               const revenue =
                 order.order_items?.reduce(
                   (sum, item) => sum + item.unit_price * item.quantity,
@@ -115,7 +116,8 @@ const OrdersTable = ({ orders, isLoading }: OrdersTableProps) => {
                   (sum, item) => sum + item.purchase_price * item.quantity,
                   0
                 ) ?? 0;
-              const profit = revenue - cost;
+              const discount = order.discount ?? 0;
+              const profit = revenue - discount - cost;
               const itemCount =
                 order.order_items?.reduce((sum, item) => sum + item.quantity, 0) ??
                 0;
@@ -156,6 +158,9 @@ const OrdersTable = ({ orders, isLoading }: OrdersTableProps) => {
                   </TableCell>
                   <TableCell className="text-right">
                     {formatCurrency(revenue)}
+                  </TableCell>
+                  <TableCell className="text-right text-orange-600">
+                    {discount > 0 ? `-${formatCurrency(discount)}` : "-"}
                   </TableCell>
                   <TableCell className="text-right text-muted-foreground">
                     {formatCurrency(cost)}

@@ -46,6 +46,7 @@ const CreateOrderDialog = ({ open, onOpenChange }: CreateOrderDialogProps) => {
   const [customerPhone, setCustomerPhone] = useState("");
   const [orderType, setOrderType] = useState<"sale" | "gift">("sale");
   const [notes, setNotes] = useState("");
+  const [discount, setDiscount] = useState(0);
   const [items, setItems] = useState<OrderItemForm[]>([]);
 
   const handleAddItem = () => {
@@ -89,6 +90,7 @@ const CreateOrderDialog = ({ open, onOpenChange }: CreateOrderDialogProps) => {
       customer_phone: customerPhone || undefined,
       order_type: orderType,
       notes: notes || undefined,
+      discount,
       items,
     });
 
@@ -96,6 +98,7 @@ const CreateOrderDialog = ({ open, onOpenChange }: CreateOrderDialogProps) => {
     setCustomerPhone("");
     setOrderType("sale");
     setNotes("");
+    setDiscount(0);
     setItems([]);
     onOpenChange(false);
   };
@@ -210,6 +213,19 @@ const CreateOrderDialog = ({ open, onOpenChange }: CreateOrderDialogProps) => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Chiết Khấu (đ)</Label>
+              <Input
+                type="number"
+                min="0"
+                value={discount}
+                onChange={(e) => setDiscount(Number(e.target.value))}
+                placeholder="0"
+              />
             </div>
           </div>
 
