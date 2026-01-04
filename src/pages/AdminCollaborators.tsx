@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Plus, Pencil, Trash2, UserCheck, UserX, Settings } from "lucide-react";
@@ -105,6 +105,7 @@ const AdminCollaborators = () => {
     commission_amount: 0,
   });
   const [orderItemsDraft, setOrderItemsDraft] = useState<CollaboratorOrderItem[]>([]);
+  const [commissionManuallyEdited, setCommissionManuallyEdited] = useState(false);
 
   const handleAddCollaborator = async () => {
     try {
@@ -194,6 +195,7 @@ const AdminCollaborators = () => {
   };
 
   const openEditOrderDialog = (order: CollaboratorOrder) => {
+    setCommissionManuallyEdited(false);
     setOrderFormData({
       customer_name: order.customer_name,
       customer_phone: order.customer_phone || "",
@@ -205,6 +207,24 @@ const AdminCollaborators = () => {
     setOrderItemsDraft((order.items || []) as CollaboratorOrderItem[]);
     setEditingOrder(order);
   };
+
+  // Live recalculation: commission follows quantity changes unless admin edits it manually
+  useEffect(() => {
+    if (!editingOrder) return;
+    if (commissionManuallyEdited) return;
+    if (!commissionTiers) return;
+
+    const totalQty = orderItemsDraft.reduce((sum, it) => sum + (Number(it.quantity) || 0), 0);
+    const totalAmount = orderItemsDraft.reduce(
+      (sum, it) => sum + it.collaborator_price * (Number(it.quantity) || 0),
+      0
+    );
+
+    const nextCommission =
+      orderFormData.status === "rejected" ? 0 : calculateCommission(commissionTiers, totalQty, totalAmount);
+
+    setOrderFormData((prev) => ({ ...prev, commission_amount: nextCommission }));
+  }, [editingOrder, commissionManuallyEdited, commissionTiers, orderItemsDraft, orderFormData.status]);
 
   const handleUpdateOrder = async () => {
     if (!editingOrder) return;
@@ -219,16 +239,12 @@ const AdminCollaborators = () => {
     );
     const newTotalQty = normalizedItems.reduce((sum, it) => sum + it.quantity, 0);
 
-    // If order is approved and admin didn't explicitly change commission amount,
-    // auto-recalculate it from tiers based on updated quantity/total.
-    const shouldAutoRecalcCommission =
-      orderFormData.status === "approved" &&
-      commissionTiers &&
-      orderFormData.commission_amount === editingOrder.commission_amount;
-
-    const nextCommissionAmount = shouldAutoRecalcCommission
-      ? calculateCommission(commissionTiers!, newTotalQty, newTotalAmount)
-      : orderFormData.commission_amount;
+    const nextCommissionAmount =
+      commissionManuallyEdited || !commissionTiers
+        ? orderFormData.commission_amount
+        : orderFormData.status === "rejected"
+          ? 0
+          : calculateCommission(commissionTiers, newTotalQty, newTotalAmount);
 
     try {
       // Update item quantities first
@@ -680,6 +696,7 @@ const AdminCollaborators = () => {
           if (!open) {
             setEditingOrder(null);
             setOrderItemsDraft([]);
+            setCommissionManuallyEdited(false);
           }
         }}
       >
@@ -796,11 +813,14 @@ const AdminCollaborators = () => {
               </div>
               <div>
                 <Label>Hoa hồng (đ)</Label>
-                <Input
-                  type="number"
-                  value={orderFormData.commission_amount}
-                  onChange={(e) => setOrderFormData({ ...orderFormData, commission_amount: Number(e.target.value) })}
-                />
+              <Input
+                type="number"
+                value={orderFormData.commission_amount}
+                onChange={(e) => {
+                  setCommissionManuallyEdited(true);
+                  setOrderFormData({ ...orderFormData, commission_amount: Number(e.target.value) });
+                }}
+              />
               </div>
             </div>
           </div>
