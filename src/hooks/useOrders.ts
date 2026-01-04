@@ -153,6 +153,108 @@ export function useUpdateOrderStatus() {
   });
 }
 
+export function useUpdateOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: {
+      orderId: string;
+      customer_name: string;
+      customer_phone?: string;
+      order_type: "sale" | "gift";
+      notes?: string;
+      discount?: number;
+      items: {
+        id?: string;
+        wine_id: string;
+        wine_name: string;
+        quantity: number;
+        unit_price: number;
+        purchase_price: number;
+        original_quantity?: number;
+      }[];
+      originalItems: OrderItem[];
+    }) => {
+      // 1. Update order basic info
+      const { error: orderError } = await supabase
+        .from("orders")
+        .update({
+          customer_name: data.customer_name,
+          customer_phone: data.customer_phone,
+          order_type: data.order_type,
+          notes: data.notes,
+          discount: data.discount ?? 0,
+        })
+        .eq("id", data.orderId);
+
+      if (orderError) throw orderError;
+
+      // 2. Restore inventory for all original items
+      for (const item of data.originalItems) {
+        if (item.wine_id) {
+          const { data: inv } = await supabase
+            .from("inventory")
+            .select("quantity_in_stock")
+            .eq("wine_id", item.wine_id)
+            .maybeSingle();
+
+          if (inv) {
+            await supabase
+              .from("inventory")
+              .update({ quantity_in_stock: inv.quantity_in_stock + item.quantity })
+              .eq("wine_id", item.wine_id);
+          }
+        }
+      }
+
+      // 3. Delete all existing order items
+      await supabase.from("order_items").delete().eq("order_id", data.orderId);
+
+      // 4. Insert new order items
+      const newOrderItems = data.items.map((item) => ({
+        order_id: data.orderId,
+        wine_id: item.wine_id,
+        wine_name: item.wine_name,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        purchase_price: item.purchase_price,
+      }));
+
+      const { error: itemsError } = await supabase
+        .from("order_items")
+        .insert(newOrderItems);
+
+      if (itemsError) throw itemsError;
+
+      // 5. Deduct inventory for new items
+      for (const item of data.items) {
+        const { data: inv } = await supabase
+          .from("inventory")
+          .select("quantity_in_stock")
+          .eq("wine_id", item.wine_id)
+          .maybeSingle();
+
+        if (inv) {
+          await supabase
+            .from("inventory")
+            .update({ quantity_in_stock: inv.quantity_in_stock - item.quantity })
+            .eq("wine_id", item.wine_id);
+        }
+      }
+
+      return data.orderId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory"] });
+      toast.success("Đã cập nhật đơn hàng");
+    },
+    onError: (error) => {
+      toast.error("Lỗi: " + error.message);
+    },
+  });
+}
+
 export function useDeleteOrder() {
   const queryClient = useQueryClient();
 
