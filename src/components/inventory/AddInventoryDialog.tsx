@@ -21,11 +21,12 @@ import { useUpsertInventory, useInventory } from "@/hooks/useInventory";
 interface AddInventoryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  profileId?: string;
 }
 
-const AddInventoryDialog = ({ open, onOpenChange }: AddInventoryDialogProps) => {
+const AddInventoryDialog = ({ open, onOpenChange, profileId }: AddInventoryDialogProps) => {
   const { data: wines } = useWines();
-  const { data: inventory } = useInventory();
+  const { data: inventory } = useInventory(profileId);
   const upsertInventory = useUpsertInventory();
 
   const [selectedWine, setSelectedWine] = useState("");
@@ -44,6 +45,7 @@ const AddInventoryDialog = ({ open, onOpenChange }: AddInventoryDialogProps) => 
       wine_id: selectedWine,
       quantity_in_stock: Number(quantity),
       purchase_price: Number(purchasePrice),
+      profile_id: profileId,
     });
 
     setSelectedWine("");
