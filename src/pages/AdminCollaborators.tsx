@@ -62,6 +62,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { AdminWithdrawals } from "@/components/admin/AdminWithdrawals";
+import { useCollaboratorWithdrawals } from "@/hooks/useWithdrawals";
 
 const AdminCollaborators = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -871,93 +872,116 @@ const AdminCollaborators = () => {
 
       {/* View Collaborator Profile Dialog */}
       <Dialog open={!!viewingCollaborator} onOpenChange={() => setViewingCollaborator(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Hồ sơ Cộng Tác Viên</DialogTitle>
           </DialogHeader>
           {viewingCollaborator && (
-            <div className="space-y-4">
-              {/* Basic Info */}
-              <div className="bg-muted/50 rounded-lg p-4 space-y-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-lg font-semibold">{viewingCollaborator.name}</h3>
-                    <p className="text-sm text-muted-foreground">{viewingCollaborator.email}</p>
-                  </div>
-                  <Badge variant={viewingCollaborator.is_active ? "default" : "secondary"}>
-                    {viewingCollaborator.is_active ? "Hoạt động" : "Vô hiệu"}
-                  </Badge>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 pt-2 border-t">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Số điện thoại</p>
-                    <p className="font-medium">{viewingCollaborator.phone || "-"}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Giảm giá</p>
-                    <p className="font-medium">{viewingCollaborator.discount_percent}%</p>
-                  </div>
-                </div>
-              </div>
+            <Tabs defaultValue="info" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="info">Thông tin</TabsTrigger>
+                <TabsTrigger value="orders">Đơn hàng</TabsTrigger>
+                <TabsTrigger value="withdrawals">Rút tiền</TabsTrigger>
+              </TabsList>
 
-              {/* Wallet */}
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Số dư ví</p>
-                    <p className="text-2xl font-bold text-primary">
-                      {formatPrice(viewingCollaborator.wallet_balance)}
-                    </p>
+              {/* Info Tab */}
+              <TabsContent value="info" className="space-y-4">
+                {/* Basic Info */}
+                <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-lg font-semibold">{viewingCollaborator.name}</h3>
+                      <p className="text-sm text-muted-foreground">{viewingCollaborator.email}</p>
+                    </div>
+                    <Badge variant={viewingCollaborator.is_active ? "default" : "secondary"}>
+                      {viewingCollaborator.is_active ? "Hoạt động" : "Vô hiệu"}
+                    </Badge>
                   </div>
-                  <Wallet className="h-8 w-8 text-primary/50" />
-                </div>
-              </div>
-
-              {/* Bank Info */}
-              <div className="border rounded-lg p-4 space-y-3">
-                <h4 className="font-medium flex items-center gap-2">
-                  <Landmark className="h-4 w-4" />
-                  Thông tin ngân hàng
-                </h4>
-                {viewingCollaborator.bank_account_number ? (
-                  <div className="flex gap-4">
-                    {viewingCollaborator.qr_code_url && (
-                      <img
-                        src={viewingCollaborator.qr_code_url}
-                        alt="QR Code"
-                        className="h-20 w-20 rounded border object-contain"
-                      />
-                    )}
-                    <div className="space-y-1">
-                      <p className="font-medium">{viewingCollaborator.bank_name}</p>
-                      <p className="text-sm">STK: {viewingCollaborator.bank_account_number}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {viewingCollaborator.bank_account_holder}
-                      </p>
+                  
+                  <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Số điện thoại</p>
+                      <p className="font-medium">{viewingCollaborator.phone || "-"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Giảm giá</p>
+                      <p className="font-medium">{viewingCollaborator.discount_percent}%</p>
                     </div>
                   </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">Chưa cập nhật thông tin ngân hàng</p>
-                )}
-              </div>
+                </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="border rounded-lg p-3 text-center">
-                  <p className="text-xs text-muted-foreground">Ngày tham gia</p>
-                  <p className="font-medium">
-                    {new Date(viewingCollaborator.created_at).toLocaleDateString("vi-VN")}
-                  </p>
+                {/* Wallet */}
+                <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Số dư ví</p>
+                      <p className="text-2xl font-bold text-primary">
+                        {formatPrice(viewingCollaborator.wallet_balance)}
+                      </p>
+                    </div>
+                    <Wallet className="h-8 w-8 text-primary/50" />
+                  </div>
                 </div>
-                <div className="border rounded-lg p-3 text-center">
-                  <p className="text-xs text-muted-foreground">Cập nhật lần cuối</p>
-                  <p className="font-medium">
-                    {new Date(viewingCollaborator.updated_at).toLocaleDateString("vi-VN")}
-                  </p>
+
+                {/* Bank Info */}
+                <div className="border rounded-lg p-4 space-y-3">
+                  <h4 className="font-medium flex items-center gap-2">
+                    <Landmark className="h-4 w-4" />
+                    Thông tin ngân hàng
+                  </h4>
+                  {viewingCollaborator.bank_account_number ? (
+                    <div className="flex gap-4">
+                      {viewingCollaborator.qr_code_url && (
+                        <img
+                          src={viewingCollaborator.qr_code_url}
+                          alt="QR Code"
+                          className="h-20 w-20 rounded border object-contain"
+                        />
+                      )}
+                      <div className="space-y-1">
+                        <p className="font-medium">{viewingCollaborator.bank_name}</p>
+                        <p className="text-sm">STK: {viewingCollaborator.bank_account_number}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {viewingCollaborator.bank_account_holder}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Chưa cập nhật thông tin ngân hàng</p>
+                  )}
                 </div>
-              </div>
-            </div>
+
+                {/* Stats */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="border rounded-lg p-3 text-center">
+                    <p className="text-xs text-muted-foreground">Ngày tham gia</p>
+                    <p className="font-medium">
+                      {new Date(viewingCollaborator.created_at).toLocaleDateString("vi-VN")}
+                    </p>
+                  </div>
+                  <div className="border rounded-lg p-3 text-center">
+                    <p className="text-xs text-muted-foreground">Cập nhật lần cuối</p>
+                    <p className="font-medium">
+                      {new Date(viewingCollaborator.updated_at).toLocaleDateString("vi-VN")}
+                    </p>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Orders Tab */}
+              <TabsContent value="orders">
+                <CollaboratorOrdersHistory 
+                  collaboratorId={viewingCollaborator.id} 
+                  orders={orders?.filter(o => o.collaborator_id === viewingCollaborator.id) || []}
+                  formatPrice={formatPrice}
+                />
+              </TabsContent>
+
+              {/* Withdrawals Tab */}
+              <TabsContent value="withdrawals">
+                <CollaboratorWithdrawalsHistory collaboratorId={viewingCollaborator.id} />
+              </TabsContent>
+            </Tabs>
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewingCollaborator(null)}>
@@ -978,5 +1002,165 @@ const AdminCollaborators = () => {
     </>
   );
 };
+
+// Sub-component for order history in profile
+function CollaboratorOrdersHistory({ 
+  collaboratorId, 
+  orders,
+  formatPrice 
+}: { 
+  collaboratorId: string; 
+  orders: CollaboratorOrder[];
+  formatPrice: (price: number) => string;
+}) {
+  if (!orders.length) {
+    return <p className="text-center py-8 text-muted-foreground">Chưa có đơn hàng nào</p>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-muted/50 rounded-lg p-3 text-center">
+          <p className="text-xs text-muted-foreground">Tổng đơn</p>
+          <p className="text-xl font-bold">{orders.length}</p>
+        </div>
+        <div className="bg-muted/50 rounded-lg p-3 text-center">
+          <p className="text-xs text-muted-foreground">Đơn đã duyệt</p>
+          <p className="text-xl font-bold text-green-600">
+            {orders.filter(o => o.status === 'approved').length}
+          </p>
+        </div>
+        <div className="bg-muted/50 rounded-lg p-3 text-center">
+          <p className="text-xs text-muted-foreground">Tổng hoa hồng</p>
+          <p className="text-xl font-bold text-primary">
+            {formatPrice(orders.filter(o => o.status === 'approved').reduce((sum, o) => sum + o.commission_amount, 0))}
+          </p>
+        </div>
+      </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Ngày</TableHead>
+            <TableHead>Khách hàng</TableHead>
+            <TableHead>Số SP</TableHead>
+            <TableHead>Tổng tiền</TableHead>
+            <TableHead>Hoa hồng</TableHead>
+            <TableHead>Trạng thái</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {orders.map((order) => (
+            <TableRow key={order.id}>
+              <TableCell>{new Date(order.created_at).toLocaleDateString("vi-VN")}</TableCell>
+              <TableCell className="font-medium">{order.customer_name}</TableCell>
+              <TableCell>{order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0}</TableCell>
+              <TableCell>{formatPrice(order.total_amount)}</TableCell>
+              <TableCell>{formatPrice(order.commission_amount)}</TableCell>
+              <TableCell>
+                <Badge
+                  variant={
+                    order.status === "approved"
+                      ? "default"
+                      : order.status === "rejected"
+                      ? "destructive"
+                      : "secondary"
+                  }
+                >
+                  {order.status === "pending"
+                    ? "Chờ duyệt"
+                    : order.status === "approved"
+                    ? "Đã duyệt"
+                    : "Từ chối"}
+                </Badge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+// Sub-component for withdrawal history in profile
+function CollaboratorWithdrawalsHistory({ collaboratorId }: { collaboratorId: string }) {
+  const { data: withdrawals, isLoading } = useCollaboratorWithdrawals(collaboratorId);
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("vi-VN").format(price) + "đ";
+  };
+
+  if (isLoading) {
+    return <p className="text-center py-8 text-muted-foreground">Đang tải...</p>;
+  }
+
+  if (!withdrawals?.length) {
+    return <p className="text-center py-8 text-muted-foreground">Chưa có yêu cầu rút tiền nào</p>;
+  }
+
+  const approved = withdrawals.filter(w => w.status === 'approved');
+  const pending = withdrawals.filter(w => w.status === 'pending');
+  const totalWithdrawn = approved.reduce((sum, w) => sum + w.amount, 0);
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-muted/50 rounded-lg p-3 text-center">
+          <p className="text-xs text-muted-foreground">Tổng yêu cầu</p>
+          <p className="text-xl font-bold">{withdrawals.length}</p>
+        </div>
+        <div className="bg-muted/50 rounded-lg p-3 text-center">
+          <p className="text-xs text-muted-foreground">Đang chờ</p>
+          <p className="text-xl font-bold text-amber-600">{pending.length}</p>
+        </div>
+        <div className="bg-muted/50 rounded-lg p-3 text-center">
+          <p className="text-xs text-muted-foreground">Đã rút</p>
+          <p className="text-xl font-bold text-green-600">{formatPrice(totalWithdrawn)}</p>
+        </div>
+      </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Ngày yêu cầu</TableHead>
+            <TableHead>Số tiền</TableHead>
+            <TableHead>Trạng thái</TableHead>
+            <TableHead>Ngày xử lý</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {withdrawals.map((withdrawal) => (
+            <TableRow key={withdrawal.id}>
+              <TableCell>{new Date(withdrawal.created_at).toLocaleDateString("vi-VN")}</TableCell>
+              <TableCell className="font-semibold">{formatPrice(withdrawal.amount)}</TableCell>
+              <TableCell>
+                <Badge
+                  variant={
+                    withdrawal.status === "approved"
+                      ? "default"
+                      : withdrawal.status === "rejected"
+                      ? "destructive"
+                      : "secondary"
+                  }
+                >
+                  {withdrawal.status === "pending"
+                    ? "Chờ duyệt"
+                    : withdrawal.status === "approved"
+                    ? "Đã duyệt"
+                    : "Từ chối"}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                {withdrawal.processed_at
+                  ? new Date(withdrawal.processed_at).toLocaleDateString("vi-VN")
+                  : "-"}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
 
 export default AdminCollaborators;
