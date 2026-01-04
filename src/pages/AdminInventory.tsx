@@ -82,7 +82,7 @@ const AdminInventory = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="px-3 pb-3">
-                <p className="text-xl font-bold truncate" title={formatCurrency(totalInventoryValue)}>
+                <p className="text-lg font-bold">
                   {formatCurrency(totalInventoryValue)}
                 </p>
                 <p className="text-xs text-muted-foreground">giá nhập</p>
@@ -138,7 +138,7 @@ const AdminInventory = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="px-3 pb-3">
-                <p className="text-xl font-bold text-orange-600 truncate" title={formatCurrency(financials?.totalDiscount ?? 0)}>
+                <p className="text-lg font-bold text-orange-600">
                   {formatCurrency(financials?.totalDiscount ?? 0)}
                 </p>
               </CardContent>
@@ -152,7 +152,7 @@ const AdminInventory = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="px-3 pb-3">
-                <p className="text-xl font-bold text-green-600 truncate" title={formatCurrency(financials?.netRevenue ?? 0)}>
+                <p className="text-lg font-bold text-green-600">
                   {formatCurrency(financials?.netRevenue ?? 0)}
                 </p>
                 <p className="text-xs text-muted-foreground">sau chiết khấu</p>
@@ -172,10 +172,9 @@ const AdminInventory = () => {
               </CardHeader>
               <CardContent className="px-3 pb-3">
                 <p
-                  className={`text-xl font-bold truncate ${
+                  className={`text-lg font-bold ${
                     (financials?.profit ?? 0) >= 0 ? "text-green-600" : "text-red-600"
                   }`}
-                  title={formatCurrency(financials?.profit ?? 0)}
                 >
                   {formatCurrency(financials?.profit ?? 0)}
                 </p>
