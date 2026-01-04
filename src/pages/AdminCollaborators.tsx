@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Plus, Pencil, Trash2, UserCheck, UserX, Settings, Wallet, Landmark } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -889,9 +890,17 @@ const AdminCollaborators = () => {
                 {/* Basic Info */}
                 <div className="bg-muted/50 rounded-lg p-4 space-y-3">
                   <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold">{viewingCollaborator.name}</h3>
-                      <p className="text-sm text-muted-foreground">{viewingCollaborator.email}</p>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-14 w-14 border-2 border-primary/20">
+                        <AvatarImage src={viewingCollaborator.avatar_url || ""} alt={viewingCollaborator.name} />
+                        <AvatarFallback className="text-lg font-medium bg-primary/10 text-primary">
+                          {viewingCollaborator.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h3 className="text-lg font-semibold">{viewingCollaborator.name}</h3>
+                        <p className="text-sm text-muted-foreground">{viewingCollaborator.email}</p>
+                      </div>
                     </div>
                     <Badge variant={viewingCollaborator.is_active ? "default" : "secondary"}>
                       {viewingCollaborator.is_active ? "Hoạt động" : "Vô hiệu"}
@@ -1019,7 +1028,7 @@ function CollaboratorOrdersHistory({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="bg-muted/50 rounded-lg p-3 text-center">
           <p className="text-xs text-muted-foreground">Tổng đơn</p>
           <p className="text-xl font-bold">{orders.length}</p>
@@ -1030,7 +1039,13 @@ function CollaboratorOrdersHistory({
             {orders.filter(o => o.status === 'approved').length}
           </p>
         </div>
-        <div className="bg-muted/50 rounded-lg p-3 text-center">
+        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
+          <p className="text-xs text-muted-foreground">Tổng doanh số</p>
+          <p className="text-xl font-bold text-blue-600">
+            {formatPrice(orders.filter(o => o.status === 'approved').reduce((sum, o) => sum + o.total_amount, 0))}
+          </p>
+        </div>
+        <div className="bg-primary/5 rounded-lg p-3 text-center">
           <p className="text-xs text-muted-foreground">Tổng hoa hồng</p>
           <p className="text-xl font-bold text-primary">
             {formatPrice(orders.filter(o => o.status === 'approved').reduce((sum, o) => sum + o.commission_amount, 0))}
