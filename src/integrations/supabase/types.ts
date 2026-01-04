@@ -143,6 +143,7 @@ export type Database = {
       collaborator_orders: {
         Row: {
           collaborator_id: string
+          commission_added: boolean
           commission_amount: number
           created_at: string
           customer_address: string | null
@@ -156,6 +157,7 @@ export type Database = {
         }
         Insert: {
           collaborator_id: string
+          commission_added?: boolean
           commission_amount?: number
           created_at?: string
           customer_address?: string | null
@@ -169,6 +171,7 @@ export type Database = {
         }
         Update: {
           collaborator_id?: string
+          commission_added?: boolean
           commission_amount?: number
           created_at?: string
           customer_address?: string | null
