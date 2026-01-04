@@ -12,7 +12,7 @@ interface AdminModule {
   icon: React.ComponentType<{ className?: string }>;
   href: string;
   color: string;
-  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending';
+  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending';
 }
 
 const adminModules: AdminModule[] = [
@@ -28,14 +28,16 @@ const adminModules: AdminModule[] = [
     description: "Cộng tác viên, hoa hồng, đơn hàng",
     icon: Users,
     href: "/admin/collaborators",
-    color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
+    color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400",
+    badgeKey: 'withdrawalsPending'
   },
   {
     title: "Duyệt Profile CTV",
     description: "Xử lý yêu cầu cập nhật hồ sơ CTV",
     icon: UserCog,
     href: "/admin/profile-updates",
-    color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400"
+    color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400",
+    badgeKey: 'profileUpdatesPending'
   },
   {
     title: "Quản lý Rượu Vang",
@@ -86,10 +88,13 @@ const adminModules: AdminModule[] = [
 const Admin = () => {
   const { data: pendingCounts } = usePendingRequestCounts();
   
-  const totalPending = (pendingCounts?.birthdayGiftsPending ?? 0) + (pendingCounts?.personalizedWinePending ?? 0);
+  const totalPending = (pendingCounts?.birthdayGiftsPending ?? 0) + 
+    (pendingCounts?.personalizedWinePending ?? 0) + 
+    (pendingCounts?.profileUpdatesPending ?? 0) + 
+    (pendingCounts?.withdrawalsPending ?? 0);
   useNotificationSound(totalPending > 0);
 
-  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending') => {
+  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending') => {
     if (!badgeKey || !pendingCounts) return 0;
     return pendingCounts[badgeKey];
   };
