@@ -45,11 +45,20 @@ import {
   useDeleteCommissionTier,
   useCollaboratorOrders,
   useUpdateCollaboratorOrderStatus,
+  useUpdateCollaboratorOrder,
   calculateCommission,
   Collaborator,
   CommissionTier,
   CollaboratorOrder,
 } from "@/hooks/useCollaborators";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 const AdminCollaborators = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -57,6 +66,7 @@ const AdminCollaborators = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isAddTierDialogOpen, setIsAddTierDialogOpen] = useState(false);
   const [editingTier, setEditingTier] = useState<CommissionTier | null>(null);
+  const [editingOrder, setEditingOrder] = useState<CollaboratorOrder | null>(null);
 
   const { data: collaborators, isLoading: loadingCollaborators } = useCollaborators();
   const { data: commissionTiers, isLoading: loadingTiers } = useCommissionTiers();
@@ -69,6 +79,7 @@ const AdminCollaborators = () => {
   const updateTier = useUpdateCommissionTier();
   const deleteTier = useDeleteCommissionTier();
   const updateOrderStatus = useUpdateCollaboratorOrderStatus();
+  const updateOrder = useUpdateCollaboratorOrder();
 
   // Form states
   const [formData, setFormData] = useState({
@@ -81,6 +92,14 @@ const AdminCollaborators = () => {
     min_quantity: 1,
     max_quantity: null as number | null,
     commission_percent: 5,
+  });
+  const [orderFormData, setOrderFormData] = useState({
+    customer_name: "",
+    customer_phone: "",
+    customer_address: "",
+    notes: "",
+    status: "pending",
+    commission_amount: 0,
   });
 
   const handleAddCollaborator = async () => {
@@ -168,6 +187,35 @@ const AdminCollaborators = () => {
       discount_percent: collab.discount_percent,
     });
     setEditingCollaborator(collab);
+  };
+
+  const openEditOrderDialog = (order: CollaboratorOrder) => {
+    setOrderFormData({
+      customer_name: order.customer_name,
+      customer_phone: order.customer_phone || "",
+      customer_address: order.customer_address || "",
+      notes: order.notes || "",
+      status: order.status,
+      commission_amount: order.commission_amount,
+    });
+    setEditingOrder(order);
+  };
+
+  const handleUpdateOrder = async () => {
+    if (!editingOrder) return;
+    try {
+      await updateOrder.mutateAsync({
+        id: editingOrder.id,
+        ...orderFormData,
+        customer_phone: orderFormData.customer_phone || null,
+        customer_address: orderFormData.customer_address || null,
+        notes: orderFormData.notes || null,
+      });
+      toast.success("Đã cập nhật đơn hàng!");
+      setEditingOrder(null);
+    } catch (error: any) {
+      toast.error(error.message || "Lỗi khi cập nhật đơn hàng");
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -338,6 +386,13 @@ const AdminCollaborators = () => {
                               </Badge>
                             </TableCell>
                             <TableCell className="text-right space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => openEditOrderDialog(order)}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
                               {order.status === "pending" && (
                                 <>
                                   <Button
@@ -575,6 +630,85 @@ const AdminCollaborators = () => {
               }}
             >
               {editingTier ? "Cập nhật" : "Thêm"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Order Dialog */}
+      <Dialog
+        open={!!editingOrder}
+        onOpenChange={(open) => {
+          if (!open) {
+            setEditingOrder(null);
+          }
+        }}
+      >
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Chỉnh sửa đơn hàng</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Tên khách hàng</Label>
+              <Input
+                value={orderFormData.customer_name}
+                onChange={(e) => setOrderFormData({ ...orderFormData, customer_name: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Số điện thoại</Label>
+              <Input
+                value={orderFormData.customer_phone}
+                onChange={(e) => setOrderFormData({ ...orderFormData, customer_phone: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Địa chỉ</Label>
+              <Input
+                value={orderFormData.customer_address}
+                onChange={(e) => setOrderFormData({ ...orderFormData, customer_address: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Ghi chú</Label>
+              <Textarea
+                value={orderFormData.notes}
+                onChange={(e) => setOrderFormData({ ...orderFormData, notes: e.target.value })}
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label>Trạng thái</Label>
+              <Select
+                value={orderFormData.status}
+                onValueChange={(value) => setOrderFormData({ ...orderFormData, status: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending">Chờ duyệt</SelectItem>
+                  <SelectItem value="approved">Đã duyệt</SelectItem>
+                  <SelectItem value="rejected">Từ chối</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Hoa hồng (đ)</Label>
+              <Input
+                type="number"
+                value={orderFormData.commission_amount}
+                onChange={(e) => setOrderFormData({ ...orderFormData, commission_amount: Number(e.target.value) })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingOrder(null)}>
+              Hủy
+            </Button>
+            <Button onClick={handleUpdateOrder} disabled={!orderFormData.customer_name}>
+              Cập nhật
             </Button>
           </DialogFooter>
         </DialogContent>
