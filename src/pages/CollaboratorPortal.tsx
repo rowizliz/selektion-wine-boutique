@@ -49,6 +49,7 @@ const CollaboratorPortal = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [enlargedWine, setEnlargedWine] = useState<{ name: string; image_url: string | null } | null>(null);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -326,7 +327,10 @@ const CollaboratorPortal = () => {
                         return (
                           <TableRow key={wine.id}>
                             <TableCell>
-                              <div className="w-16 h-12 bg-white rounded border overflow-hidden flex items-center justify-center">
+                              <div 
+                                className="w-16 h-12 bg-white rounded border overflow-hidden flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                                onClick={() => setEnlargedWine({ name: wine.name, image_url: wine.image_url })}
+                              >
                                 <img 
                                   src={wine.image_url || "/placeholder.svg"} 
                                   alt={wine.name}
@@ -550,6 +554,22 @@ const CollaboratorPortal = () => {
               {createOrder.isPending ? "Đang gửi..." : "Gửi đơn hàng"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Enlarged Wine Image Dialog */}
+      <Dialog open={!!enlargedWine} onOpenChange={() => setEnlargedWine(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{enlargedWine?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="flex items-center justify-center bg-white rounded-lg p-4">
+            <img
+              src={enlargedWine?.image_url || "/placeholder.svg"}
+              alt={enlargedWine?.name || "Wine"}
+              className="max-h-[400px] w-auto object-contain"
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </>
