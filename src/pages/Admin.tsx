@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package } from "lucide-react";
+import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
@@ -22,6 +22,13 @@ const adminModules: AdminModule[] = [
     icon: Package,
     href: "/admin/inventory",
     color: "bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400"
+  },
+  {
+    title: "Quản Lý CTV",
+    description: "Cộng tác viên, hoa hồng, đơn hàng",
+    icon: Users,
+    href: "/admin/collaborators",
+    color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
   },
   {
     title: "Quản lý Rượu Vang",

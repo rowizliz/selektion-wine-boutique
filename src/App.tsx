@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "./components/ScrollToTop";
 import AdminRoute from "./components/AdminRoute";
+import CollaboratorRoute from "./components/CollaboratorRoute";
 import Index from "./pages/Index";
 import Collection from "./pages/Collection";
 import WineDetail from "./pages/WineDetail";
@@ -23,9 +24,11 @@ import AdminBirthdayGifts from "./pages/AdminBirthdayGifts";
 import AdminPersonalizedWine from "./pages/AdminPersonalizedWine";
 import AdminInvitations from "./pages/AdminInvitations";
 import AdminInventory from "./pages/AdminInventory";
+import AdminCollaborators from "./pages/AdminCollaborators";
 import PersonalizedWineConsultation from "./pages/PersonalizedWineConsultation";
 import CustomerWineRecommendation from "./pages/CustomerWineRecommendation";
 import PublicInvitation from "./pages/PublicInvitation";
+import CollaboratorPortal from "./pages/CollaboratorPortal";
 
 const queryClient = new QueryClient();
 
@@ -53,9 +56,11 @@ const App = () => (
             <Route path="/admin/tu-van" element={<AdminRoute><AdminPersonalizedWine /></AdminRoute>} />
             <Route path="/admin/invitations" element={<AdminRoute><AdminInvitations /></AdminRoute>} />
             <Route path="/admin/inventory" element={<AdminRoute><AdminInventory /></AdminRoute>} />
+            <Route path="/admin/collaborators" element={<AdminRoute><AdminCollaborators /></AdminRoute>} />
             <Route path="/tu-van-ca-nhan" element={<PersonalizedWineConsultation />} />
             <Route path="/tuvan/:slug" element={<CustomerWineRecommendation />} />
             <Route path="/thiep/:slug" element={<PublicInvitation />} />
+            <Route path="/ctv" element={<CollaboratorRoute><CollaboratorPortal /></CollaboratorRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

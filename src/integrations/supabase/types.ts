@@ -92,6 +92,167 @@ export type Database = {
         }
         Relationships: []
       }
+      collaborator_order_items: {
+        Row: {
+          collaborator_price: number
+          created_at: string
+          id: string
+          order_id: string
+          original_price: number
+          quantity: number
+          wine_id: string | null
+          wine_name: string
+        }
+        Insert: {
+          collaborator_price: number
+          created_at?: string
+          id?: string
+          order_id: string
+          original_price: number
+          quantity?: number
+          wine_id?: string | null
+          wine_name: string
+        }
+        Update: {
+          collaborator_price?: number
+          created_at?: string
+          id?: string
+          order_id?: string
+          original_price?: number
+          quantity?: number
+          wine_id?: string | null
+          wine_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collaborator_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "collaborator_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collaborator_order_items_wine_id_fkey"
+            columns: ["wine_id"]
+            isOneToOne: false
+            referencedRelation: "wines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collaborator_orders: {
+        Row: {
+          collaborator_id: string
+          commission_amount: number
+          created_at: string
+          customer_address: string | null
+          customer_name: string
+          customer_phone: string | null
+          id: string
+          notes: string | null
+          status: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          collaborator_id: string
+          commission_amount?: number
+          created_at?: string
+          customer_address?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          collaborator_id?: string
+          commission_amount?: number
+          created_at?: string
+          customer_address?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collaborator_orders_collaborator_id_fkey"
+            columns: ["collaborator_id"]
+            isOneToOne: false
+            referencedRelation: "collaborators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collaborators: {
+        Row: {
+          created_at: string
+          discount_percent: number
+          email: string
+          id: string
+          is_active: boolean
+          name: string
+          phone: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          discount_percent?: number
+          email: string
+          id?: string
+          is_active?: boolean
+          name: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          discount_percent?: number
+          email?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      commission_tiers: {
+        Row: {
+          commission_percent: number
+          created_at: string
+          id: string
+          max_quantity: number | null
+          min_quantity: number
+          updated_at: string
+        }
+        Insert: {
+          commission_percent: number
+          created_at?: string
+          id?: string
+          max_quantity?: number | null
+          min_quantity: number
+          updated_at?: string
+        }
+        Update: {
+          commission_percent?: number
+          created_at?: string
+          id?: string
+          max_quantity?: number | null
+          min_quantity?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       event_invitations: {
         Row: {
           agenda: string | null
@@ -633,6 +794,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      is_collaborator: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
