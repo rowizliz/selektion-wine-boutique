@@ -119,14 +119,14 @@ const AdminInventory = () => {
               <CardHeader className="pb-2 px-3 pt-3">
                 <CardTitle className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                   <TrendingDown className="h-3 w-3" />
-                  Tổng Nhập
+                  Đã Bán/Tặng
                 </CardTitle>
               </CardHeader>
               <CardContent className="px-3 pb-3">
-                <p className="text-xl font-bold text-blue-600 truncate" title={formatCurrency(financials?.totalCost ?? 0)}>
-                  {formatCurrency(financials?.totalCost ?? 0)}
+                <p className="text-xl font-bold text-blue-600">
+                  {(financials?.totalBottlesSold ?? 0)}
                 </p>
-                <p className="text-xs text-muted-foreground">giá vốn bán</p>
+                <p className="text-xs text-muted-foreground">chai</p>
               </CardContent>
             </Card>
 

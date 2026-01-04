@@ -306,6 +306,7 @@ export function calculateOrderFinancials(orders: Order[]) {
   let totalRevenue = 0;
   let totalCost = 0;
   let totalDiscount = 0;
+  let totalBottlesSold = 0;
   let salesCount = 0;
   let giftCount = 0;
 
@@ -323,6 +324,7 @@ export function calculateOrderFinancials(orders: Order[]) {
     order.order_items?.forEach((item) => {
       totalRevenue += item.unit_price * item.quantity;
       totalCost += item.purchase_price * item.quantity;
+      totalBottlesSold += item.quantity;
     });
   });
 
@@ -334,6 +336,7 @@ export function calculateOrderFinancials(orders: Order[]) {
     profit: totalRevenue - totalDiscount - totalCost,
     salesCount,
     giftCount,
+    totalBottlesSold,
     totalOrders: salesCount + giftCount,
   };
 }
