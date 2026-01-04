@@ -375,7 +375,8 @@ export function useUpdateCollaboratorOrder() {
       customer_address, 
       notes, 
       status,
-      commission_amount 
+      commission_amount,
+      total_amount
     }: { 
       id: string; 
       customer_name?: string;
@@ -384,6 +385,7 @@ export function useUpdateCollaboratorOrder() {
       notes?: string | null;
       status?: string;
       commission_amount?: number;
+      total_amount?: number;
     }) => {
       const updateData: Record<string, any> = {};
       if (customer_name !== undefined) updateData.customer_name = customer_name;
@@ -392,6 +394,7 @@ export function useUpdateCollaboratorOrder() {
       if (notes !== undefined) updateData.notes = notes;
       if (status !== undefined) updateData.status = status;
       if (commission_amount !== undefined) updateData.commission_amount = commission_amount;
+      if (total_amount !== undefined) updateData.total_amount = total_amount;
 
       const { error } = await supabase
         .from("collaborator_orders")
@@ -402,6 +405,35 @@ export function useUpdateCollaboratorOrder() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["collaborator-orders"] });
       queryClient.invalidateQueries({ queryKey: ["accumulated-quantity"] });
+    },
+  });
+}
+
+// Update collaborator order items quantities (admin)
+export function useUpdateCollaboratorOrderItems() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: {
+      order_id: string;
+      items: { id: string; quantity: number }[];
+    }) => {
+      if (!data.items.length) return;
+
+      const results = await Promise.all(
+        data.items.map((it) =>
+          supabase
+            .from("collaborator_order_items")
+            .update({ quantity: it.quantity })
+            .eq("id", it.id)
+            .eq("order_id", data.order_id)
+        )
+      );
+
+      const firstError = results.find((r) => r.error)?.error;
+      if (firstError) throw firstError;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["collaborator-orders"] });
     },
   });
 }
