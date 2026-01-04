@@ -166,8 +166,6 @@ const AdminCollaborators = () => {
         id: order.id,
         status: "approved",
         commission_amount: commission,
-        collaborator_id: order.collaborator_id,
-        add_to_wallet: true,
       });
       toast.success("Đã duyệt đơn hàng và cộng hoa hồng vào ví CTV");
     } catch (error: any) {
@@ -266,8 +264,6 @@ const AdminCollaborators = () => {
         status: orderFormData.status,
         commission_amount: nextCommissionAmount,
         total_amount: newTotalAmount,
-        collaborator_id: editingOrder.collaborator_id,
-        previous_status: editingOrder.status,
       });
 
       const statusChanged = editingOrder.status !== orderFormData.status && orderFormData.status === "approved";
