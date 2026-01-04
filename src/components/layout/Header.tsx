@@ -1,30 +1,54 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, LogOut } from "lucide-react";
+import { Menu, X, LogOut, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [isCollaborator, setIsCollaborator] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
+        if (session?.user) {
+          checkCollaboratorStatus(session.user.id);
+        } else {
+          setIsCollaborator(false);
+        }
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkCollaboratorStatus(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
+  const checkCollaboratorStatus = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('collaborators')
+      .select('id, is_active')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    if (!error && data && data.is_active) {
+      setIsCollaborator(true);
+    } else {
+      setIsCollaborator(false);
+    }
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setIsCollaborator(false);
     navigate("/");
   };
 
@@ -111,6 +135,16 @@ const Header = () => {
               <div className="border-t border-border pt-6 mt-6">
                 {user ? (
                   <>
+                    {isCollaborator && (
+                      <Link
+                        to="/ctv"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center text-sm font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors mb-4"
+                      >
+                        <Users className="h-4 w-4 mr-2" />
+                        Cộng Tác Viên
+                      </Link>
+                    )}
                     <p className="text-xs text-muted-foreground mb-4 truncate">{user.email}</p>
                     <button
                       onClick={() => {
