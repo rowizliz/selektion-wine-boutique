@@ -140,6 +140,41 @@ export type Database = {
         }
         Relationships: []
       }
+      inventory: {
+        Row: {
+          created_at: string
+          id: string
+          purchase_price: number
+          quantity_in_stock: number
+          updated_at: string
+          wine_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          purchase_price?: number
+          quantity_in_stock?: number
+          updated_at?: string
+          wine_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          purchase_price?: number
+          quantity_in_stock?: number
+          updated_at?: string
+          wine_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_wine_id_fkey"
+            columns: ["wine_id"]
+            isOneToOne: true
+            referencedRelation: "wines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invitation_rsvps: {
         Row: {
           attending: boolean
@@ -183,6 +218,87 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          purchase_price: number
+          quantity: number
+          unit_price: number
+          wine_id: string | null
+          wine_name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          purchase_price?: number
+          quantity?: number
+          unit_price: number
+          wine_id?: string | null
+          wine_name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          purchase_price?: number
+          quantity?: number
+          unit_price?: number
+          wine_id?: string | null
+          wine_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_wine_id_fkey"
+            columns: ["wine_id"]
+            isOneToOne: false
+            referencedRelation: "wines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          customer_name: string
+          customer_phone: string | null
+          id: string
+          notes: string | null
+          order_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_name: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          order_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_name?: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          order_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       personalized_wine_requests: {
         Row: {
