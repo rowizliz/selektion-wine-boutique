@@ -644,24 +644,69 @@ const AdminCollaborators = () => {
           }
         }}
       >
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Chỉnh sửa đơn hàng</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            {/* Order Items */}
             <div>
-              <Label>Tên khách hàng</Label>
-              <Input
-                value={orderFormData.customer_name}
-                onChange={(e) => setOrderFormData({ ...orderFormData, customer_name: e.target.value })}
-              />
+              <Label className="text-base font-semibold">Sản phẩm trong đơn</Label>
+              <div className="mt-2 border rounded-lg overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Tên sản phẩm</TableHead>
+                      <TableHead className="text-right">SL</TableHead>
+                      <TableHead className="text-right">Giá gốc</TableHead>
+                      <TableHead className="text-right">Giá CTV</TableHead>
+                      <TableHead className="text-right">Thành tiền</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {editingOrder?.items?.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-medium">{item.wine_name}</TableCell>
+                        <TableCell className="text-right">{item.quantity}</TableCell>
+                        <TableCell className="text-right text-muted-foreground">
+                          {formatPrice(item.original_price)}
+                        </TableCell>
+                        <TableCell className="text-right text-primary">
+                          {formatPrice(item.collaborator_price)}
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          {formatPrice(item.collaborator_price * item.quantity)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                <div className="bg-muted/50 px-4 py-2 flex justify-between text-sm">
+                  <span>
+                    Tổng: {editingOrder?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0} sản phẩm
+                  </span>
+                  <span className="font-semibold">
+                    {formatPrice(editingOrder?.total_amount || 0)}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div>
-              <Label>Số điện thoại</Label>
-              <Input
-                value={orderFormData.customer_phone}
-                onChange={(e) => setOrderFormData({ ...orderFormData, customer_phone: e.target.value })}
-              />
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Tên khách hàng</Label>
+                <Input
+                  value={orderFormData.customer_name}
+                  onChange={(e) => setOrderFormData({ ...orderFormData, customer_name: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Số điện thoại</Label>
+                <Input
+                  value={orderFormData.customer_phone}
+                  onChange={(e) => setOrderFormData({ ...orderFormData, customer_phone: e.target.value })}
+                />
+              </div>
             </div>
             <div>
               <Label>Địa chỉ</Label>
@@ -675,32 +720,34 @@ const AdminCollaborators = () => {
               <Textarea
                 value={orderFormData.notes}
                 onChange={(e) => setOrderFormData({ ...orderFormData, notes: e.target.value })}
-                rows={3}
+                rows={2}
               />
             </div>
-            <div>
-              <Label>Trạng thái</Label>
-              <Select
-                value={orderFormData.status}
-                onValueChange={(value) => setOrderFormData({ ...orderFormData, status: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">Chờ duyệt</SelectItem>
-                  <SelectItem value="approved">Đã duyệt</SelectItem>
-                  <SelectItem value="rejected">Từ chối</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Hoa hồng (đ)</Label>
-              <Input
-                type="number"
-                value={orderFormData.commission_amount}
-                onChange={(e) => setOrderFormData({ ...orderFormData, commission_amount: Number(e.target.value) })}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label>Trạng thái</Label>
+                <Select
+                  value={orderFormData.status}
+                  onValueChange={(value) => setOrderFormData({ ...orderFormData, status: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Chờ duyệt</SelectItem>
+                    <SelectItem value="approved">Đã duyệt</SelectItem>
+                    <SelectItem value="rejected">Từ chối</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Hoa hồng (đ)</Label>
+                <Input
+                  type="number"
+                  value={orderFormData.commission_amount}
+                  onChange={(e) => setOrderFormData({ ...orderFormData, commission_amount: Number(e.target.value) })}
+                />
+              </div>
             </div>
           </div>
           <DialogFooter>
