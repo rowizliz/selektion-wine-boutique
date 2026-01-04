@@ -46,10 +46,12 @@ import {
   useCollaboratorOrders,
   useUpdateCollaboratorOrderStatus,
   useUpdateCollaboratorOrder,
+  useUpdateCollaboratorOrderItems,
   calculateCommission,
   Collaborator,
   CommissionTier,
   CollaboratorOrder,
+  CollaboratorOrderItem,
 } from "@/hooks/useCollaborators";
 import {
   Select,
@@ -80,6 +82,7 @@ const AdminCollaborators = () => {
   const deleteTier = useDeleteCommissionTier();
   const updateOrderStatus = useUpdateCollaboratorOrderStatus();
   const updateOrder = useUpdateCollaboratorOrder();
+  const updateOrderItems = useUpdateCollaboratorOrderItems();
 
   // Form states
   const [formData, setFormData] = useState({
@@ -101,6 +104,7 @@ const AdminCollaborators = () => {
     status: "pending",
     commission_amount: 0,
   });
+  const [orderItemsDraft, setOrderItemsDraft] = useState<CollaboratorOrderItem[]>([]);
 
   const handleAddCollaborator = async () => {
     try {
@@ -198,19 +202,53 @@ const AdminCollaborators = () => {
       status: order.status,
       commission_amount: order.commission_amount,
     });
+    setOrderItemsDraft((order.items || []) as CollaboratorOrderItem[]);
     setEditingOrder(order);
   };
 
   const handleUpdateOrder = async () => {
     if (!editingOrder) return;
+
+    const normalizedItems = orderItemsDraft
+      .map((it) => ({ ...it, quantity: Math.max(1, Number(it.quantity) || 1) }))
+      .filter((it) => it.id);
+
+    const newTotalAmount = normalizedItems.reduce(
+      (sum, it) => sum + it.collaborator_price * it.quantity,
+      0
+    );
+    const newTotalQty = normalizedItems.reduce((sum, it) => sum + it.quantity, 0);
+
+    // If order is approved and admin didn't explicitly change commission amount,
+    // auto-recalculate it from tiers based on updated quantity/total.
+    const shouldAutoRecalcCommission =
+      orderFormData.status === "approved" &&
+      commissionTiers &&
+      orderFormData.commission_amount === editingOrder.commission_amount;
+
+    const nextCommissionAmount = shouldAutoRecalcCommission
+      ? calculateCommission(commissionTiers!, newTotalQty, newTotalAmount)
+      : orderFormData.commission_amount;
+
     try {
+      // Update item quantities first
+      await updateOrderItems.mutateAsync({
+        order_id: editingOrder.id,
+        items: normalizedItems.map((it) => ({ id: it.id, quantity: it.quantity })),
+      });
+
+      // Update order fields + totals
       await updateOrder.mutateAsync({
         id: editingOrder.id,
-        ...orderFormData,
+        customer_name: orderFormData.customer_name,
         customer_phone: orderFormData.customer_phone || null,
         customer_address: orderFormData.customer_address || null,
         notes: orderFormData.notes || null,
+        status: orderFormData.status,
+        commission_amount: nextCommissionAmount,
+        total_amount: newTotalAmount,
       });
+
       toast.success("Đã cập nhật đơn hàng!");
       setEditingOrder(null);
     } catch (error: any) {
@@ -641,6 +679,7 @@ const AdminCollaborators = () => {
         onOpenChange={(open) => {
           if (!open) {
             setEditingOrder(null);
+            setOrderItemsDraft([]);
           }
         }}
       >
@@ -664,10 +703,23 @@ const AdminCollaborators = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {editingOrder?.items?.map((item, index) => (
-                      <TableRow key={index}>
+                    {orderItemsDraft.map((item, index) => (
+                      <TableRow key={item.id || index}>
                         <TableCell className="font-medium">{item.wine_name}</TableCell>
-                        <TableCell className="text-right">{item.quantity}</TableCell>
+                        <TableCell className="text-right">
+                          <Input
+                            type="number"
+                            min={1}
+                            className="h-8 w-20 ml-auto text-right"
+                            value={item.quantity}
+                            onChange={(e) => {
+                              const nextQty = Math.max(1, Number(e.target.value) || 1);
+                              setOrderItemsDraft((prev) =>
+                                prev.map((p) => (p.id === item.id ? { ...p, quantity: nextQty } : p))
+                              );
+                            }}
+                          />
+                        </TableCell>
                         <TableCell className="text-right text-muted-foreground">
                           {formatPrice(item.original_price)}
                         </TableCell>
@@ -683,10 +735,12 @@ const AdminCollaborators = () => {
                 </Table>
                 <div className="bg-muted/50 px-4 py-2 flex justify-between text-sm">
                   <span>
-                    Tổng: {editingOrder?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0} sản phẩm
+                    Tổng: {orderItemsDraft.reduce((sum, it) => sum + it.quantity, 0)} sản phẩm
                   </span>
                   <span className="font-semibold">
-                    {formatPrice(editingOrder?.total_amount || 0)}
+                    {formatPrice(
+                      orderItemsDraft.reduce((sum, it) => sum + it.collaborator_price * it.quantity, 0)
+                    )}
                   </span>
                 </div>
               </div>
