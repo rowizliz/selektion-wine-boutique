@@ -364,6 +364,48 @@ export function useUpdateCollaboratorOrderStatus() {
   });
 }
 
+// Update collaborator order (admin) - edit all fields
+export function useUpdateCollaboratorOrder() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ 
+      id, 
+      customer_name, 
+      customer_phone, 
+      customer_address, 
+      notes, 
+      status,
+      commission_amount 
+    }: { 
+      id: string; 
+      customer_name?: string;
+      customer_phone?: string | null;
+      customer_address?: string | null;
+      notes?: string | null;
+      status?: string;
+      commission_amount?: number;
+    }) => {
+      const updateData: Record<string, any> = {};
+      if (customer_name !== undefined) updateData.customer_name = customer_name;
+      if (customer_phone !== undefined) updateData.customer_phone = customer_phone;
+      if (customer_address !== undefined) updateData.customer_address = customer_address;
+      if (notes !== undefined) updateData.notes = notes;
+      if (status !== undefined) updateData.status = status;
+      if (commission_amount !== undefined) updateData.commission_amount = commission_amount;
+
+      const { error } = await supabase
+        .from("collaborator_orders")
+        .update(updateData)
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["collaborator-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["accumulated-quantity"] });
+    },
+  });
+}
+
 // Calculate commission based on quantity
 export function calculateCommission(tiers: CommissionTier[], totalQuantity: number, totalAmount: number): number {
   const tier = tiers.find(t => {
