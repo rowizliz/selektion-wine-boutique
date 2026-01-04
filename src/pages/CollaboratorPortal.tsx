@@ -239,75 +239,87 @@ const CollaboratorPortal = () => {
         <title>Cộng Tác Viên | Sélection</title>
       </Helmet>
 
-      <main className="min-h-screen bg-background p-4 md:p-6">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <main className="min-h-screen bg-background px-3 py-4 sm:p-4 md:p-6">
+        <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6">
           {/* Header */}
-          <header className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-serif">Xin chào, {collaborator.name}</h1>
-              <p className="text-muted-foreground text-sm">
-                Giảm giá hiện tại: {currentDiscountPercent}% 
-                <span className="ml-2">
+          <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-serif truncate">Xin chào, {collaborator.name}</h1>
+              <p className="text-muted-foreground text-xs sm:text-sm">
+                <span className="font-medium">Giảm giá: {currentDiscountPercent}%</span>
+                <span className="hidden sm:inline ml-2">
                   (Tích lũy: {accumulatedQuantity} + Giỏ: {currentCartQuantity} = {totalQuantityInSession} SP)
                 </span>
               </p>
+              <p className="text-muted-foreground text-xs sm:hidden">
+                Tích lũy: {totalQuantityInSession} SP
+              </p>
               {sessionEnd && (
                 <p className="text-xs text-muted-foreground">
-                  Phiên tích lũy kết thúc: {new Date(sessionEnd).toLocaleDateString("vi-VN")}
+                  Phiên kết thúc: {new Date(sessionEnd).toLocaleDateString("vi-VN")}
                 </p>
               )}
             </div>
-            <Button variant="outline" onClick={() => supabase.auth.signOut()}>
+            <Button variant="outline" size="sm" onClick={() => supabase.auth.signOut()} className="self-start sm:self-auto">
               Đăng xuất
             </Button>
           </header>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Tổng doanh số</CardTitle>
-                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+              <CardHeader className="flex flex-row items-center justify-between pb-1 sm:pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+                <CardTitle className="text-xs sm:text-sm font-medium">Doanh số</CardTitle>
+                <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{formatPrice(totalSales)}</div>
+              <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+                <div className="text-lg sm:text-2xl font-bold truncate">{formatPrice(totalSales)}</div>
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Hoa hồng đã nhận</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <CardHeader className="flex flex-row items-center justify-between pb-1 sm:pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+                <CardTitle className="text-xs sm:text-sm font-medium">Hoa hồng</CardTitle>
+                <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{formatPrice(totalCommission)}</div>
+              <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+                <div className="text-lg sm:text-2xl font-bold truncate">{formatPrice(totalCommission)}</div>
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Đơn đã duyệt</CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
+              <CardHeader className="flex flex-row items-center justify-between pb-1 sm:pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+                <CardTitle className="text-xs sm:text-sm font-medium">Đơn duyệt</CardTitle>
+                <Package className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{approvedOrders.length}</div>
+              <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+                <div className="text-lg sm:text-2xl font-bold">{approvedOrders.length}</div>
               </CardContent>
             </Card>
-            <Card className="bg-primary/5 border-primary/20">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Số dư ví</CardTitle>
-                <Wallet className="h-4 w-4 text-primary" />
+            <Card className="bg-primary/5 border-primary/20 col-span-2 lg:col-span-1">
+              <CardHeader className="flex flex-row items-center justify-between pb-1 sm:pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+                <CardTitle className="text-xs sm:text-sm font-medium">Số dư ví</CardTitle>
+                <Wallet className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-primary">
+              <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+                <div className="text-xl sm:text-2xl font-bold text-primary truncate">
                   {formatPrice(collaborator.wallet_balance)}
                 </div>
-                <div className="flex gap-2 mt-2">
-                  <Button size="sm" variant="outline" onClick={() => setIsBankInfoOpen(true)}>
-                    <Landmark className="h-3 w-3 mr-1" />
-                    Ngân hàng
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => setIsBankInfoOpen(true)}
+                    className="h-8 text-xs sm:text-sm px-2 sm:px-3"
+                  >
+                    <Landmark className="h-3 w-3 sm:mr-1" />
+                    <span className="hidden sm:inline">Ngân hàng</span>
                   </Button>
-                  <Button size="sm" onClick={() => setIsWithdrawOpen(true)}>
-                    <CreditCard className="h-3 w-3 mr-1" />
-                    Rút tiền
+                  <Button 
+                    size="sm" 
+                    onClick={() => setIsWithdrawOpen(true)}
+                    className="h-8 text-xs sm:text-sm px-2 sm:px-3"
+                  >
+                    <CreditCard className="h-3 w-3 sm:mr-1" />
+                    <span className="hidden xs:inline">Rút tiền</span>
                   </Button>
                 </div>
               </CardContent>
@@ -315,11 +327,11 @@ const CollaboratorPortal = () => {
           </div>
 
           <Tabs defaultValue="products" className="space-y-4">
-            <TabsList>
-              <TabsTrigger value="products">Bảng giá</TabsTrigger>
-              <TabsTrigger value="orders">Đơn hàng của tôi</TabsTrigger>
-              <TabsTrigger value="withdrawals">Lịch sử rút tiền</TabsTrigger>
-              <TabsTrigger value="commission">Bậc hoa hồng</TabsTrigger>
+            <TabsList className="w-full sm:w-auto flex overflow-x-auto">
+              <TabsTrigger value="products" className="flex-1 sm:flex-none text-xs sm:text-sm">Bảng giá</TabsTrigger>
+              <TabsTrigger value="orders" className="flex-1 sm:flex-none text-xs sm:text-sm">Đơn hàng</TabsTrigger>
+              <TabsTrigger value="withdrawals" className="flex-1 sm:flex-none text-xs sm:text-sm">Rút tiền</TabsTrigger>
+              <TabsTrigger value="commission" className="flex-1 sm:flex-none text-xs sm:text-sm">Hoa hồng</TabsTrigger>
             </TabsList>
 
             {/* Products Tab */}
@@ -472,36 +484,45 @@ const CollaboratorPortal = () => {
             {/* Withdrawals Tab */}
             <TabsContent value="withdrawals">
               <Card>
-                <CardHeader className="flex-row items-center justify-between">
-                  <CardTitle>Lịch sử rút tiền</CardTitle>
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setIsBankInfoOpen(true)}>
-                      <Landmark className="h-4 w-4 mr-2" />
-                      Cập nhật ngân hàng
+                <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <CardTitle className="text-base sm:text-lg">Lịch sử rút tiền</CardTitle>
+                  <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsBankInfoOpen(true)}
+                      size="sm"
+                      className="flex-1 sm:flex-none text-xs sm:text-sm"
+                    >
+                      <Landmark className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                      Ngân hàng
                     </Button>
-                    <Button onClick={() => setIsWithdrawOpen(true)}>
-                      <CreditCard className="h-4 w-4 mr-2" />
-                      Yêu cầu rút tiền
+                    <Button 
+                      onClick={() => setIsWithdrawOpen(true)}
+                      size="sm"
+                      className="flex-1 sm:flex-none text-xs sm:text-sm"
+                    >
+                      <CreditCard className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                      Rút tiền
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-3 sm:px-6">
                   {/* Bank Info Summary */}
                   {collaborator.bank_account_number && (
-                    <div className="mb-4 p-4 bg-muted/50 rounded-lg flex items-center gap-4">
+                    <div className="mb-4 p-3 sm:p-4 bg-muted/50 rounded-lg flex items-center gap-3 sm:gap-4">
                       {collaborator.qr_code_url && (
                         <img
                           src={collaborator.qr_code_url}
                           alt="QR Code"
-                          className="h-16 w-16 rounded border object-contain"
+                          className="h-12 w-12 sm:h-16 sm:w-16 rounded border object-contain flex-shrink-0"
                         />
                       )}
-                      <div>
-                        <p className="font-medium">{collaborator.bank_name}</p>
-                        <p className="text-sm text-muted-foreground">
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm sm:text-base truncate">{collaborator.bank_name}</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">
                           STK: {collaborator.bank_account_number}
                         </p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">
                           {collaborator.bank_account_holder}
                         </p>
                       </div>
