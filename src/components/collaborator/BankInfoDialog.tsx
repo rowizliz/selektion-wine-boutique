@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,12 +21,22 @@ interface BankInfoDialogProps {
 }
 
 export function BankInfoDialog({ open, onOpenChange, collaborator }: BankInfoDialogProps) {
-  const [bankName, setBankName] = useState(collaborator.bank_name || "");
-  const [accountNumber, setAccountNumber] = useState(collaborator.bank_account_number || "");
-  const [accountHolder, setAccountHolder] = useState(collaborator.bank_account_holder || "");
-  const [qrCodeUrl, setQrCodeUrl] = useState(collaborator.qr_code_url || "");
+  const [bankName, setBankName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [accountHolder, setAccountHolder] = useState("");
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync state with collaborator prop when dialog opens or collaborator changes
+  useEffect(() => {
+    if (open) {
+      setBankName(collaborator.bank_name || "");
+      setAccountNumber(collaborator.bank_account_number || "");
+      setAccountHolder(collaborator.bank_account_holder || "");
+      setQrCodeUrl(collaborator.qr_code_url || "");
+    }
+  }, [open, collaborator]);
 
   const updateBankInfo = useUpdateCollaboratorBankInfo();
 
