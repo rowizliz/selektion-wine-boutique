@@ -310,6 +310,7 @@ const CollaboratorPortal = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableHead className="w-20">Ảnh</TableHead>
                         <TableHead>Sản phẩm</TableHead>
                         <TableHead>Giá gốc</TableHead>
                         <TableHead>Giá CTV</TableHead>
@@ -324,6 +325,16 @@ const CollaboratorPortal = () => {
 
                         return (
                           <TableRow key={wine.id}>
+                            <TableCell>
+                              <div className="w-16 h-12 bg-white rounded border overflow-hidden flex items-center justify-center">
+                                <img 
+                                  src={wine.image_url || "/placeholder.svg"} 
+                                  alt={wine.name}
+                                  className="h-full w-auto object-contain"
+                                  style={{ transform: "rotate(-90deg)", maxHeight: "60px" }}
+                                />
+                              </div>
+                            </TableCell>
                             <TableCell className="font-medium">{wine.name}</TableCell>
                             <TableCell className="text-muted-foreground">
                               {formatPrice(originalPrice)}
