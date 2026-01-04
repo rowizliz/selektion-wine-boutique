@@ -118,13 +118,33 @@ const CollaboratorPortal = () => {
     return parseInt(priceStr.replace(/[^\d]/g, "")) || 0;
   };
 
+  // Get discount percent based on cart quantity from commission tiers
+  const getDiscountPercentByQuantity = (quantity: number): number => {
+    if (!commissionTiers || commissionTiers.length === 0) {
+      return collaborator.discount_percent; // Fallback to personal discount
+    }
+    
+    // Find matching tier for the quantity
+    const matchingTier = commissionTiers.find(tier => {
+      if (tier.max_quantity) {
+        return quantity >= tier.min_quantity && quantity <= tier.max_quantity;
+      }
+      return quantity >= tier.min_quantity;
+    });
+    
+    return matchingTier?.commission_percent || collaborator.discount_percent;
+  };
+
+  // Current discount based on cart quantity
+  const currentCartQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const currentDiscountPercent = getDiscountPercentByQuantity(currentCartQuantity);
+
   const getCollaboratorPrice = (originalPrice: number) => {
-    return originalPrice * (1 - collaborator.discount_percent / 100);
+    return originalPrice * (1 - currentDiscountPercent / 100);
   };
 
   const addToCart = (wine: any) => {
     const originalPrice = parsePrice(wine.price);
-    const collaboratorPrice = getCollaboratorPrice(originalPrice);
 
     setCart((prev) => {
       const existing = prev.find((item) => item.wine_id === wine.id);
@@ -139,7 +159,7 @@ const CollaboratorPortal = () => {
           wine_id: wine.id,
           wine_name: wine.name,
           original_price: originalPrice,
-          collaborator_price: collaboratorPrice,
+          collaborator_price: originalPrice, // Will be recalculated based on total quantity
           quantity: 1,
         },
       ];
@@ -156,14 +176,24 @@ const CollaboratorPortal = () => {
     );
   };
 
-  const cartTotal = cart.reduce((sum, item) => sum + item.collaborator_price * item.quantity, 0);
-  const cartQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+  // Calculate cart total with current discount
+  const cartTotal = cart.reduce((sum, item) => {
+    const discountedPrice = item.original_price * (1 - currentDiscountPercent / 100);
+    return sum + discountedPrice * item.quantity;
+  }, 0);
+  const cartQuantity = currentCartQuantity;
 
   const handleSubmitOrder = async () => {
     if (!customerInfo.name || cart.length === 0) {
       toast.error("Vui lòng nhập tên khách hàng và thêm sản phẩm");
       return;
     }
+
+    // Calculate items with current discount applied
+    const itemsWithDiscount = cart.map(item => ({
+      ...item,
+      collaborator_price: item.original_price * (1 - currentDiscountPercent / 100),
+    }));
 
     try {
       await createOrder.mutateAsync({
@@ -172,7 +202,7 @@ const CollaboratorPortal = () => {
         customer_phone: customerInfo.phone || undefined,
         customer_address: customerInfo.address || undefined,
         notes: customerInfo.notes || undefined,
-        items: cart,
+        items: itemsWithDiscount,
       });
       toast.success("Đơn hàng đã được gửi, chờ admin duyệt");
       setCart([]);
@@ -201,7 +231,12 @@ const CollaboratorPortal = () => {
             <div>
               <h1 className="text-2xl font-serif">Xin chào, {collaborator.name}</h1>
               <p className="text-muted-foreground text-sm">
-                Giảm giá của bạn: {collaborator.discount_percent}%
+                Giảm giá hiện tại: {currentDiscountPercent}%
+                {cartQuantity > 0 && (
+                  <span className="ml-2 text-primary">
+                    ({cartQuantity} sản phẩm trong giỏ)
+                  </span>
+                )}
               </p>
             </div>
             <Button variant="outline" onClick={() => supabase.auth.signOut()}>
