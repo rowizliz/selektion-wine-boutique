@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Plus, Pencil, Trash2, UserCheck, UserX, Settings, Wallet, Landmark } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, UserCheck, UserX, Settings, Wallet, Landmark, Key } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,6 +63,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { AdminWithdrawals } from "@/components/admin/AdminWithdrawals";
+import { AdminPasswordRequests } from "@/components/admin/AdminPasswordRequests";
 import { useCollaboratorWithdrawals } from "@/hooks/useWithdrawals";
 
 const AdminCollaborators = () => {
@@ -308,10 +309,11 @@ const AdminCollaborators = () => {
           </header>
 
           <Tabs defaultValue="collaborators" className="space-y-4">
-            <TabsList>
+            <TabsList className="flex-wrap">
               <TabsTrigger value="collaborators">Danh sách CTV</TabsTrigger>
               <TabsTrigger value="orders">Đơn hàng CTV</TabsTrigger>
               <TabsTrigger value="withdrawals">Yêu cầu rút tiền</TabsTrigger>
+              <TabsTrigger value="password">Đổi mật khẩu</TabsTrigger>
               <TabsTrigger value="commission">Bậc hoa hồng</TabsTrigger>
             </TabsList>
 
@@ -492,6 +494,11 @@ const AdminCollaborators = () => {
             {/* Withdrawals Tab */}
             <TabsContent value="withdrawals">
               <AdminWithdrawals />
+            </TabsContent>
+
+            {/* Password Change Requests Tab */}
+            <TabsContent value="password">
+              <AdminPasswordRequests collaborators={collaborators} />
             </TabsContent>
 
             {/* Commission Tiers Tab */}

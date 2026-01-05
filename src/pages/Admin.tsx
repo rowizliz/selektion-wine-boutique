@@ -12,7 +12,7 @@ interface AdminModule {
   icon: React.ComponentType<{ className?: string }>;
   href: string;
   color: string;
-  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending';
+  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending';
 }
 
 const adminModules: AdminModule[] = [
@@ -29,7 +29,7 @@ const adminModules: AdminModule[] = [
     icon: Users,
     href: "/admin/collaborators",
     color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400",
-    badgeKey: 'collaboratorOrdersPending'
+    badgeKey: 'ctvModulePending'
   },
   {
     title: "Duyệt Profile CTV",
@@ -92,11 +92,16 @@ const Admin = () => {
     (pendingCounts?.personalizedWinePending ?? 0) + 
     (pendingCounts?.profileUpdatesPending ?? 0) + 
     (pendingCounts?.withdrawalsPending ?? 0) +
-    (pendingCounts?.collaboratorOrdersPending ?? 0);
+    (pendingCounts?.collaboratorOrdersPending ?? 0) +
+    (pendingCounts?.passwordRequestsPending ?? 0);
   const { soundEnabled, enableSound, disableSound } = useNotificationSound(totalPending > 0);
 
-  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending') => {
+  // Calculate CTV module badge (orders + password requests)
+  const ctvModulePending = (pendingCounts?.collaboratorOrdersPending ?? 0) + (pendingCounts?.passwordRequestsPending ?? 0);
+
+  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending') => {
     if (!badgeKey || !pendingCounts) return 0;
+    if (badgeKey === 'ctvModulePending') return ctvModulePending;
     return pendingCounts[badgeKey];
   };
 

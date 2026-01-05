@@ -598,6 +598,47 @@ export type Database = {
           },
         ]
       }
+      password_change_requests: {
+        Row: {
+          admin_notes: string | null
+          collaborator_id: string
+          created_at: string
+          id: string
+          processed_at: string | null
+          processed_by: string | null
+          reason: string | null
+          status: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          collaborator_id: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string | null
+          status?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          collaborator_id?: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "password_change_requests_collaborator_id_fkey"
+            columns: ["collaborator_id"]
+            isOneToOne: false
+            referencedRelation: "collaborators"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       personalized_wine_requests: {
         Row: {
           additional_notes: string | null
