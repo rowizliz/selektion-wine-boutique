@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Check, X, Key, Loader2 } from "lucide-react";
+import { Check, X, Key, Loader2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +12,13 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -43,6 +51,8 @@ export const AdminPasswordRequests = ({ collaborators }: AdminPasswordRequestsPr
   const [selectedRequest, setSelectedRequest] = useState<PasswordRequest | null>(null);
   const [adminNotes, setAdminNotes] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editStatus, setEditStatus] = useState("");
 
   const { data: requests, isLoading } = useQuery({
     queryKey: ["password-change-requests"],
@@ -104,11 +114,55 @@ export const AdminPasswordRequests = ({ collaborators }: AdminPasswordRequestsPr
     },
   });
 
+  const updateStatus = useMutation({
+    mutationFn: async ({ id, status, notes }: { id: string; status: string; notes: string }) => {
+      const { error } = await supabase
+        .from("password_change_requests")
+        .update({
+          status,
+          admin_notes: notes || null,
+          processed_at: new Date().toISOString(),
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["password-change-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["pending-request-counts"] });
+      toast.success("Đã cập nhật trạng thái yêu cầu");
+      setSelectedRequest(null);
+      setAdminNotes("");
+      setIsEditing(false);
+    },
+    onError: (error: Error) => {
+      toast.error("Lỗi: " + error.message);
+    },
+  });
+
   const handleProcess = async (approve: boolean) => {
     if (!selectedRequest) return;
     setIsProcessing(true);
     await processRequest.mutateAsync({ id: selectedRequest.id, approve });
     setIsProcessing(false);
+  };
+
+  const handleUpdateStatus = async () => {
+    if (!selectedRequest) return;
+    setIsProcessing(true);
+    await updateStatus.mutateAsync({
+      id: selectedRequest.id,
+      status: editStatus,
+      notes: adminNotes,
+    });
+    setIsProcessing(false);
+  };
+
+  const openEditDialog = (request: PasswordRequest) => {
+    setSelectedRequest(request);
+    setEditStatus(request.status);
+    setAdminNotes(request.admin_notes || "");
+    setIsEditing(true);
   };
 
   const getCollaboratorName = (collaboratorId: string) => {
@@ -127,6 +181,8 @@ export const AdminPasswordRequests = ({ collaborators }: AdminPasswordRequestsPr
         return <Badge className="bg-green-500">Đã duyệt</Badge>;
       case "rejected":
         return <Badge variant="destructive">Từ chối</Badge>;
+      case "completed":
+        return <Badge className="bg-blue-500">Hoàn thành</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -198,6 +254,7 @@ export const AdminPasswordRequests = ({ collaborators }: AdminPasswordRequestsPr
                               onClick={() => {
                                 setSelectedRequest(request);
                                 setAdminNotes("");
+                                setIsEditing(false);
                               }}
                             >
                               <Check className="h-4 w-4" />
@@ -209,19 +266,33 @@ export const AdminPasswordRequests = ({ collaborators }: AdminPasswordRequestsPr
                               onClick={() => {
                                 setSelectedRequest(request);
                                 setAdminNotes("");
+                                setIsEditing(false);
                               }}
                             >
                               <X className="h-4 w-4" />
                             </Button>
                           </div>
                         ) : (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setSelectedRequest(request)}
-                          >
-                            Xem
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedRequest(request);
+                                setAdminNotes(request.admin_notes || "");
+                                setIsEditing(false);
+                              }}
+                            >
+                              Xem
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => openEditDialog(request)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </div>
                         )}
                       </TableCell>
                     </TableRow>
@@ -234,7 +305,7 @@ export const AdminPasswordRequests = ({ collaborators }: AdminPasswordRequestsPr
       </Card>
 
       {/* Detail/Process Dialog */}
-      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
+      <Dialog open={!!selectedRequest && !isEditing} onOpenChange={() => setSelectedRequest(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -309,6 +380,64 @@ export const AdminPasswordRequests = ({ collaborators }: AdminPasswordRequestsPr
                 Đóng
               </Button>
             )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Status Dialog */}
+      <Dialog open={isEditing} onOpenChange={() => { setIsEditing(false); setSelectedRequest(null); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Edit className="h-5 w-5" />
+              Chỉnh sửa trạng thái
+            </DialogTitle>
+          </DialogHeader>
+
+          {selectedRequest && (
+            <div className="space-y-4">
+              <div className="p-3 bg-muted rounded-md">
+                <p className="text-sm font-medium">
+                  CTV: {getCollaboratorName(selectedRequest.collaborator_id)}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Email: {getCollaboratorEmail(selectedRequest.collaborator_id)}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Trạng thái</Label>
+                <Select value={editStatus} onValueChange={setEditStatus}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn trạng thái" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Chờ duyệt</SelectItem>
+                    <SelectItem value="approved">Đã duyệt</SelectItem>
+                    <SelectItem value="rejected">Từ chối</SelectItem>
+                    <SelectItem value="completed">Hoàn thành</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Ghi chú (tùy chọn)</Label>
+                <Textarea
+                  value={adminNotes}
+                  onChange={(e) => setAdminNotes(e.target.value)}
+                  placeholder="Ghi chú..."
+                />
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => { setIsEditing(false); setSelectedRequest(null); }}>
+              Hủy
+            </Button>
+            <Button onClick={handleUpdateStatus} disabled={isProcessing}>
+              {isProcessing ? "Đang lưu..." : "Lưu thay đổi"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
