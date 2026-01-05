@@ -43,6 +43,32 @@ const AdminImportWines = () => {
     setExistingCount(count || 0);
   };
 
+  const mapStaticToDb = (wine: (typeof staticWines)[number]) => {
+    return {
+      name: wine.name,
+      origin: wine.origin,
+      grapes: wine.grapes,
+      price: wine.price,
+      description: wine.description,
+      story: wine.story || null,
+      // ⚠️ Không ghi đè image_url ở chế độ sync để tránh làm hỏng đường dẫn ảnh production
+      // image_url: wine.image || null,
+      category: wine.category,
+      temperature: wine.temperature || null,
+      alcohol: wine.alcohol || null,
+      pairing: wine.pairing || null,
+      tasting_notes: wine.tastingNotes || null,
+      flavor_notes: wine.flavorNotes || null,
+      vintage: wine.vintage || null,
+      region: wine.region || null,
+      sweetness: wine.characteristics?.sweetness ?? null,
+      body: wine.characteristics?.body ?? null,
+      tannin: wine.characteristics?.tannin ?? null,
+      acidity: wine.characteristics?.acidity ?? null,
+      fizzy: wine.characteristics?.fizzy ?? null,
+    };
+  };
+
   const importWines = async () => {
     setIsImporting(true);
     setImportStatuses(staticWines.map((w) => ({ name: w.name, status: "pending" as const })));
@@ -55,28 +81,9 @@ const AdminImportWines = () => {
       const wine = staticWines[i];
 
       try {
-        // Map static wine data to database format
         const wineData = {
-          name: wine.name,
-          origin: wine.origin,
-          grapes: wine.grapes,
-          price: wine.price,
-          description: wine.description,
-          story: wine.story || null,
+          ...mapStaticToDb(wine),
           image_url: wine.image || null,
-          category: wine.category,
-          temperature: wine.temperature || null,
-          alcohol: wine.alcohol || null,
-          pairing: wine.pairing || null,
-          tasting_notes: wine.tastingNotes || null,
-          flavor_notes: wine.flavorNotes || null,
-          vintage: wine.vintage || null,
-          region: wine.region || null,
-          sweetness: wine.characteristics?.sweetness || null,
-          body: wine.characteristics?.body || null,
-          tannin: wine.characteristics?.tannin || null,
-          acidity: wine.characteristics?.acidity || null,
-          fizzy: wine.characteristics?.fizzy || null,
         };
 
         const { error } = await supabase.from("wines").insert(wineData);
@@ -107,6 +114,87 @@ const AdminImportWines = () => {
     toast({
       title: "Import hoàn tất",
       description: `Thành công: ${successCount}, Lỗi: ${errorCount}`,
+      variant: errorCount > 0 ? "destructive" : "default",
+    });
+  };
+
+  const syncWines = async () => {
+    setIsImporting(true);
+    setImportStatuses(staticWines.map((w) => ({ name: w.name, status: "pending" as const })));
+    setProgress(0);
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    const { data: dbWines, error: dbErr } = await supabase
+      .from("wines")
+      .select("id,name");
+
+    if (dbErr) {
+      setIsImporting(false);
+      toast({
+        title: "Lỗi",
+        description: dbErr.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const normalize = (s: string) => s.trim().toLowerCase();
+    const byName = new Map<string, { id: string; name: string }>();
+
+    // Nếu có trùng tên, ưu tiên record đầu tiên (an toàn, tránh update hàng loạt nhầm)
+    for (const w of dbWines ?? []) {
+      const key = normalize(w.name);
+      if (!byName.has(key)) byName.set(key, w);
+    }
+
+    for (let i = 0; i < staticWines.length; i++) {
+      const wine = staticWines[i];
+
+      try {
+        const match = byName.get(normalize(wine.name));
+        const wineData = mapStaticToDb(wine);
+
+        if (match) {
+          const { error } = await supabase
+            .from("wines")
+            .update(wineData)
+            .eq("id", match.id);
+          if (error) throw error;
+        } else {
+          // Nếu thiếu trong DB thì insert (có ảnh để đầy đủ)
+          const { error } = await supabase
+            .from("wines")
+            .insert({ ...wineData, image_url: wine.image || null });
+          if (error) throw error;
+        }
+
+        successCount++;
+        setImportStatuses((prev) =>
+          prev.map((s, idx) => (idx === i ? { ...s, status: "success" as const } : s))
+        );
+      } catch (error: any) {
+        errorCount++;
+        setImportStatuses((prev) =>
+          prev.map((s, idx) =>
+            idx === i
+              ? { ...s, status: "error" as const, error: error.message }
+              : s
+          )
+        );
+      }
+
+      setProgress(((i + 1) / staticWines.length) * 100);
+    }
+
+    setIsImporting(false);
+    await checkExistingWines();
+    queryClient.invalidateQueries({ queryKey: ["wines"] });
+
+    toast({
+      title: "Đồng bộ hoàn tất",
+      description: `Cập nhật/thêm: ${successCount}, Lỗi: ${errorCount}`,
       variant: errorCount > 0 ? "destructive" : "default",
     });
   };
@@ -165,15 +253,25 @@ const AdminImportWines = () => {
 
               {existingCount !== null && existingCount > 0 && (
                 <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
-                  ⚠️ Database đã có {existingCount} chai rượu. Import thêm sẽ tạo
-                  bản sao.
+                  ⚠️ Database đã có {existingCount} chai rượu.
+                  <div className="mt-1">
+                    - <b>Import</b> sẽ tạo bản sao (không khuyến nghị).
+                    <br />- <b>Đồng bộ</b> sẽ cập nhật/ghi đè nội dung theo <b>file tĩnh</b> (khuyến nghị để khớp nguyên bản).
+                  </div>
                 </div>
               )}
 
-              <Button onClick={importWines} disabled={isImporting} className="w-full" size="lg">
-                <Upload className="h-4 w-4 mr-2" />
-                {isImporting ? `Đang import... ${Math.round(progress)}%` : "Bắt đầu Import"}
-              </Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Button onClick={syncWines} disabled={isImporting} className="w-full" size="lg" variant="default">
+                  <Upload className="h-4 w-4 mr-2" />
+                  {isImporting ? `Đang đồng bộ... ${Math.round(progress)}%` : "Đồng bộ (ghi đè) theo file tĩnh"}
+                </Button>
+
+                <Button onClick={importWines} disabled={isImporting} className="w-full" size="lg" variant="outline">
+                  <Upload className="h-4 w-4 mr-2" />
+                  {isImporting ? `Đang import... ${Math.round(progress)}%` : "Import (tạo bản sao)"}
+                </Button>
+              </div>
 
               {isImporting && <Progress value={progress} />}
             </CardContent>
