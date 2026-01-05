@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle, XCircle, Upload, ArrowLeft } from "lucide-react";
+import { CheckCircle, XCircle, Upload, ArrowLeft, FileUp, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Import all wine data
@@ -18,12 +18,40 @@ interface ImportStatus {
   error?: string;
 }
 
+interface CSVWine {
+  id: string;
+  name: string;
+  origin: string;
+  grapes: string;
+  price: string;
+  description: string;
+  story: string;
+  image_url: string;
+  category: string;
+  temperature: string;
+  alcohol: string;
+  pairing: string;
+  tasting_notes: string;
+  flavor_notes: string;
+  vintage: string;
+  region: string;
+  sweetness: string;
+  body: string;
+  tannin: string;
+  acidity: string;
+  fizzy: string;
+  created_at: string;
+  updated_at: string;
+}
+
 const AdminImportWines = () => {
   const queryClient = useQueryClient();
   const [isImporting, setIsImporting] = useState(false);
   const [importStatuses, setImportStatuses] = useState<ImportStatus[]>([]);
   const [progress, setProgress] = useState(0);
   const [existingCount, setExistingCount] = useState<number | null>(null);
+  const [csvWines, setCsvWines] = useState<CSVWine[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -43,6 +71,180 @@ const AdminImportWines = () => {
     setExistingCount(count || 0);
   };
 
+  const parseCSV = (text: string): CSVWine[] => {
+    const lines = text.split('\n');
+    const headers = lines[0].split(';');
+    const wines: CSVWine[] = [];
+    
+    let currentLine = '';
+    for (let i = 1; i < lines.length; i++) {
+      currentLine += lines[i];
+      
+      // Check if line is complete (has all fields)
+      const fields = currentLine.split(';');
+      if (fields.length >= headers.length) {
+        const wine: any = {};
+        headers.forEach((header, idx) => {
+          wine[header.trim()] = fields[idx]?.trim() || '';
+        });
+        if (wine.id && wine.name) {
+          wines.push(wine as CSVWine);
+        }
+        currentLine = '';
+      } else {
+        currentLine += '\n';
+      }
+    }
+    
+    return wines;
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target?.result as string;
+      const wines = parseCSV(text);
+      setCsvWines(wines);
+      toast({
+        title: "CSV đã tải",
+        description: `Đã phát hiện ${wines.length} chai rượu từ file CSV`,
+      });
+    };
+    reader.readAsText(file);
+  };
+
+  const parseFlavorNotes = (str: string): string[] | null => {
+    if (!str) return null;
+    try {
+      // Parse JSON array like ["Dâu đen","Mâm xôi"]
+      const parsed = JSON.parse(str.replace(/\\/g, ''));
+      return Array.isArray(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const parseNumber = (str: string): number | null => {
+    if (!str || str === '') return null;
+    const num = parseFloat(str);
+    return isNaN(num) ? null : num;
+  };
+
+  const syncFromCSV = async () => {
+    if (csvWines.length === 0) {
+      toast({
+        title: "Lỗi",
+        description: "Vui lòng tải file CSV trước",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsImporting(true);
+    setImportStatuses(csvWines.map((w) => ({ name: w.name, status: "pending" as const })));
+    setProgress(0);
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    // Get current wines from DB to match by name
+    const { data: dbWines, error: dbErr } = await supabase
+      .from("wines")
+      .select("id,name");
+
+    if (dbErr) {
+      setIsImporting(false);
+      toast({
+        title: "Lỗi",
+        description: dbErr.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const normalize = (s: string) => s.trim().toLowerCase();
+    const byName = new Map<string, { id: string; name: string }>();
+
+    for (const w of dbWines ?? []) {
+      const key = normalize(w.name);
+      if (!byName.has(key)) byName.set(key, w);
+    }
+
+    for (let i = 0; i < csvWines.length; i++) {
+      const wine = csvWines[i];
+
+      try {
+        const match = byName.get(normalize(wine.name));
+        
+        const wineData = {
+          name: wine.name,
+          origin: wine.origin,
+          grapes: wine.grapes,
+          price: wine.price,
+          description: wine.description,
+          story: wine.story || null,
+          image_url: wine.image_url || null,
+          category: wine.category as "red" | "white" | "sparkling",
+          temperature: wine.temperature || null,
+          alcohol: wine.alcohol || null,
+          pairing: wine.pairing || null,
+          tasting_notes: wine.tasting_notes || null,
+          flavor_notes: parseFlavorNotes(wine.flavor_notes),
+          vintage: wine.vintage || null,
+          region: wine.region || null,
+          sweetness: parseNumber(wine.sweetness),
+          body: parseNumber(wine.body),
+          tannin: parseNumber(wine.tannin),
+          acidity: parseNumber(wine.acidity),
+          fizzy: parseNumber(wine.fizzy),
+        };
+
+        if (match) {
+          const { error } = await supabase
+            .from("wines")
+            .update(wineData)
+            .eq("id", match.id);
+          if (error) throw error;
+        } else {
+          // Insert new wine
+          const { error } = await supabase
+            .from("wines")
+            .insert(wineData);
+          if (error) throw error;
+        }
+
+        successCount++;
+        setImportStatuses((prev) =>
+          prev.map((s, idx) => (idx === i ? { ...s, status: "success" as const } : s))
+        );
+      } catch (error: any) {
+        errorCount++;
+        setImportStatuses((prev) =>
+          prev.map((s, idx) =>
+            idx === i
+              ? { ...s, status: "error" as const, error: error.message }
+              : s
+          )
+        );
+      }
+
+      setProgress(((i + 1) / csvWines.length) * 100);
+    }
+
+    setIsImporting(false);
+    await checkExistingWines();
+    queryClient.invalidateQueries({ queryKey: ["wines"] });
+
+    toast({
+      title: "Đồng bộ từ CSV hoàn tất",
+      description: `Cập nhật/thêm: ${successCount}, Lỗi: ${errorCount}`,
+      variant: errorCount > 0 ? "destructive" : "default",
+    });
+  };
+
   const mapStaticToDb = (wine: (typeof staticWines)[number]) => {
     return {
       name: wine.name,
@@ -51,8 +253,6 @@ const AdminImportWines = () => {
       price: wine.price,
       description: wine.description,
       story: wine.story || null,
-      // ⚠️ Không ghi đè image_url ở chế độ sync để tránh làm hỏng đường dẫn ảnh production
-      // image_url: wine.image || null,
       category: wine.category,
       temperature: wine.temperature || null,
       alcohol: wine.alcohol || null,
@@ -143,7 +343,6 @@ const AdminImportWines = () => {
     const normalize = (s: string) => s.trim().toLowerCase();
     const byName = new Map<string, { id: string; name: string }>();
 
-    // Nếu có trùng tên, ưu tiên record đầu tiên (an toàn, tránh update hàng loạt nhầm)
     for (const w of dbWines ?? []) {
       const key = normalize(w.name);
       if (!byName.has(key)) byName.set(key, w);
@@ -163,7 +362,6 @@ const AdminImportWines = () => {
             .eq("id", match.id);
           if (error) throw error;
         } else {
-          // Nếu thiếu trong DB thì insert (có ảnh để đầy đủ)
           const { error } = await supabase
             .from("wines")
             .insert({ ...wineData, image_url: wine.image || null });
@@ -225,15 +423,66 @@ const AdminImportWines = () => {
             <div className="flex-1">
               <h1 className="text-2xl font-serif">Import Dữ Liệu Rượu</h1>
               <p className="text-muted-foreground text-sm">
-                Chuyển {staticWines.length} chai rượu từ file tĩnh vào database
+                Đồng bộ dữ liệu rượu từ CSV hoặc file tĩnh
               </p>
             </div>
           </header>
 
+          {/* CSV Import Card */}
+          <Card className="border-2 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileUp className="h-5 w-5" />
+                Import từ CSV (Selection.com.vn)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
+                ✅ <b>Khuyến nghị:</b> Sử dụng file CSV export từ selection.com.vn để đồng bộ data chính xác nhất.
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="file"
+                  accept=".csv"
+                  ref={fileInputRef}
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isImporting}
+                >
+                  <FileUp className="h-4 w-4 mr-2" />
+                  Chọn file CSV
+                </Button>
+                
+                {csvWines.length > 0 && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    Đã tải: <span className="font-semibold text-foreground">{csvWines.length} chai rượu</span>
+                  </div>
+                )}
+              </div>
+
+              {csvWines.length > 0 && (
+                <Button
+                  onClick={syncFromCSV}
+                  disabled={isImporting}
+                  className="w-full"
+                  size="lg"
+                >
+                  <RefreshCw className={`h-4 w-4 mr-2 ${isImporting ? 'animate-spin' : ''}`} />
+                  {isImporting ? `Đang đồng bộ... ${Math.round(progress)}%` : `Đồng bộ ${csvWines.length} chai từ CSV`}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Status Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Trạng thái</CardTitle>
+              <CardTitle>Trạng thái Database</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-4 text-center">
@@ -256,15 +505,15 @@ const AdminImportWines = () => {
                   ⚠️ Database đã có {existingCount} chai rượu.
                   <div className="mt-1">
                     - <b>Import</b> sẽ tạo bản sao (không khuyến nghị).
-                    <br />- <b>Đồng bộ</b> sẽ cập nhật/ghi đè nội dung theo <b>file tĩnh</b> (khuyến nghị để khớp nguyên bản).
+                    <br />- <b>Đồng bộ</b> sẽ cập nhật/ghi đè nội dung theo file tĩnh.
                   </div>
                 </div>
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <Button onClick={syncWines} disabled={isImporting} className="w-full" size="lg" variant="default">
+                <Button onClick={syncWines} disabled={isImporting} className="w-full" size="lg" variant="secondary">
                   <Upload className="h-4 w-4 mr-2" />
-                  {isImporting ? `Đang đồng bộ... ${Math.round(progress)}%` : "Đồng bộ (ghi đè) theo file tĩnh"}
+                  {isImporting ? `Đang đồng bộ... ${Math.round(progress)}%` : "Đồng bộ theo file tĩnh"}
                 </Button>
 
                 <Button onClick={importWines} disabled={isImporting} className="w-full" size="lg" variant="outline">
