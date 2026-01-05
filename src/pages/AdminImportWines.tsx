@@ -117,14 +117,33 @@ const AdminImportWines = () => {
   };
 
   const parseFlavorNotes = (str: string): string[] | null => {
-    if (!str) return null;
+    const raw = (str ?? "").trim();
+    if (!raw) return null;
+
+    // CSV export thường encode JSON array theo dạng "[""A"",""B""]" (double-quote doubled)
+    const normalized = raw
+      .replace(/^"|"$/g, "") // strip wrapping quotes
+      .replace(/""/g, '"') // unescape doubled quotes
+      .trim();
+
     try {
-      // Parse JSON array like ["Dâu đen","Mâm xôi"]
-      const parsed = JSON.parse(str.replace(/\\/g, ''));
-      return Array.isArray(parsed) ? parsed : null;
+      const parsed = JSON.parse(normalized);
+      if (Array.isArray(parsed)) {
+        const cleaned = parsed
+          .map((v) => (typeof v === "string" ? v.trim() : ""))
+          .filter(Boolean);
+        return cleaned.length ? cleaned : null;
+      }
     } catch {
-      return null;
+      // ignore
     }
+
+    // Fallback: allow comma-separated values
+    const fallback = normalized
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return fallback.length ? fallback : null;
   };
 
   const parseNumber = (str: string): number | null => {
