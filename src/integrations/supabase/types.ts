@@ -206,6 +206,7 @@ export type Database = {
           requested_bank_account_number: string | null
           requested_bank_name: string | null
           requested_name: string | null
+          requested_phone: string | null
           requested_qr_code_url: string | null
           status: string
         }
@@ -221,6 +222,7 @@ export type Database = {
           requested_bank_account_number?: string | null
           requested_bank_name?: string | null
           requested_name?: string | null
+          requested_phone?: string | null
           requested_qr_code_url?: string | null
           status?: string
         }
@@ -236,6 +238,7 @@ export type Database = {
           requested_bank_account_number?: string | null
           requested_bank_name?: string | null
           requested_name?: string | null
+          requested_phone?: string | null
           requested_qr_code_url?: string | null
           status?: string
         }

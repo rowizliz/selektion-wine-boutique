@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Check, X, User, Image, Landmark } from "lucide-react";
+import { ArrowLeft, Check, X, User, Image, Landmark, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +31,7 @@ interface ProfileUpdate {
   id: string;
   collaborator_id: string;
   requested_name: string | null;
+  requested_phone: string | null;
   requested_avatar_url: string | null;
   requested_bank_name: string | null;
   requested_bank_account_number: string | null;
@@ -71,6 +72,7 @@ const AdminProfileUpdates = () => {
       if (approve) {
         const updateData: Record<string, string | null> = {};
         if (update.requested_name) updateData.name = update.requested_name;
+        if (update.requested_phone) updateData.phone = update.requested_phone;
         if (update.requested_avatar_url) updateData.avatar_url = update.requested_avatar_url;
         if (update.requested_bank_name) updateData.bank_name = update.requested_bank_name;
         if (update.requested_bank_account_number) updateData.bank_account_number = update.requested_bank_account_number;
@@ -191,6 +193,12 @@ const AdminProfileUpdates = () => {
                                   Tên
                                 </Badge>
                               )}
+                              {update.requested_phone && (
+                                <Badge variant="secondary" className="text-xs">
+                                  <Phone className="h-3 w-3 mr-1" />
+                                  SĐT
+                                </Badge>
+                              )}
                               {update.requested_avatar_url && (
                                 <Badge variant="secondary" className="text-xs">
                                   <Image className="h-3 w-3 mr-1" />
@@ -254,6 +262,13 @@ const AdminProfileUpdates = () => {
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Tên mới:</p>
                   <p className="text-sm p-2 bg-muted rounded">{selectedUpdate.requested_name}</p>
+                </div>
+              )}
+
+              {selectedUpdate.requested_phone && (
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">Số điện thoại mới:</p>
+                  <p className="text-sm p-2 bg-muted rounded">{selectedUpdate.requested_phone}</p>
                 </div>
               )}
 
