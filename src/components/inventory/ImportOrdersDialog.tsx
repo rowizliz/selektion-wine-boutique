@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,7 +25,7 @@ interface CSVOrder {
   order_type: string;
   notes?: string;
   discount?: string;
-  wines: string; // Format: "wine_name:quantity:unit_price:purchase_price;..."
+  wines?: string; // Format: "wine_name:quantity:unit_price:purchase_price;..."
   created_at?: string;
 }
 
@@ -35,37 +35,42 @@ interface ImportStatus {
   message: string;
 }
 
+function normalizeHeader(h: string) {
+  // remove BOM + quotes
+  return h
+    .replace(/^\uFEFF/, "")
+    .trim()
+    .toLowerCase()
+    .replace(/"/g, "");
+}
+
 function parseCSV(text: string): CSVOrder[] {
-  const lines = text.trim().split("\n");
+  const cleaned = text.replace(/^\uFEFF/, "");
+  const lines = cleaned.trim().split("\n");
   if (lines.length < 2) {
     console.log("CSV không đủ dòng (cần ít nhất 2 dòng: header + data)");
     return [];
   }
 
-  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase().replace(/"/g, ""));
+  const headers = lines[0].split(",").map(normalizeHeader);
   console.log("Headers found:", headers);
-  
+
   const orders: CSVOrder[] = [];
 
   for (let i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue; // Skip empty lines
-    
+    if (!lines[i].trim()) continue;
+
     const values = parseCSVLine(lines[i]);
-    console.log(`Line ${i} values:`, values);
-    
-    const order: Record<string, string> = {};
+    const row: Record<string, string> = {};
 
     headers.forEach((header, index) => {
-      if (values[index]) {
-        order[header] = values[index].trim();
-      }
+      const v = values[index];
+      if (v !== undefined) row[header] = v.trim();
     });
 
-    console.log(`Parsed order:`, order);
-
-    // Make wines optional - allow orders without wine details
-    if (order.customer_name) {
-      orders.push(order as unknown as CSVOrder);
+    // Must at least have customer_name
+    if (row.customer_name) {
+      orders.push(row as unknown as CSVOrder);
     }
   }
 
@@ -82,7 +87,14 @@ function parseCSVLine(line: string): string[] {
     const char = line[i];
 
     if (char === '"') {
-      inQuotes = !inQuotes;
+      // Handle escaped quotes ""
+      const next = line[i + 1];
+      if (inQuotes && next === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
     } else if (char === "," && !inQuotes) {
       result.push(current.replace(/^"|"$/g, ""));
       current = "";
@@ -95,53 +107,44 @@ function parseCSVLine(line: string): string[] {
   return result;
 }
 
-function parseWines(winesStr: string | undefined): { wine_name: string; quantity: number; unit_price: number; purchase_price: number }[] {
-  if (!winesStr || !winesStr.trim()) {
-    console.log("No wines string provided");
-    return [];
-  }
-  
+function parseWines(
+  winesStr: string | undefined
+): { wine_name: string; quantity: number; unit_price: number; purchase_price: number }[] {
+  if (!winesStr || !winesStr.trim()) return [];
+
   const wines: { wine_name: string; quantity: number; unit_price: number; purchase_price: number }[] = [];
-  
-  const items = winesStr.split(";").filter(item => item.trim());
-  console.log("Wine items to parse:", items);
-  
+  const items = winesStr.split(";").filter((x) => x.trim());
+
   for (const item of items) {
     const parts = item.split(":");
-    console.log("Wine parts:", parts);
-    
-    if (parts.length >= 4) {
-      wines.push({
-        wine_name: parts[0].trim(),
-        quantity: parseInt(parts[1]) || 1,
-        unit_price: parseFloat(parts[2]) || 0,
-        purchase_price: parseFloat(parts[3]) || 0,
-      });
-    } else if (parts.length >= 1 && parts[0].trim()) {
-      // Allow simple wine name only
-      wines.push({
-        wine_name: parts[0].trim(),
-        quantity: parseInt(parts[1]) || 1,
-        unit_price: parseFloat(parts[2]) || 0,
-        purchase_price: parseFloat(parts[3]) || 0,
-      });
-    }
+    if (!parts[0]?.trim()) continue;
+
+    wines.push({
+      wine_name: parts[0].trim(),
+      quantity: parseInt(parts[1] ?? "", 10) || 1,
+      unit_price: parseFloat(parts[2] ?? "") || 0,
+      purchase_price: parseFloat(parts[3] ?? "") || 0,
+    });
   }
 
-  console.log("Parsed wines:", wines);
   return wines;
 }
 
-export default function ImportOrdersDialog({
-  open,
-  onOpenChange,
-  profileId,
-}: ImportOrdersDialogProps) {
+export default function ImportOrdersDialog({ open, onOpenChange, profileId }: ImportOrdersDialogProps) {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [csvOrders, setCsvOrders] = useState<CSVOrder[]>([]);
   const [importStatuses, setImportStatuses] = useState<ImportStatus[]>([]);
   const [isImporting, setIsImporting] = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      setCsvOrders([]);
+      setImportStatuses([]);
+      setIsImporting(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }, [open]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -149,8 +152,9 @@ export default function ImportOrdersDialog({
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      const text = event.target?.result as string;
+      const text = (event.target?.result as string) ?? "";
       const orders = parseCSV(text);
+
       setCsvOrders(orders);
       setImportStatuses(
         orders.map((o) => ({
@@ -159,13 +163,17 @@ export default function ImportOrdersDialog({
           message: "Chờ import",
         }))
       );
+
+      if (orders.length === 0) {
+        toast.error("Không đọc được đơn hàng từ CSV (kiểm tra header customer_name)");
+      }
     };
     reader.readAsText(file);
   };
 
   const importOrders = async () => {
     if (csvOrders.length === 0) {
-      toast.error("Chưa có dữ liệu để import");
+      toast.error("Chưa có đơn hàng hợp lệ để import");
       return;
     }
 
@@ -181,13 +189,12 @@ export default function ImportOrdersDialog({
           newStatuses[i] = {
             customer_name: csvOrder.customer_name,
             status: "error",
-            message: "Không có sản phẩm hợp lệ",
+            message: "Thiếu cột wines hoặc sai định dạng wines",
           };
           setImportStatuses([...newStatuses]);
           continue;
         }
 
-        // Create order
         const { data: orderData, error: orderError } = await supabase
           .from("orders")
           .insert({
@@ -204,7 +211,6 @@ export default function ImportOrdersDialog({
 
         if (orderError) throw orderError;
 
-        // Create order items
         const orderItems = wines.map((wine) => ({
           order_id: orderData.id,
           wine_id: null as string | null,
@@ -214,10 +220,7 @@ export default function ImportOrdersDialog({
           purchase_price: wine.purchase_price,
         }));
 
-        const { error: itemsError } = await supabase
-          .from("order_items")
-          .insert(orderItems);
-
+        const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
         if (itemsError) throw itemsError;
 
         newStatuses[i] = {
@@ -229,7 +232,7 @@ export default function ImportOrdersDialog({
         newStatuses[i] = {
           customer_name: csvOrder.customer_name,
           status: "error",
-          message: error.message || "Lỗi không xác định",
+          message: error?.message || "Lỗi không xác định",
         };
       }
 
@@ -241,30 +244,20 @@ export default function ImportOrdersDialog({
     toast.success("Import hoàn tất!");
   };
 
-  const handleClose = () => {
-    setCsvOrders([]);
-    setImportStatuses([]);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    onOpenChange(false);
-  };
-
   const successCount = importStatuses.filter((s) => s.status === "success").length;
   const errorCount = importStatuses.filter((s) => s.status === "error").length;
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Import Đơn Hàng từ CSV</DialogTitle>
           <DialogDescription>
-            Upload file CSV chứa danh sách đơn hàng. File cần có các cột: customer_name, customer_phone, order_type (sale/gift), notes, discount, wines (định dạng: tên:số lượng:giá bán:giá nhập;...)
+            CSV cần cột: customer_name, customer_phone, order_type (sale/gift), notes, discount, wines (định dạng: tên:số lượng:giá bán:giá nhập;...)
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* File Upload */}
           <div className="border-2 border-dashed rounded-lg p-6 text-center">
             <input
               ref={fileInputRef}
@@ -273,32 +266,24 @@ export default function ImportOrdersDialog({
               onChange={handleFileUpload}
               className="hidden"
             />
-            <Button
-              variant="outline"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isImporting}
-            >
+            <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={isImporting}>
               <Upload className="h-4 w-4 mr-2" />
               Chọn file CSV
             </Button>
-            {csvOrders.length > 0 && (
-              <p className="mt-2 text-sm text-muted-foreground">
-                <FileText className="h-4 w-4 inline mr-1" />
-                Đã tải {csvOrders.length} đơn hàng
-              </p>
-            )}
+            <p className="mt-2 text-sm text-muted-foreground">
+              <FileText className="h-4 w-4 inline mr-1" />
+              {csvOrders.length > 0 ? `Đã đọc ${csvOrders.length} đơn hàng` : "Chưa có dữ liệu"}
+            </p>
           </div>
 
-          {/* CSV Template */}
           <div className="bg-muted p-3 rounded-lg text-xs">
-            <p className="font-medium mb-1">Định dạng CSV mẫu:</p>
+            <p className="font-medium mb-1">CSV mẫu:</p>
             <code className="block overflow-x-auto whitespace-nowrap">
-              customer_name,customer_phone,order_type,notes,discount,wines<br/>
+              customer_name,customer_phone,order_type,notes,discount,wines<br />
               "Nguyễn Văn A","0901234567","sale","Ghi chú","100000","Rượu 1:2:500000:300000;Rượu 2:1:400000:250000"
             </code>
           </div>
 
-          {/* Import Status */}
           {importStatuses.length > 0 && (
             <div className="space-y-2">
               <div className="flex items-center gap-4 text-sm">
@@ -330,9 +315,7 @@ export default function ImportOrdersDialog({
                           : "bg-muted"
                       }`}
                     >
-                      <span className="font-medium truncate max-w-[200px]">
-                        {status.customer_name}
-                      </span>
+                      <span className="font-medium truncate max-w-[200px]">{status.customer_name}</span>
                       <span className="flex items-center gap-1">
                         {status.status === "success" && <CheckCircle className="h-3 w-3" />}
                         {status.status === "error" && <XCircle className="h-3 w-3" />}
@@ -346,15 +329,11 @@ export default function ImportOrdersDialog({
             </div>
           )}
 
-          {/* Actions */}
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={handleClose} disabled={isImporting}>
+            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isImporting}>
               Đóng
             </Button>
-            <Button
-              onClick={importOrders}
-              disabled={csvOrders.length === 0 || isImporting}
-            >
+            <Button onClick={importOrders} disabled={isImporting}>
               {isImporting ? "Đang import..." : "Import Đơn Hàng"}
             </Button>
           </div>
