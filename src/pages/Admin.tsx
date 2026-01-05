@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog } from "lucide-react";
+import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
@@ -93,7 +93,7 @@ const Admin = () => {
     (pendingCounts?.profileUpdatesPending ?? 0) + 
     (pendingCounts?.withdrawalsPending ?? 0) +
     (pendingCounts?.collaboratorOrdersPending ?? 0);
-  useNotificationSound(totalPending > 0);
+  const { soundEnabled, enableSound, disableSound } = useNotificationSound(totalPending > 0);
 
   const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending') => {
     if (!badgeKey || !pendingCounts) return 0;
@@ -116,12 +116,30 @@ const Admin = () => {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <div>
+            <div className="flex-1">
               <h1 className="text-2xl font-serif">Bảng điều khiển Admin</h1>
               <p className="text-muted-foreground text-sm">
                 Quản lý nội dung website Sélection
               </p>
             </div>
+            <Button
+              variant={soundEnabled ? "default" : "outline"}
+              size="sm"
+              onClick={soundEnabled ? disableSound : enableSound}
+              className="gap-2"
+            >
+              {soundEnabled ? (
+                <>
+                  <Volume2 className="h-4 w-4" />
+                  <span className="hidden sm:inline">Âm thanh bật</span>
+                </>
+              ) : (
+                <>
+                  <VolumeX className="h-4 w-4" />
+                  <span className="hidden sm:inline">Bật âm thanh</span>
+                </>
+              )}
+            </Button>
           </header>
 
           {/* Module Cards */}
