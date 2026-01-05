@@ -12,7 +12,7 @@ interface AdminModule {
   icon: React.ComponentType<{ className?: string }>;
   href: string;
   color: string;
-  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending';
+  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending';
 }
 
 const adminModules: AdminModule[] = [
@@ -29,7 +29,7 @@ const adminModules: AdminModule[] = [
     icon: Users,
     href: "/admin/collaborators",
     color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400",
-    badgeKey: 'withdrawalsPending'
+    badgeKey: 'collaboratorOrdersPending'
   },
   {
     title: "Duyệt Profile CTV",
@@ -91,10 +91,11 @@ const Admin = () => {
   const totalPending = (pendingCounts?.birthdayGiftsPending ?? 0) + 
     (pendingCounts?.personalizedWinePending ?? 0) + 
     (pendingCounts?.profileUpdatesPending ?? 0) + 
-    (pendingCounts?.withdrawalsPending ?? 0);
+    (pendingCounts?.withdrawalsPending ?? 0) +
+    (pendingCounts?.collaboratorOrdersPending ?? 0);
   useNotificationSound(totalPending > 0);
 
-  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending') => {
+  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending') => {
     if (!badgeKey || !pendingCounts) return 0;
     return pendingCounts[badgeKey];
   };
