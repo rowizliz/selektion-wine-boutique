@@ -37,13 +37,22 @@ interface ImportStatus {
 
 function parseCSV(text: string): CSVOrder[] {
   const lines = text.trim().split("\n");
-  if (lines.length < 2) return [];
+  if (lines.length < 2) {
+    console.log("CSV không đủ dòng (cần ít nhất 2 dòng: header + data)");
+    return [];
+  }
 
   const headers = lines[0].split(",").map((h) => h.trim().toLowerCase().replace(/"/g, ""));
+  console.log("Headers found:", headers);
+  
   const orders: CSVOrder[] = [];
 
   for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue; // Skip empty lines
+    
     const values = parseCSVLine(lines[i]);
+    console.log(`Line ${i} values:`, values);
+    
     const order: Record<string, string> = {};
 
     headers.forEach((header, index) => {
@@ -52,11 +61,15 @@ function parseCSV(text: string): CSVOrder[] {
       }
     });
 
-    if (order.customer_name && order.wines) {
+    console.log(`Parsed order:`, order);
+
+    // Make wines optional - allow orders without wine details
+    if (order.customer_name) {
       orders.push(order as unknown as CSVOrder);
     }
   }
 
+  console.log("Total orders parsed:", orders.length);
   return orders;
 }
 
@@ -82,13 +95,30 @@ function parseCSVLine(line: string): string[] {
   return result;
 }
 
-function parseWines(winesStr: string): { wine_name: string; quantity: number; unit_price: number; purchase_price: number }[] {
+function parseWines(winesStr: string | undefined): { wine_name: string; quantity: number; unit_price: number; purchase_price: number }[] {
+  if (!winesStr || !winesStr.trim()) {
+    console.log("No wines string provided");
+    return [];
+  }
+  
   const wines: { wine_name: string; quantity: number; unit_price: number; purchase_price: number }[] = [];
   
-  const items = winesStr.split(";");
+  const items = winesStr.split(";").filter(item => item.trim());
+  console.log("Wine items to parse:", items);
+  
   for (const item of items) {
     const parts = item.split(":");
+    console.log("Wine parts:", parts);
+    
     if (parts.length >= 4) {
+      wines.push({
+        wine_name: parts[0].trim(),
+        quantity: parseInt(parts[1]) || 1,
+        unit_price: parseFloat(parts[2]) || 0,
+        purchase_price: parseFloat(parts[3]) || 0,
+      });
+    } else if (parts.length >= 1 && parts[0].trim()) {
+      // Allow simple wine name only
       wines.push({
         wine_name: parts[0].trim(),
         quantity: parseInt(parts[1]) || 1,
@@ -98,6 +128,7 @@ function parseWines(winesStr: string): { wine_name: string; quantity: number; un
     }
   }
 
+  console.log("Parsed wines:", wines);
   return wines;
 }
 
