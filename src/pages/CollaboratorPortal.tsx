@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Package, DollarSign, ShoppingCart, Plus, Minus, Wallet, CreditCard, Landmark, Settings } from "lucide-react";
+import { Package, DollarSign, ShoppingCart, Plus, Minus, Wallet, CreditCard, Landmark, Settings, Key } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,6 +39,7 @@ import { BankInfoDialog } from "@/components/collaborator/BankInfoDialog";
 import { WithdrawalDialog } from "@/components/collaborator/WithdrawalDialog";
 import { WithdrawalHistory } from "@/components/collaborator/WithdrawalHistory";
 import { ProfileSettingsDialog } from "@/components/collaborator/ProfileSettingsDialog";
+import { PasswordChangeDialog } from "@/components/collaborator/PasswordChangeDialog";
 
 interface CartItem {
   wine_id: string;
@@ -58,6 +59,7 @@ const CollaboratorPortal = () => {
   const [isBankInfoOpen, setIsBankInfoOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
   const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false);
+  const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -275,8 +277,18 @@ const CollaboratorPortal = () => {
               <Button
                 variant="outline"
                 size="icon"
+                onClick={() => setIsPasswordChangeOpen(true)}
+                className="h-8 w-8 sm:h-9 sm:w-9"
+                title="Đổi mật khẩu"
+              >
+                <Key className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={() => setIsProfileSettingsOpen(true)}
                 className="h-8 w-8 sm:h-9 sm:w-9"
+                title="Cài đặt hồ sơ"
               >
                 <Settings className="h-4 w-4" />
               </Button>
@@ -708,6 +720,15 @@ const CollaboratorPortal = () => {
         <ProfileSettingsDialog
           open={isProfileSettingsOpen}
           onOpenChange={setIsProfileSettingsOpen}
+          collaborator={collaborator}
+        />
+      )}
+
+      {/* Password Change Dialog */}
+      {collaborator && (
+        <PasswordChangeDialog
+          open={isPasswordChangeOpen}
+          onOpenChange={setIsPasswordChangeOpen}
           collaborator={collaborator}
         />
       )}
