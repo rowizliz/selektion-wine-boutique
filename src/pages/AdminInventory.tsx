@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Package, TrendingUp, TrendingDown, DollarSign, ShoppingCart, Gift, Plus, Percent } from "lucide-react";
+import { ArrowLeft, Package, TrendingUp, TrendingDown, DollarSign, ShoppingCart, Gift, Plus, Percent, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +13,7 @@ import OrdersTable from "@/components/inventory/OrdersTable";
 import AddInventoryDialog from "@/components/inventory/AddInventoryDialog";
 import CreateOrderDialog from "@/components/inventory/CreateOrderDialog";
 import ProfileSelector from "@/components/inventory/ProfileSelector";
-
+import ImportOrdersDialog from "@/components/inventory/ImportOrdersDialog";
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -45,6 +45,7 @@ const AdminInventory = () => {
   const { data: orders, isLoading: ordersLoading } = useOrders(profileId);
   const [showAddInventory, setShowAddInventory] = useState(false);
   const [showCreateOrder, setShowCreateOrder] = useState(false);
+  const [showImportOrders, setShowImportOrders] = useState(false);
 
   const financials = orders ? calculateOrderFinancials(orders) : null;
 
@@ -227,6 +228,10 @@ const AdminInventory = () => {
                       <Plus className="h-4 w-4 mr-2" />
                       Thêm Tồn Kho
                     </Button>
+                    <Button onClick={() => setShowImportOrders(true)} variant="outline">
+                      <Upload className="h-4 w-4 mr-2" />
+                      Import CSV
+                    </Button>
                     <Button onClick={() => setShowCreateOrder(true)}>
                       <Plus className="h-4 w-4 mr-2" />
                       Tạo Đơn Hàng
@@ -259,6 +264,12 @@ const AdminInventory = () => {
       <CreateOrderDialog
         open={showCreateOrder}
         onOpenChange={setShowCreateOrder}
+        profileId={profileId}
+      />
+
+      <ImportOrdersDialog
+        open={showImportOrders}
+        onOpenChange={setShowImportOrders}
         profileId={profileId}
       />
     </>
