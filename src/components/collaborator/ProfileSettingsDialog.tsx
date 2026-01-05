@@ -27,6 +27,7 @@ interface PendingUpdate {
   status: string;
   created_at: string;
   requested_name: string | null;
+  requested_phone: string | null;
   requested_avatar_url: string | null;
   requested_bank_name: string | null;
   requested_bank_account_number: string | null;
@@ -40,6 +41,7 @@ export const ProfileSettingsDialog = ({
   collaborator,
 }: ProfileSettingsDialogProps) => {
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [bankName, setBankName] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
@@ -54,6 +56,7 @@ export const ProfileSettingsDialog = ({
   useEffect(() => {
     if (open && collaborator) {
       setName(collaborator.name || "");
+      setPhone(collaborator.phone || "");
       setAvatarUrl(collaborator.avatar_url || "");
       setBankName(collaborator.bank_name || "");
       setBankAccountNumber(collaborator.bank_account_number || "");
@@ -130,6 +133,7 @@ export const ProfileSettingsDialog = ({
   const hasChanges = () => {
     return (
       name !== (collaborator.name || "") ||
+      phone !== (collaborator.phone || "") ||
       avatarUrl !== (collaborator.avatar_url || "") ||
       bankName !== (collaborator.bank_name || "") ||
       bankAccountNumber !== (collaborator.bank_account_number || "") ||
@@ -151,6 +155,7 @@ export const ProfileSettingsDialog = ({
       .insert({
         collaborator_id: collaborator.id,
         requested_name: name !== collaborator.name ? name : null,
+        requested_phone: phone !== collaborator.phone ? phone : null,
         requested_avatar_url: avatarUrl !== collaborator.avatar_url ? avatarUrl : null,
         requested_bank_name: bankName !== collaborator.bank_name ? bankName : null,
         requested_bank_account_number: bankAccountNumber !== collaborator.bank_account_number ? bankAccountNumber : null,
@@ -225,6 +230,17 @@ export const ProfileSettingsDialog = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Nhập tên của bạn"
+            />
+          </div>
+
+          {/* Phone */}
+          <div className="space-y-2">
+            <Label htmlFor="phone">Số điện thoại</Label>
+            <Input
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Nhập số điện thoại"
             />
           </div>
 
