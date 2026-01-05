@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 
 export const useNotificationSound = (hasPendingRequests: boolean) => {
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -6,6 +6,9 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
   const beepTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef(false);
   const hasPendingRef = useRef(hasPendingRequests);
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    return localStorage.getItem('admin-notification-sound') === 'true';
+  });
 
   // Keep ref in sync with prop
   useEffect(() => {
@@ -27,11 +30,74 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
     }
   }, [hasPendingRequests]);
 
+  const enableSound = useCallback(() => {
+    // Create AudioContext on user interaction to bypass autoplay restrictions
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContext();
+    }
+    
+    // Resume if suspended
+    if (audioContextRef.current.state === 'suspended') {
+      audioContextRef.current.resume();
+    }
+    
+    setSoundEnabled(true);
+    localStorage.setItem('admin-notification-sound', 'true');
+    
+    // Play a test beep to confirm sound is working
+    playBeepOnce();
+  }, []);
+
+  const disableSound = useCallback(() => {
+    setSoundEnabled(false);
+    localStorage.setItem('admin-notification-sound', 'false');
+    
+    // Stop any playing sounds
+    if (beepTimeoutRef.current) {
+      clearTimeout(beepTimeoutRef.current);
+      beepTimeoutRef.current = null;
+    }
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    isPlayingRef.current = false;
+  }, []);
+
+  const playBeepOnce = useCallback(() => {
+    if (!audioContextRef.current) return;
+    
+    const ctx = audioContextRef.current;
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+    oscillator.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
+    oscillator.frequency.setValueAtTime(800, ctx.currentTime + 0.2);
+    
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
+    gainNode.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.15);
+    gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.25);
+    gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
+    
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + 0.4);
+  }, []);
+
   const playNotificationSound = useCallback(() => {
-    if (isPlayingRef.current || !hasPendingRef.current) return;
+    if (isPlayingRef.current || !hasPendingRef.current || !soundEnabled) return;
     
     try {
-      // Create or resume AudioContext
       if (!audioContextRef.current) {
         audioContextRef.current = new AudioContext();
       }
@@ -43,32 +109,27 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
 
       isPlayingRef.current = true;
       
-      // Play notification beeps for 30 seconds (every 3 seconds = 10 beeps)
       let beepCount = 0;
       const maxBeeps = 10;
       
       const playBeep = () => {
-        // Use ref to get latest value
-        if (beepCount >= maxBeeps || !hasPendingRef.current) {
+        if (beepCount >= maxBeeps || !hasPendingRef.current || !soundEnabled) {
           isPlayingRef.current = false;
           return;
         }
 
-        // Create a pleasant notification sound
         const oscillator = ctx.createOscillator();
         const gainNode = ctx.createGain();
         
         oscillator.connect(gainNode);
         gainNode.connect(ctx.destination);
         
-        // Two-tone notification (like a doorbell)
         oscillator.frequency.setValueAtTime(800, ctx.currentTime);
         oscillator.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
         oscillator.frequency.setValueAtTime(800, ctx.currentTime + 0.2);
         
         oscillator.type = 'sine';
         
-        // Envelope for smooth sound
         gainNode.gain.setValueAtTime(0, ctx.currentTime);
         gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
         gainNode.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.15);
@@ -80,7 +141,6 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
         
         beepCount++;
         
-        // Schedule next beep after 3 seconds
         if (beepCount < maxBeeps && hasPendingRef.current) {
           beepTimeoutRef.current = setTimeout(playBeep, 3000);
         } else {
@@ -93,19 +153,19 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
       console.error('Error playing notification sound:', error);
       isPlayingRef.current = false;
     }
-  }, []);
+  }, [soundEnabled]);
 
   useEffect(() => {
-    if (hasPendingRequests) {
+    if (hasPendingRequests && soundEnabled) {
       // Play immediately
       playNotificationSound();
       
       // Set up 5-minute interval
       intervalRef.current = setInterval(() => {
-        if (hasPendingRef.current) {
+        if (hasPendingRef.current && soundEnabled) {
           playNotificationSound();
         }
-      }, 5 * 60 * 1000); // 5 minutes
+      }, 5 * 60 * 1000);
     }
 
     return () => {
@@ -114,7 +174,7 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
         intervalRef.current = null;
       }
     };
-  }, [hasPendingRequests, playNotificationSound]);
+  }, [hasPendingRequests, soundEnabled, playNotificationSound]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -128,5 +188,5 @@ export const useNotificationSound = (hasPendingRequests: boolean) => {
     };
   }, []);
 
-  return { playNotificationSound };
+  return { playNotificationSound, soundEnabled, enableSound, disableSound };
 };
