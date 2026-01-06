@@ -424,14 +424,14 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
 
   return (
     <article
-      className="group relative animate-fade-in"
+      className="group relative animate-fade-in h-full"
       style={{ animationDelay: `${index * 60}ms` }}
     >
       {/* Card Container with elegant border */}
-      <div className="relative bg-card rounded-xl overflow-hidden border border-border/40 hover:border-primary/20 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+      <div className="relative h-full bg-card rounded-xl overflow-hidden border border-border/40 hover:border-primary/20 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 flex flex-col">
         
         {/* Image Section */}
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
           <button
             onClick={() => onImageClick({ src: gift.image, name: gift.name })}
             className="w-full h-full cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-inset"
@@ -488,31 +488,31 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
           </div>
         </div>
 
-        {/* Content Section - Minimal & Elegant */}
-        <div className="p-5">
-          {/* Items as elegant pills */}
-          <div className="flex flex-wrap gap-1.5 mb-5">
+        {/* Content Section - Fixed height */}
+        <div className="p-5 flex flex-col flex-1">
+          {/* Items as elegant pills - fixed height container */}
+          <div className="flex flex-wrap gap-1.5 mb-5 min-h-[52px] content-start">
             {gift.items.slice(0, 3).map((item, i) => (
               <span
                 key={i}
-                className="px-2.5 py-1 rounded-full bg-secondary/80 text-[10px] text-muted-foreground font-medium"
+                className="px-2.5 py-1 rounded-full bg-secondary/80 text-[10px] text-muted-foreground font-medium h-fit"
               >
-                {item.length > 20 ? item.slice(0, 20) + "..." : item}
+                {item.length > 18 ? item.slice(0, 18) + "..." : item}
               </span>
             ))}
             {gift.items.length > 3 && (
-              <span className="px-2.5 py-1 rounded-full bg-primary/10 text-[10px] text-primary font-medium">
+              <span className="px-2.5 py-1 rounded-full bg-primary/10 text-[10px] text-primary font-medium h-fit">
                 +{gift.items.length - 3}
               </span>
             )}
           </div>
 
-          {/* CTA Button - Luxury style */}
+          {/* CTA Button - Luxury style, pushed to bottom */}
           <a
             href="https://zalo.me/0906777377"
             target="_blank"
             rel="noopener noreferrer"
-            className="group/btn relative w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-foreground text-background text-sm font-medium overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-foreground/20"
+            className="group/btn relative w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-foreground text-background text-sm font-medium overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-foreground/20 mt-auto"
           >
             {/* Button shine effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
