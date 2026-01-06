@@ -1,9 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, FileText, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Upload, FileText, CheckCircle, XCircle, Loader2, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -15,14 +15,20 @@ interface ImportInventoryDialogProps {
 }
 
 interface CSVInventoryItem {
-  wine_id: string;
+  wine_name: string;
+  wine_id?: string;
   quantity_in_stock: number;
   purchase_price: number;
 }
 
+interface ParsedInventoryItem extends CSVInventoryItem {
+  resolved_wine_id: string | null;
+  resolved_wine_name: string | null;
+}
+
 interface ImportStatus {
-  wine_id: string;
-  status: "pending" | "importing" | "success" | "error";
+  wine_name: string;
+  status: "pending" | "importing" | "success" | "error" | "not_found";
   message?: string;
 }
 
@@ -34,14 +40,21 @@ function parseCSV(text: string): CSVInventoryItem[] {
   const firstLine = lines[0];
   const delimiter = firstLine.includes(";") ? ";" : ",";
 
-  const headers = lines[0].split(delimiter).map((h) => h.trim().toLowerCase());
+  const headers = lines[0].split(delimiter).map((h) => h.trim().toLowerCase().replace(/"/g, ""));
 
-  const wineIdIndex = headers.findIndex(h => h === "wine_id");
-  const quantityIndex = headers.findIndex(h => h === "quantity_in_stock");
-  const priceIndex = headers.findIndex(h => h === "purchase_price");
+  // Support both wine_name and name columns
+  const wineNameIndex = headers.findIndex(h => h === "wine_name" || h === "name");
+  const quantityIndex = headers.findIndex(h => h === "quantity_in_stock" || h === "quantity");
+  const priceIndex = headers.findIndex(h => h === "purchase_price" || h === "price");
 
-  if (wineIdIndex === -1 || quantityIndex === -1 || priceIndex === -1) {
-    throw new Error("CSV thiếu cột bắt buộc: wine_id, quantity_in_stock, purchase_price");
+  if (wineNameIndex === -1) {
+    throw new Error("CSV thiếu cột bắt buộc: wine_name hoặc name");
+  }
+  if (quantityIndex === -1) {
+    throw new Error("CSV thiếu cột bắt buộc: quantity_in_stock hoặc quantity");
+  }
+  if (priceIndex === -1) {
+    throw new Error("CSV thiếu cột bắt buộc: purchase_price hoặc price");
   }
 
   const items: CSVInventoryItem[] = [];
@@ -50,15 +63,16 @@ function parseCSV(text: string): CSVInventoryItem[] {
     const line = lines[i].trim();
     if (!line) continue;
 
-    const values = line.split(delimiter);
+    // Handle CSV with quoted values
+    const values = line.split(delimiter).map(v => v.trim().replace(/^"|"$/g, ""));
     
-    const wine_id = values[wineIdIndex]?.trim();
+    const wine_name = values[wineNameIndex]?.trim();
     const quantity = parseInt(values[quantityIndex]?.trim() || "0", 10);
     const price = parseFloat(values[priceIndex]?.trim().replace(",", ".") || "0");
 
-    if (wine_id) {
+    if (wine_name) {
       items.push({
-        wine_id,
+        wine_name,
         quantity_in_stock: quantity,
         purchase_price: price,
       });
@@ -74,11 +88,34 @@ export default function ImportInventoryDialog({
   profileId,
 }: ImportInventoryDialogProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [parsedItems, setParsedItems] = useState<CSVInventoryItem[]>([]);
+  const [parsedItems, setParsedItems] = useState<ParsedInventoryItem[]>([]);
   const [importStatuses, setImportStatuses] = useState<ImportStatus[]>([]);
   const [isImporting, setIsImporting] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+
+  // Fetch wines for matching
+  const resolveWineNames = async (items: CSVInventoryItem[]): Promise<ParsedInventoryItem[]> => {
+    const { data: wines } = await supabase
+      .from("wines")
+      .select("id, name");
+
+    if (!wines) return items.map(item => ({ ...item, resolved_wine_id: null, resolved_wine_name: null }));
+
+    return items.map(item => {
+      // Case-insensitive match
+      const matchedWine = wines.find(
+        w => w.name.toLowerCase().trim() === item.wine_name.toLowerCase().trim()
+      );
+
+      return {
+        ...item,
+        resolved_wine_id: matchedWine?.id || null,
+        resolved_wine_name: matchedWine?.name || null,
+      };
+    });
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -86,20 +123,29 @@ export default function ImportInventoryDialog({
 
     setFile(selectedFile);
     setImportStatuses([]);
+    setIsValidating(true);
 
     try {
       const text = await selectedFile.text();
       const items = parseCSV(text);
-      setParsedItems(items);
+      
+      // Resolve wine names to IDs
+      const resolvedItems = await resolveWineNames(items);
+      setParsedItems(resolvedItems);
+      
+      // Set initial statuses - mark not found items
       setImportStatuses(
-        items.map((item) => ({
-          wine_id: item.wine_id,
-          status: "pending" as const,
+        resolvedItems.map((item) => ({
+          wine_name: item.wine_name,
+          status: item.resolved_wine_id ? "pending" : "not_found",
+          message: item.resolved_wine_id ? undefined : "Không tìm thấy wine",
         }))
       );
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Lỗi đọc file CSV");
       setParsedItems([]);
+    } finally {
+      setIsValidating(false);
     }
   };
 
@@ -109,10 +155,23 @@ export default function ImportInventoryDialog({
       return;
     }
 
+    // Only import items with resolved wine_id
+    const validItems = parsedItems.filter(item => item.resolved_wine_id);
+    
+    if (validItems.length === 0) {
+      toast.error("Không có sản phẩm hợp lệ để import");
+      return;
+    }
+
     setIsImporting(true);
 
     for (let i = 0; i < parsedItems.length; i++) {
       const item = parsedItems[i];
+
+      // Skip not found items
+      if (!item.resolved_wine_id) {
+        continue;
+      }
 
       setImportStatuses((prev) =>
         prev.map((s, idx) =>
@@ -125,7 +184,7 @@ export default function ImportInventoryDialog({
         const { data: existing } = await supabase
           .from("inventory")
           .select("id")
-          .eq("wine_id", item.wine_id)
+          .eq("wine_id", item.resolved_wine_id)
           .eq("profile_id", profileId)
           .maybeSingle();
 
@@ -143,7 +202,7 @@ export default function ImportInventoryDialog({
         } else {
           // Insert new
           const { error } = await supabase.from("inventory").insert({
-            wine_id: item.wine_id,
+            wine_id: item.resolved_wine_id,
             quantity_in_stock: item.quantity_in_stock,
             purchase_price: item.purchase_price,
             profile_id: profileId,
@@ -191,6 +250,8 @@ export default function ImportInventoryDialog({
 
   const successCount = importStatuses.filter((s) => s.status === "success").length;
   const errorCount = importStatuses.filter((s) => s.status === "error").length;
+  const notFoundCount = importStatuses.filter((s) => s.status === "not_found").length;
+  const validCount = parsedItems.filter((item) => item.resolved_wine_id).length;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -212,7 +273,7 @@ export default function ImportInventoryDialog({
                 type="file"
                 accept=".csv"
                 onChange={handleFileUpload}
-                disabled={isImporting}
+                disabled={isImporting || isValidating}
               />
             </div>
           </div>
@@ -221,49 +282,71 @@ export default function ImportInventoryDialog({
           <div className="bg-muted p-3 rounded-lg text-xs">
             <p className="font-medium mb-1">Format CSV mẫu:</p>
             <code className="text-muted-foreground">
-              wine_id;quantity_in_stock;purchase_price
+              wine_name;quantity_in_stock;purchase_price
               <br />
-              4dd0209c-f4b3-4791-94f9-a954e0ee65e3;12;300000
+              770 Miles Zinfandel;12;300000
               <br />
-              3adeeddf-5289-4b45-8b06-87d12d0651cf;6;650000
+              Château Franc Pipeau;6;650000
             </code>
           </div>
 
+          {/* Validating */}
+          {isValidating && (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span className="text-sm">Đang kiểm tra danh sách wines...</span>
+            </div>
+          )}
+
           {/* Preview & Status */}
-          {parsedItems.length > 0 && (
+          {parsedItems.length > 0 && !isValidating && (
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium">
                   <FileText className="h-4 w-4 inline mr-1" />
                   {parsedItems.length} sản phẩm trong file
                 </p>
-                {importStatuses.some((s) => s.status !== "pending") && (
-                  <p className="text-sm text-muted-foreground">
-                    <span className="text-green-600">{successCount} thành công</span>
-                    {errorCount > 0 && (
-                      <span className="text-red-600 ml-2">{errorCount} lỗi</span>
-                    )}
-                  </p>
-                )}
+                <div className="text-sm text-muted-foreground">
+                  {notFoundCount > 0 && (
+                    <span className="text-amber-600 mr-2">
+                      <AlertCircle className="h-3 w-3 inline mr-1" />
+                      {notFoundCount} không tìm thấy
+                    </span>
+                  )}
+                  {importStatuses.some((s) => s.status === "success" || s.status === "error") && (
+                    <>
+                      <span className="text-green-600">{successCount} thành công</span>
+                      {errorCount > 0 && (
+                        <span className="text-red-600 ml-2">{errorCount} lỗi</span>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="max-h-60 overflow-y-auto border rounded-lg">
                 <table className="w-full text-sm">
                   <thead className="bg-muted sticky top-0">
                     <tr>
-                      <th className="text-left p-2">Wine ID</th>
+                      <th className="text-left p-2">Tên Wine</th>
                       <th className="text-right p-2">Số lượng</th>
                       <th className="text-right p-2">Giá nhập</th>
-                      <th className="text-center p-2 w-20">Trạng thái</th>
+                      <th className="text-center p-2 w-24">Trạng thái</th>
                     </tr>
                   </thead>
                   <tbody>
                     {parsedItems.map((item, idx) => {
                       const status = importStatuses[idx];
+                      const isNotFound = !item.resolved_wine_id;
                       return (
-                        <tr key={idx} className="border-t">
-                          <td className="p-2 font-mono text-xs truncate max-w-[200px]">
-                            {item.wine_id}
+                        <tr key={idx} className={`border-t ${isNotFound ? "bg-amber-50" : ""}`}>
+                          <td className="p-2 max-w-[200px]">
+                            <div className="truncate" title={item.wine_name}>
+                              {item.resolved_wine_name || item.wine_name}
+                            </div>
+                            {isNotFound && (
+                              <div className="text-xs text-amber-600">Không tìm thấy</div>
+                            )}
                           </td>
                           <td className="p-2 text-right">{item.quantity_in_stock}</td>
                           <td className="p-2 text-right">
@@ -272,6 +355,9 @@ export default function ImportInventoryDialog({
                           <td className="p-2 text-center">
                             {status?.status === "pending" && (
                               <span className="text-muted-foreground">—</span>
+                            )}
+                            {status?.status === "not_found" && (
+                              <AlertCircle className="h-4 w-4 mx-auto text-amber-500" />
                             )}
                             {status?.status === "importing" && (
                               <Loader2 className="h-4 w-4 animate-spin mx-auto text-blue-500" />
@@ -299,7 +385,7 @@ export default function ImportInventoryDialog({
             </Button>
             <Button
               onClick={importInventory}
-              disabled={parsedItems.length === 0 || isImporting || !profileId}
+              disabled={validCount === 0 || isImporting || isValidating || !profileId}
             >
               {isImporting ? (
                 <>
@@ -309,7 +395,7 @@ export default function ImportInventoryDialog({
               ) : (
                 <>
                   <Upload className="h-4 w-4 mr-2" />
-                  Import {parsedItems.length} sản phẩm
+                  Import {validCount} sản phẩm
                 </>
               )}
             </Button>
