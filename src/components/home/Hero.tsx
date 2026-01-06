@@ -22,7 +22,10 @@ const slides = [
 ];
 
 const Hero = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    loop: true,
+    duration: 40 // Slower transition ~2 seconds
+  });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const scrollTo = useCallback(
