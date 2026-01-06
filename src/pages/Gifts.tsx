@@ -205,18 +205,18 @@ const Gifts = () => {
             </section>
 
         {/* Filter & Grid Section */}
-        <section className="py-12 lg:py-16">
+        <section className="py-12 lg:py-20">
           <div className="container">
-            {/* Filter Tabs */}
-            <div className="flex items-center justify-center gap-2 mb-12">
+            {/* Elegant Filter Tabs */}
+            <div className="flex items-center justify-center gap-1 mb-16 p-1.5 bg-secondary/50 rounded-full max-w-lg mx-auto">
               {categories.map((cat) => (
                 <button
                   key={cat.value}
                   onClick={() => setFilter(cat.value)}
-                  className={`px-4 py-2 text-xs font-medium tracking-wider uppercase rounded-full transition-all duration-300 ${
+                  className={`relative px-5 py-2.5 text-xs font-medium tracking-wider uppercase rounded-full transition-all duration-300 ${
                     filter === cat.value
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                      : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      ? "bg-foreground text-background shadow-lg"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {cat.label}
@@ -224,8 +224,8 @@ const Gifts = () => {
               ))}
             </div>
 
-            {/* Gift Sets Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            {/* Gift Sets Grid - 3 columns max for better card size */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-6xl mx-auto">
               {sortedGifts.map((gift, index) => (
                 <GiftCard
                   key={gift.id}
@@ -405,98 +405,128 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
     luxury: "Sang trọng",
   };
 
-  const categoryColor = {
-    standard: "bg-secondary text-foreground",
-    premium: "bg-primary/10 text-primary border border-primary/20",
-    luxury:
-      "bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-700 border border-amber-500/30",
+  const categoryStyles = {
+    standard: {
+      badge: "bg-stone-100 text-stone-700 border-stone-200",
+      accent: "from-stone-400/20 to-stone-300/10",
+    },
+    premium: {
+      badge: "bg-gradient-to-r from-amber-100 to-yellow-50 text-amber-800 border-amber-300/50",
+      accent: "from-amber-400/30 to-yellow-300/20",
+    },
+    luxury: {
+      badge: "bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-200 text-amber-900 border-amber-400/60 shadow-sm shadow-amber-500/20",
+      accent: "from-amber-500/40 via-yellow-400/30 to-amber-500/40",
+    },
   };
+
+  const styles = categoryStyles[gift.category];
 
   return (
     <article
-      className="group relative bg-card rounded-2xl overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 animate-fade-in flex flex-col"
-      style={{ animationDelay: `${index * 50}ms` }}
+      className="group relative animate-fade-in"
+      style={{ animationDelay: `${index * 60}ms` }}
     >
-      {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-secondary/30">
-        <button
-          onClick={() => onImageClick({ src: gift.image, name: gift.name })}
-          className="w-full h-full cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-inset"
-          aria-label={`Xem ảnh ${gift.name}`}
-        >
-          <img
-            src={gift.image}
-            alt={gift.name}
-            className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
-          />
-          {/* Hover overlay with zoom icon */}
-          <div className="absolute inset-0 bg-background/0 group-hover:bg-background/20 transition-colors duration-300 flex items-center justify-center">
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-3 rounded-full bg-background/80 backdrop-blur-sm shadow-lg">
-              <ZoomIn className="w-5 h-5 text-foreground" />
+      {/* Card Container with elegant border */}
+      <div className="relative bg-card rounded-xl overflow-hidden border border-border/40 hover:border-primary/20 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+        
+        {/* Image Section */}
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <button
+            onClick={() => onImageClick({ src: gift.image, name: gift.name })}
+            className="w-full h-full cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-inset"
+            aria-label={`Xem ảnh ${gift.name}`}
+          >
+            <img
+              src={gift.image}
+              alt={gift.name}
+              className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-1000 ease-out"
+            />
+            
+            {/* Elegant gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
+            
+            {/* Shimmer effect on hover */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+            </div>
+            
+            {/* Zoom indicator */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100 p-4 rounded-full bg-white/90 backdrop-blur-sm shadow-xl">
+                <ZoomIn className="w-5 h-5 text-foreground" />
+              </div>
+            </div>
+          </button>
+          
+          {/* Category Badge - Top Left */}
+          <div className="absolute top-3 left-3 pointer-events-none">
+            <span className={`px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-wider uppercase border backdrop-blur-sm ${styles.badge}`}>
+              {categoryLabel[gift.category]}
+            </span>
+          </div>
+          
+          {/* Price - Bottom of image, elegant overlay */}
+          <div className="absolute bottom-0 inset-x-0 p-4 pointer-events-none">
+            <div className="flex items-end justify-between">
+              <div>
+                <h3 className="font-serif text-xl lg:text-2xl text-white font-medium drop-shadow-lg leading-tight mb-1">
+                  {gift.name}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <Wine className="w-3.5 h-3.5 text-white/80" />
+                  <span className="text-white/80 text-xs font-medium">{gift.wine}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="text-white/60 text-[10px] uppercase tracking-wider block mb-0.5">Giá</span>
+                <span className="text-white text-lg font-semibold drop-shadow-lg">
+                  {formatPrice(gift.price)}
+                </span>
+              </div>
             </div>
           </div>
-        </button>
-        {/* Category Badge */}
-        <div className="absolute top-4 left-4 pointer-events-none">
-          <span
-            className={`px-3 py-1.5 rounded-full text-[10px] font-medium tracking-wider uppercase ${categoryColor[gift.category]}`}
+        </div>
+
+        {/* Content Section - Minimal & Elegant */}
+        <div className="p-5">
+          {/* Items as elegant pills */}
+          <div className="flex flex-wrap gap-1.5 mb-5">
+            {gift.items.slice(0, 3).map((item, i) => (
+              <span
+                key={i}
+                className="px-2.5 py-1 rounded-full bg-secondary/80 text-[10px] text-muted-foreground font-medium"
+              >
+                {item.length > 20 ? item.slice(0, 20) + "..." : item}
+              </span>
+            ))}
+            {gift.items.length > 3 && (
+              <span className="px-2.5 py-1 rounded-full bg-primary/10 text-[10px] text-primary font-medium">
+                +{gift.items.length - 3}
+              </span>
+            )}
+          </div>
+
+          {/* CTA Button - Luxury style */}
+          <a
+            href="https://zalo.me/0906777377"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group/btn relative w-full flex items-center justify-center gap-2 py-3.5 rounded-lg bg-foreground text-background text-sm font-medium overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-foreground/20"
           >
-            {categoryLabel[gift.category]}
-          </span>
+            {/* Button shine effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
+            <Gift className="w-4 h-4 relative z-10" />
+            <span className="relative z-10">Đặt hàng ngay</span>
+          </a>
         </div>
-        {/* Price Badge */}
-        <div className="absolute top-4 right-4 pointer-events-none">
-          <span className="px-3 py-1.5 rounded-full bg-background/90 backdrop-blur-sm text-foreground text-xs font-semibold shadow-lg border border-border/50">
-            {formatPrice(gift.price)}
-          </span>
-        </div>
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-40 pointer-events-none" />
-      </div>
-
-      {/* Content */}
-      <div className="p-5 lg:p-6 flex flex-col flex-1">
-        <h3 className="font-serif text-lg lg:text-xl leading-tight group-hover:text-primary transition-colors mb-4">
-          {gift.name}
-        </h3>
-
-        {/* Separator */}
-        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mb-4" />
-
-        {/* Wine Info */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/5 text-sm mb-4 w-fit">
-          <Wine className="w-4 h-4 text-primary" />
-          <span className="text-foreground/80">{gift.wine}</span>
-        </div>
-
-        {/* Items List */}
-        <ul className="space-y-1.5 flex-1">
-          {gift.items.slice(0, 4).map((item, i) => (
-            <li
-              key={i}
-              className="text-xs text-muted-foreground flex items-start gap-2"
-            >
-              <span className="w-1 h-1 rounded-full bg-primary/40 mt-1.5 flex-shrink-0" />
-              {item}
-            </li>
-          ))}
-          {gift.items.length > 4 && (
-            <li className="text-xs text-primary/70">
-              +{gift.items.length - 4} sản phẩm khác
-            </li>
-          )}
-        </ul>
-
-        {/* Contact Button */}
-        <a
-          href="https://zalo.me/0906777377"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-5 w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-sm font-medium hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-md shadow-primary/20"
-        >
-          <Gift className="w-4 h-4" />
-          Đặt hàng ngay
-        </a>
+        
+        {/* Decorative corner accent for luxury items */}
+        {gift.category === "luxury" && (
+          <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none overflow-hidden">
+            <div className="absolute -top-8 -right-8 w-16 h-16 bg-gradient-to-br from-amber-400/40 to-yellow-300/20 rotate-45" />
+          </div>
+        )}
       </div>
     </article>
   );
