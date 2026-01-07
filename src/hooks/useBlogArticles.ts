@@ -177,7 +177,7 @@ export const useArticleMutations = () => {
       if (!profile) {
         const { data: newProfile, error: profileError } = await supabase
           .from("user_profiles")
-          .insert({ user_id: user.user.id, display_name: user.user.email })
+          .insert({ user_id: user.user.id })
           .select("id")
           .single();
         
