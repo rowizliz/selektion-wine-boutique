@@ -133,9 +133,9 @@ const Collection = () => {
                       <HoverCardTrigger asChild>
                         <Link
                           to={`/collection/${wine.id}`}
-                          className={`group opacity-0 animate-slide-up transition-all duration-300 ${
+                          className={`group opacity-0 animate-slide-up transition-all duration-500 ease-out ${
                             hasHover && !isHovered 
-                              ? 'opacity-40 blur-[1px] scale-[0.98]' 
+                              ? 'opacity-[0.15] blur-[2px] scale-[0.98]' 
                               : isHovered 
                                 ? 'opacity-100 scale-[1.02] z-10 relative' 
                                 : ''
