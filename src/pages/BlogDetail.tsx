@@ -91,21 +91,21 @@ const BlogDetail = () => {
         {/* Content */}
         <article className="container mx-auto px-4 py-12 lg:py-16">
           <div className="max-w-3xl mx-auto">
-            {/* Back link */}
-            <Link
-              to="/blog"
-              className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-border text-muted-foreground hover:text-foreground hover:border-foreground mb-8 transition-colors"
-              aria-label="Quay lại Blog"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-
-            {/* Category */}
-            {article.category && (
-              <span className="inline-block px-3 py-1 mb-4 text-xs font-sans tracking-widest uppercase bg-muted text-foreground">
-                {article.category.name}
-              </span>
-            )}
+            {/* Back link & Category */}
+            <div className="flex items-center gap-4 mb-8">
+              <Link
+                to="/blog"
+                className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-border text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
+                aria-label="Quay lại Blog"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+              {article.category && (
+                <span className="px-3 py-1 text-xs font-sans tracking-widest uppercase bg-muted text-foreground">
+                  {article.category.name}
+                </span>
+              )}
+            </div>
 
             {/* Title */}
             <h1 className="text-3xl lg:text-5xl font-serif mb-6 leading-tight">
