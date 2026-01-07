@@ -222,7 +222,7 @@ const Recruitment = () => {
               <Textarea
                 id="motivation"
                 {...register("motivation")}
-                placeholder="Chia sẻ lý do bạn muốn gia nhập đội ngũ SÉLECTION, (nếu được ứng tuyển, xin vui lòng note hình thức liên hệ lại qua đây)"
+                placeholder="Chia sẻ lý do bạn muốn gia nhập đội ngũ SÉLECTION, (xin vui lòng note thêm hình thức liên hệ, để chúng tôi có thể liên lạc lại cho bạn)"
                 rows={3}
               />
             </div>
