@@ -645,6 +645,48 @@ export type Database = {
         }
         Relationships: []
       }
+      gift_sets: {
+        Row: {
+          category: string
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          items: string[]
+          name: string
+          price: number
+          updated_at: string
+          wine: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          items?: string[]
+          name: string
+          price: number
+          updated_at?: string
+          wine?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          items?: string[]
+          name?: string
+          price?: number
+          updated_at?: string
+          wine?: string | null
+        }
+        Relationships: []
+      }
       inventory: {
         Row: {
           created_at: string
