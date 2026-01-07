@@ -68,11 +68,11 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
 
         if (block.type === "image") {
           return (
-            <figure key={index} className="my-8">
+            <figure key={index} className="my-8 flex flex-col items-center">
               <img
                 src={block.url}
                 alt={block.caption || ""}
-                className="w-full h-auto rounded-none"
+                className="max-w-2xl w-full h-auto rounded-none object-contain"
               />
               {block.caption && (
                 <figcaption className="text-center text-sm text-muted-foreground mt-3 italic">
@@ -85,17 +85,17 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
 
         if (block.type === "gallery" && block.images.length > 0) {
           return (
-            <div key={index} className="my-8">
+            <div key={index} className="my-8 max-w-2xl mx-auto">
               <Carousel className="w-full" opts={{ loop: true }}>
                 <CarouselContent>
                   {block.images.map((img, imgIndex) => (
                     <CarouselItem key={imgIndex}>
                       <figure>
-                        <div className="aspect-[16/9] overflow-hidden">
+                        <div className="aspect-[4/3] overflow-hidden flex items-center justify-center bg-muted/30">
                           <img
                             src={img.url}
                             alt={img.caption || ""}
-                            className="w-full h-full object-cover"
+                            className="max-w-full max-h-full object-contain"
                           />
                         </div>
                         {img.caption && (
@@ -109,8 +109,8 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
                 </CarouselContent>
                 {block.images.length > 1 && (
                   <>
-                    <CarouselPrevious className="left-4" />
-                    <CarouselNext className="right-4" />
+                    <CarouselPrevious className="left-2" />
+                    <CarouselNext className="right-2" />
                   </>
                 )}
               </Carousel>
