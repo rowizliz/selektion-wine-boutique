@@ -17,7 +17,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_FILE_TYPES = [
   "application/pdf",
   "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
 const applicationSchema = z.object({
@@ -76,7 +76,7 @@ const Recruitment = () => {
   const onSubmit = async (data: ApplicationFormData) => {
     try {
       setIsUploading(true);
-      
+
       let cvUrl: string | undefined;
       if (cvFile) {
         cvUrl = await uploadCV(cvFile);
@@ -120,12 +120,10 @@ const Recruitment = () => {
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
               <h1 className="text-2xl font-serif mb-4">Nộp Đơn Thành Công!</h1>
               <p className="text-muted-foreground mb-8">
-                Cảm ơn bạn đã quan tâm đến vị trí Cộng Tác Viên tại SÉLECTION. 
-                Chúng tôi sẽ xem xét hồ sơ và liên hệ với bạn trong thời gian sớm nhất.
+                Cảm ơn bạn đã quan tâm đến vị trí Cộng Tác Viên tại SÉLECTION. Chúng tôi sẽ xem xét hồ sơ và liên hệ với
+                bạn trong thời gian sớm nhất.
               </p>
-              <Button onClick={() => window.location.href = "/"}>
-                Về Trang Chủ
-              </Button>
+              <Button onClick={() => (window.location.href = "/")}>Về Trang Chủ</Button>
             </div>
           </div>
         </main>
@@ -138,17 +136,21 @@ const Recruitment = () => {
     <>
       <Helmet>
         <title>Tuyển Dụng Cộng Tác Viên | SÉLECTION</title>
-        <meta name="description" content="Gia nhập đội ngũ Cộng Tác Viên SÉLECTION - Cơ hội hợp tác kinh doanh rượu vang cao cấp" />
+        <meta
+          name="description"
+          content="Gia nhập đội ngũ Cộng Tác Viên SÉLECTION - Cơ hội hợp tác kinh doanh rượu vang cao cấp"
+        />
       </Helmet>
       <Header />
-      
+
       <main className="min-h-screen pt-20 lg:pt-24 pb-16 bg-background">
         <div className="container max-w-2xl mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-3xl lg:text-4xl font-serif mb-4">Tuyển Dụng Cộng Tác Viên</h1>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              Hãy gia nhập đội ngũ SÉLECTION và cùng chúng tôi mang đến những trải nghiệm rượu vang tuyệt vời cho khách hàng.
+              Hãy gia nhập đội ngũ SÉLECTION và cùng chúng tôi mang đến những trải nghiệm rượu vang tuyệt vời cho khách
+              hàng.
             </p>
           </div>
 
@@ -156,7 +158,7 @@ const Recruitment = () => {
           <div className="bg-secondary/50 rounded-lg p-6 mb-8">
             <h2 className="text-lg font-medium mb-4">Quyền lợi Cộng Tác Viên:</h2>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>• Chiết khấu hấp dẫn từ 15% trở lên</li>
+              <li>• Chiết khấu hấp dẫn từ 20% trở lên</li>
               <li>• Hoa hồng theo bậc thang doanh số</li>
               <li>• Đào tạo kiến thức về rượu vang</li>
               <li>• Hỗ trợ marketing và bán hàng</li>
@@ -169,58 +171,31 @@ const Recruitment = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="full_name">Họ và tên *</Label>
-                <Input
-                  id="full_name"
-                  {...register("full_name")}
-                  placeholder="Nguyễn Văn A"
-                />
-                {errors.full_name && (
-                  <p className="text-sm text-destructive">{errors.full_name.message}</p>
-                )}
+                <Input id="full_name" {...register("full_name")} placeholder="Nguyễn Văn A" />
+                {errors.full_name && <p className="text-sm text-destructive">{errors.full_name.message}</p>}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">Email *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  placeholder="email@example.com"
-                />
-                {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
-                )}
+                <Input id="email" type="email" {...register("email")} placeholder="email@example.com" />
+                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="phone">Số điện thoại *</Label>
-                <Input
-                  id="phone"
-                  {...register("phone")}
-                  placeholder="0901234567"
-                />
-                {errors.phone && (
-                  <p className="text-sm text-destructive">{errors.phone.message}</p>
-                )}
+                <Input id="phone" {...register("phone")} placeholder="0901234567" />
+                {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="date_of_birth">Ngày sinh</Label>
-                <Input
-                  id="date_of_birth"
-                  type="date"
-                  {...register("date_of_birth")}
-                />
+                <Input id="date_of_birth" type="date" {...register("date_of_birth")} />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="address">Địa chỉ</Label>
-              <Input
-                id="address"
-                {...register("address")}
-                placeholder="Số nhà, đường, quận/huyện, thành phố"
-              />
+              <Input id="address" {...register("address")} placeholder="Số nhà, đường, quận/huyện, thành phố" />
             </div>
 
             <div className="space-y-2">
@@ -233,7 +208,7 @@ const Recruitment = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="experience">Kinh nghiệm bán hàng / rượu vang</Label>
+              <Label htmlFor="experience">Kinh nghiệm bán hàng / bạn có thực sự yêu thích rượu vang </Label>
               <Textarea
                 id="experience"
                 {...register("experience")}
@@ -256,37 +231,20 @@ const Recruitment = () => {
             <div className="space-y-2">
               <Label>CV / Hồ sơ (PDF, DOC, DOCX - tối đa 5MB)</Label>
               <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
-                <input
-                  type="file"
-                  id="cv"
-                  accept=".pdf,.doc,.docx"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <label
-                  htmlFor="cv"
-                  className="cursor-pointer flex flex-col items-center gap-2"
-                >
+                <input type="file" id="cv" accept=".pdf,.doc,.docx" onChange={handleFileChange} className="hidden" />
+                <label htmlFor="cv" className="cursor-pointer flex flex-col items-center gap-2">
                   <Upload className="h-8 w-8 text-muted-foreground" />
                   {cvFile ? (
                     <span className="text-sm text-foreground">{cvFile.name}</span>
                   ) : (
-                    <span className="text-sm text-muted-foreground">
-                      Nhấn để chọn file hoặc kéo thả vào đây
-                    </span>
+                    <span className="text-sm text-muted-foreground">Nhấn để chọn file hoặc kéo thả vào đây</span>
                   )}
                 </label>
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting || isUploading}
-            >
-              {(isSubmitting || isUploading) && (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              )}
+            <Button type="submit" className="w-full" disabled={isSubmitting || isUploading}>
+              {(isSubmitting || isUploading) && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Nộp Đơn Ứng Tuyển
             </Button>
           </form>
