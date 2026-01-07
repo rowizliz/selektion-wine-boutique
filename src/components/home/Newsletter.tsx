@@ -2,19 +2,39 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useSubmitContactMessage } from "@/hooks/useContactMessages";
 
 const Newsletter = () => {
-  const [email, setEmail] = useState("");
+  const [contact, setContact] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const submitMessage = useSubmitContactMessage();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!contact.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      await submitMessage.mutateAsync({
+        name: "Khách đăng ký nhận tin",
+        email: contact.trim(),
+        message: "user đăng ký nhận tin",
+      });
+
       toast({
         title: "Cảm ơn bạn đã đăng ký",
         description: "Bạn sẽ nhận được thông tin về các loại rượu mới nhất.",
       });
-      setEmail("");
+      setContact("");
+    } catch (error) {
+      toast({
+        title: "Đã xảy ra lỗi",
+        description: "Vui lòng thử lại sau.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -35,10 +55,10 @@ const Newsletter = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <Input
-              type="email"
-              placeholder="Địa chỉ email của bạn"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Email hoặc số Zalo của bạn"
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
               className="flex-1 bg-transparent border-background/30 text-background placeholder:text-background/50 focus:border-background h-12 px-4"
               required
             />
@@ -46,8 +66,9 @@ const Newsletter = () => {
               type="submit" 
               variant="outline"
               className="bg-background text-foreground hover:bg-background/90 border-background h-12"
+              disabled={isSubmitting}
             >
-              Đăng Ký
+              {isSubmitting ? "Đang gửi..." : "Đăng Ký"}
             </Button>
           </form>
         </div>
