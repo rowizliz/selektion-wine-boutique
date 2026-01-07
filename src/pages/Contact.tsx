@@ -21,7 +21,7 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       await submitMessage.mutateAsync(formData);
       toast({
@@ -44,9 +44,9 @@ const Contact = () => {
     <>
       <Helmet>
         <title>Liên Hệ | SÉLECTION</title>
-        <meta 
-          name="description" 
-          content="Liên hệ với SÉLECTION. Gửi câu hỏi về rượu vang, đặt hàng hoặc tìm hiểu thêm về bộ sưu tập của chúng tôi." 
+        <meta
+          name="description"
+          content="Liên hệ với SÉLECTION. Gửi câu hỏi về rượu vang, đặt hàng hoặc tìm hiểu thêm về bộ sưu tập của chúng tôi."
         />
       </Helmet>
 
@@ -61,33 +61,27 @@ const Contact = () => {
                   <p className="text-xs font-sans tracking-[0.3em] uppercase text-muted-foreground mb-4">
                     Liên Hệ Với Chúng Tôi
                   </p>
-                  <h1 className="text-4xl md:text-5xl font-serif font-light mb-8">
-                    Liên Hệ
-                  </h1>
+                  <h1 className="text-4xl md:text-5xl font-serif font-light mb-8">Liên Hệ</h1>
                   <p className="text-muted-foreground leading-relaxed mb-12">
-                    Chúng tôi rất vui được nghe từ bạn. Dù bạn có câu hỏi về 
-                    rượu vang, muốn đặt hàng, hay chỉ muốn trò chuyện về rượu, 
-                    chúng tôi luôn sẵn sàng hỗ trợ.
+                    Chúng tôi rất vui được nghe từ bạn. Dù bạn có câu hỏi về rượu vang, muốn đặt hàng, hay chỉ muốn trò
+                    chuyện về rượu, chúng tôi luôn sẵn sàng hỗ trợ.
                   </p>
 
                   <div className="space-y-8">
                     <div>
-                      <h3 className="text-xs font-sans tracking-widest uppercase mb-3">
-                        Địa Chỉ
-                      </h3>
+                      <h3 className="text-xs font-sans tracking-widest uppercase mb-3">Địa Chỉ</h3>
                       <p className="text-muted-foreground">
                         127/15 Hoàng Diệu 2<br />
-                        Linh Xuân, Thủ Đức<br />
+                        Linh Xuân, Thủ Đức
+                        <br />
                         TP. Hồ Chí Minh
                       </p>
                     </div>
                     <div>
-                      <h3 className="text-xs font-sans tracking-widest uppercase mb-3">
-                        Liên Hệ
-                      </h3>
+                      <h3 className="text-xs font-sans tracking-widest uppercase mb-3">Liên Hệ</h3>
                       <p className="text-muted-foreground">
-                        <a 
-                          href="https://zalo.me/0906777377" 
+                        <a
+                          href="https://zalo.me/0906777377"
                           className="hover:text-foreground transition-colors"
                           target="_blank"
                           rel="noopener noreferrer"
@@ -97,11 +91,10 @@ const Contact = () => {
                       </p>
                     </div>
                     <div>
-                      <h3 className="text-xs font-sans tracking-widest uppercase mb-3">
-                        Giờ Làm Việc
-                      </h3>
+                      <h3 className="text-xs font-sans tracking-widest uppercase mb-3">Giờ Làm Việc</h3>
                       <p className="text-muted-foreground">
-                        Thứ Hai – Thứ Bảy: 9:00 – 21:00<br />
+                        Thứ Hai – Thứ Bảy: 9:00 – 21:00
+                        <br />
                         Chủ Nhật: 10:00 – 18:00
                       </p>
                     </div>
@@ -113,10 +106,7 @@ const Contact = () => {
                   <h2 className="text-2xl font-serif mb-8">Gửi Tin Nhắn</h2>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                      <label 
-                        htmlFor="name" 
-                        className="block text-xs tracking-widest uppercase mb-3"
-                      >
+                      <label htmlFor="name" className="block text-xs tracking-widest uppercase mb-3">
                         Họ Tên
                       </label>
                       <Input
@@ -129,11 +119,8 @@ const Contact = () => {
                       />
                     </div>
                     <div>
-                      <label 
-                        htmlFor="email" 
-                        className="block text-xs tracking-widest uppercase mb-3"
-                      >
-                        Email
+                      <label htmlFor="email" className="block text-xs tracking-widest uppercase mb-3">
+                        Email hoặc Số Điện Thoại
                       </label>
                       <Input
                         id="email"
@@ -145,10 +132,7 @@ const Contact = () => {
                       />
                     </div>
                     <div>
-                      <label 
-                        htmlFor="message" 
-                        className="block text-xs tracking-widest uppercase mb-3"
-                      >
+                      <label htmlFor="message" className="block text-xs tracking-widest uppercase mb-3">
                         Nội Dung
                       </label>
                       <Textarea
