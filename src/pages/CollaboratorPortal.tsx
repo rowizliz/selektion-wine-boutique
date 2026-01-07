@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, Link } from "react-router-dom";
-import { Package, DollarSign, ShoppingCart, Plus, Minus, Wallet, CreditCard, Landmark, Settings, Key } from "lucide-react";
+import { Package, DollarSign, ShoppingCart, Plus, Minus, Wallet, CreditCard, Landmark, Settings, Key, FileText, FileEdit, Trash2 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,6 +40,8 @@ import { WithdrawalDialog } from "@/components/collaborator/WithdrawalDialog";
 import { WithdrawalHistory } from "@/components/collaborator/WithdrawalHistory";
 import { ProfileSettingsDialog } from "@/components/collaborator/ProfileSettingsDialog";
 import { PasswordChangeDialog } from "@/components/collaborator/PasswordChangeDialog";
+import ArticleFormDialog from "@/components/blog/ArticleFormDialog";
+import { useMyArticles, useArticleMutations, BlogArticle } from "@/hooks/useBlogArticles";
 
 interface CartItem {
   wine_id: string;
@@ -60,6 +62,8 @@ const CollaboratorPortal = () => {
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
   const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false);
   const [isPasswordChangeOpen, setIsPasswordChangeOpen] = useState(false);
+  const [isArticleDialogOpen, setIsArticleDialogOpen] = useState(false);
+  const [editingArticle, setEditingArticle] = useState<BlogArticle | undefined>(undefined);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -73,6 +77,8 @@ const CollaboratorPortal = () => {
   const { data: accumulatedData } = useAccumulatedQuantity(collaborator?.id);
   const { data: wines } = useWines();
   const createOrder = useCreateCollaboratorOrder();
+  const { data: myArticles } = useMyArticles();
+  const { deleteArticle } = useArticleMutations();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -363,6 +369,7 @@ const CollaboratorPortal = () => {
             <TabsList className="w-full sm:w-auto flex overflow-x-auto">
               <TabsTrigger value="products" className="flex-1 sm:flex-none text-xs sm:text-sm">Bảng giá</TabsTrigger>
               <TabsTrigger value="orders" className="flex-1 sm:flex-none text-xs sm:text-sm">Đơn hàng</TabsTrigger>
+              <TabsTrigger value="articles" className="flex-1 sm:flex-none text-xs sm:text-sm">Bài viết</TabsTrigger>
               <TabsTrigger value="withdrawals" className="flex-1 sm:flex-none text-xs sm:text-sm">Rút tiền</TabsTrigger>
               <TabsTrigger value="commission" className="flex-1 sm:flex-none text-xs sm:text-sm">Hoa hồng</TabsTrigger>
             </TabsList>
@@ -574,6 +581,115 @@ const CollaboratorPortal = () => {
               </Card>
             </TabsContent>
 
+            {/* Articles Tab */}
+            <TabsContent value="articles">
+              <Card>
+                <CardHeader className="flex-row items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    Bài Viết Của Tôi
+                  </CardTitle>
+                  <Button 
+                    onClick={() => {
+                      setEditingArticle(undefined);
+                      setIsArticleDialogOpen(true);
+                    }}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Viết Bài Mới
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  {!myArticles || myArticles.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>Bạn chưa có bài viết nào</p>
+                      <p className="text-sm mt-1">Nhấn "Viết Bài Mới" để bắt đầu</p>
+                    </div>
+                  ) : (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Tiêu đề</TableHead>
+                          <TableHead>Danh mục</TableHead>
+                          <TableHead>Trạng thái</TableHead>
+                          <TableHead>Ngày tạo</TableHead>
+                          <TableHead className="text-right">Thao tác</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {myArticles.map((article) => (
+                          <TableRow key={article.id}>
+                            <TableCell className="font-medium max-w-xs truncate">
+                              {article.title}
+                            </TableCell>
+                            <TableCell>
+                              {article.category?.name || "-"}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  article.status === "published"
+                                    ? "default"
+                                    : article.status === "pending"
+                                    ? "secondary"
+                                    : article.status === "rejected"
+                                    ? "destructive"
+                                    : "outline"
+                                }
+                              >
+                                {article.status === "published"
+                                  ? "Đã xuất bản"
+                                  : article.status === "pending"
+                                  ? "Chờ duyệt"
+                                  : article.status === "rejected"
+                                  ? "Bị từ chối"
+                                  : "Nháp"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {new Date(article.created_at).toLocaleDateString("vi-VN")}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setEditingArticle(article);
+                                    setIsArticleDialogOpen(true);
+                                  }}
+                                >
+                                  <FileEdit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-destructive hover:text-destructive"
+                                  onClick={async () => {
+                                    if (confirm("Bạn có chắc muốn xóa bài viết này?")) {
+                                      try {
+                                        await deleteArticle.mutateAsync(article.id);
+                                        toast.success("Đã xóa bài viết");
+                                      } catch (error: any) {
+                                        toast.error(error.message || "Lỗi khi xóa");
+                                      }
+                                    }
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             {/* Commission Tiers Tab */}
             <TabsContent value="commission">
               <Card>
@@ -740,6 +856,14 @@ const CollaboratorPortal = () => {
           collaborator={collaborator}
         />
       )}
+
+      {/* Article Form Dialog */}
+      <ArticleFormDialog
+        open={isArticleDialogOpen}
+        onOpenChange={setIsArticleDialogOpen}
+        article={editingArticle}
+        isAdmin={false}
+      />
     </>
   );
 };
