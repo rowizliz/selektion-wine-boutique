@@ -49,28 +49,19 @@ const Header = () => {
       return;
     }
 
-    // 2) If not linked yet (common with Google login), link by email
-    const email = authUser.email;
-    if (email) {
-      const { data: unlinked } = await supabase
-        .from("collaborators")
-        .select("id")
-        .eq("email", email)
-        .eq("is_active", true)
-        .is("user_id", null)
-        .maybeSingle();
+    // 2) If not linked yet (common with Google login), call secure DB function to link by email
+    const { data: wasLinked } = await supabase.rpc("link_collaborator_for_current_user");
 
-      if (unlinked) {
-        const { error: updateError } = await supabase
-          .from("collaborators")
-          .update({ user_id: authUser.id })
-          .eq("id", unlinked.id);
+    if (wasLinked) {
+      setIsCollaborator(true);
+      return;
+    }
 
-        if (!updateError) {
-          setIsCollaborator(true);
-          return;
-        }
-      }
+    // 3) Check admin status (admins can also access CTV portal)
+    const { data: isAdmin } = await supabase.rpc("is_admin");
+    if (isAdmin) {
+      setIsCollaborator(true);
+      return;
     }
 
     setIsCollaborator(false);
