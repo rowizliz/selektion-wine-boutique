@@ -16,11 +16,11 @@ const CollaboratorRoute = ({ children }: CollaboratorRouteProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
-        navigate("/auth");
+        navigate("/auth?returnTo=/ctv");
         return;
       }
 
-      // Check if user is a collaborator
+      // Check if user is already linked as collaborator
       const { data: collaborator } = await supabase
         .from("collaborators")
         .select("id, is_active")
@@ -30,14 +30,42 @@ const CollaboratorRoute = ({ children }: CollaboratorRouteProps) => {
 
       if (collaborator) {
         setIsCollaborator(true);
-      } else {
-        // Check if user is admin (admins can also access)
-        const { data: isAdmin } = await supabase.rpc("is_admin");
-        if (isAdmin) {
-          setIsCollaborator(true);
-        } else {
-          navigate("/");
+        setIsLoading(false);
+        return;
+      }
+
+      // If not linked by user_id, try to link by email
+      const userEmail = session.user.email;
+      if (userEmail) {
+        const { data: unlinkedCollaborator } = await supabase
+          .from("collaborators")
+          .select("id, is_active, user_id")
+          .eq("email", userEmail)
+          .eq("is_active", true)
+          .is("user_id", null)
+          .maybeSingle();
+
+        if (unlinkedCollaborator) {
+          // Link the collaborator to this user
+          const { error: updateError } = await supabase
+            .from("collaborators")
+            .update({ user_id: session.user.id })
+            .eq("id", unlinkedCollaborator.id);
+
+          if (!updateError) {
+            setIsCollaborator(true);
+            setIsLoading(false);
+            return;
+          }
         }
+      }
+
+      // Check if user is admin (admins can also access)
+      const { data: isAdmin } = await supabase.rpc("is_admin");
+      if (isAdmin) {
+        setIsCollaborator(true);
+      } else {
+        navigate("/");
       }
       
       setIsLoading(false);
@@ -47,7 +75,7 @@ const CollaboratorRoute = ({ children }: CollaboratorRouteProps) => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
-        navigate("/auth");
+        navigate("/auth?returnTo=/ctv");
       }
     });
 
