@@ -34,30 +34,12 @@ const CollaboratorRoute = ({ children }: CollaboratorRouteProps) => {
         return;
       }
 
-      // If not linked by user_id, try to link by email
-      const userEmail = session.user.email;
-      if (userEmail) {
-        const { data: unlinkedCollaborator } = await supabase
-          .from("collaborators")
-          .select("id, is_active, user_id")
-          .eq("email", userEmail)
-          .eq("is_active", true)
-          .is("user_id", null)
-          .maybeSingle();
-
-        if (unlinkedCollaborator) {
-          // Link the collaborator to this user
-          const { error: updateError } = await supabase
-            .from("collaborators")
-            .update({ user_id: session.user.id })
-            .eq("id", unlinkedCollaborator.id);
-
-          if (!updateError) {
-            setIsCollaborator(true);
-            setIsLoading(false);
-            return;
-          }
-        }
+      // If not linked by user_id, try to link via secure database function
+      const { data: wasLinked } = await supabase.rpc("link_collaborator_for_current_user");
+      if (wasLinked) {
+        setIsCollaborator(true);
+        setIsLoading(false);
+        return;
       }
 
       // Check if user is admin (admins can also access)

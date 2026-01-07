@@ -1044,6 +1044,7 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       is_collaborator: { Args: never; Returns: boolean }
+      link_collaborator_for_current_user: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
