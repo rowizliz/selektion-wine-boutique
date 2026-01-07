@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog, Volume2, VolumeX, Download, UserPlus, MessageSquare } from "lucide-react";
+import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog, Volume2, VolumeX, Download, UserPlus, MessageSquare, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
@@ -12,7 +12,7 @@ interface AdminModule {
   icon: React.ComponentType<{ className?: string }>;
   href: string;
   color: string;
-  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending' | 'applicationsPending' | 'contactMessagesPending';
+  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending' | 'applicationsPending' | 'contactMessagesPending' | 'blogPending';
 }
 
 const adminModules: AdminModule[] = [
@@ -105,6 +105,14 @@ const adminModules: AdminModule[] = [
     href: "/admin/contact-messages",
     color: "bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-400",
     badgeKey: 'contactMessagesPending'
+  },
+  {
+    title: "Quản Lý Blog",
+    description: "Duyệt bài viết, quản lý danh mục",
+    icon: FileText,
+    href: "/admin/blog",
+    color: "bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400",
+    badgeKey: 'blogPending'
   }
 ];
 
@@ -124,11 +132,12 @@ const Admin = () => {
   // Calculate CTV module badge (orders + password requests)
   const ctvModulePending = (pendingCounts?.collaboratorOrdersPending ?? 0) + (pendingCounts?.passwordRequestsPending ?? 0);
 
-  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending' | 'applicationsPending' | 'contactMessagesPending') => {
+  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending' | 'applicationsPending' | 'contactMessagesPending' | 'blogPending') => {
     if (!badgeKey || !pendingCounts) return 0;
     if (badgeKey === 'ctvModulePending') return ctvModulePending;
     if (badgeKey === 'applicationsPending') return pendingCounts.applicationsPending ?? 0;
     if (badgeKey === 'contactMessagesPending') return pendingCounts.contactMessagesPending ?? 0;
+    if (badgeKey === 'blogPending') return pendingCounts.blogPending ?? 0;
     return pendingCounts[badgeKey];
   };
 
