@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useSubmitContactMessage } from "@/hooks/useContactMessages";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,15 +14,30 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const submitMessage = useSubmitContactMessage();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Đã gửi tin nhắn",
-      description: "Chúng tôi sẽ phản hồi bạn sớm nhất có thể.",
-    });
-    setFormData({ name: "", email: "", message: "" });
+    setIsSubmitting(true);
+    
+    try {
+      await submitMessage.mutateAsync(formData);
+      toast({
+        title: "Đã gửi tin nhắn",
+        description: "Chúng tôi sẽ phản hồi bạn sớm nhất có thể.",
+      });
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      toast({
+        title: "Lỗi",
+        description: "Không thể gửi tin nhắn. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -143,8 +159,8 @@ const Contact = () => {
                         required
                       />
                     </div>
-                    <Button type="submit" variant="luxury" className="w-full">
-                      Gửi Tin Nhắn
+                    <Button type="submit" variant="luxury" className="w-full" disabled={isSubmitting}>
+                      {isSubmitting ? "Đang gửi..." : "Gửi Tin Nhắn"}
                     </Button>
                   </form>
                 </div>

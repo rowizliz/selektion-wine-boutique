@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog, Volume2, VolumeX, Download, UserPlus } from "lucide-react";
+import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog, Volume2, VolumeX, Download, UserPlus, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
@@ -12,7 +12,7 @@ interface AdminModule {
   icon: React.ComponentType<{ className?: string }>;
   href: string;
   color: string;
-  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending' | 'applicationsPending';
+  badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending' | 'applicationsPending' | 'contactMessagesPending';
 }
 
 const adminModules: AdminModule[] = [
@@ -97,6 +97,14 @@ const adminModules: AdminModule[] = [
     href: "/admin/tuyen-dung",
     color: "bg-lime-100 text-lime-600 dark:bg-lime-900/30 dark:text-lime-400",
     badgeKey: 'applicationsPending'
+  },
+  {
+    title: "Tin Nhắn Liên Hệ",
+    description: "Xem tin nhắn từ khách hàng",
+    icon: MessageSquare,
+    href: "/admin/contact-messages",
+    color: "bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-400",
+    badgeKey: 'contactMessagesPending'
   }
 ];
 
@@ -109,16 +117,18 @@ const Admin = () => {
     (pendingCounts?.withdrawalsPending ?? 0) +
     (pendingCounts?.collaboratorOrdersPending ?? 0) +
     (pendingCounts?.passwordRequestsPending ?? 0) +
-    (pendingCounts?.applicationsPending ?? 0);
+    (pendingCounts?.applicationsPending ?? 0) +
+    (pendingCounts?.contactMessagesPending ?? 0);
   const { soundEnabled, enableSound, disableSound } = useNotificationSound(totalPending > 0);
 
   // Calculate CTV module badge (orders + password requests)
   const ctvModulePending = (pendingCounts?.collaboratorOrdersPending ?? 0) + (pendingCounts?.passwordRequestsPending ?? 0);
 
-  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending' | 'applicationsPending') => {
+  const getBadgeCount = (badgeKey?: 'birthdayGiftsPending' | 'personalizedWinePending' | 'profileUpdatesPending' | 'withdrawalsPending' | 'collaboratorOrdersPending' | 'ctvModulePending' | 'applicationsPending' | 'contactMessagesPending') => {
     if (!badgeKey || !pendingCounts) return 0;
     if (badgeKey === 'ctvModulePending') return ctvModulePending;
     if (badgeKey === 'applicationsPending') return pendingCounts.applicationsPending ?? 0;
+    if (badgeKey === 'contactMessagesPending') return pendingCounts.contactMessagesPending ?? 0;
     return pendingCounts[badgeKey];
   };
 
