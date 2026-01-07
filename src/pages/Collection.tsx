@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/hover-card";
 import WineCharacteristics from "@/components/wine/WineCharacteristics";
 import FlavorNotes from "@/components/wine/FlavorNotes";
+import { Slider } from "@/components/ui/slider";
+import { Grid2X2, Grid3X3, LayoutGrid } from "lucide-react";
 
 const parsePrice = (price: string): number => {
   // Remove currency symbol and commas, parse as number
@@ -22,6 +24,7 @@ const parsePrice = (price: string): number => {
 const Collection = () => {
   const { data: wines = [], isLoading, isError } = useWines();
   const [hoveredWineId, setHoveredWineId] = useState<string | null>(null);
+  const [columnsPerRow, setColumnsPerRow] = useState(4);
 
   const canonicalUrl =
     typeof window !== "undefined"
@@ -105,13 +108,37 @@ const Collection = () => {
         {/* Wine Grid */}
         <section className="py-12 md:py-16 bg-background">
           <div className="container">
+            {/* Grid Filter */}
+            <div className="flex items-center justify-end gap-4 mb-8 pb-6 border-b border-border/30">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <LayoutGrid className="w-4 h-4" />
+                  <span className="text-xs tracking-wide uppercase hidden sm:inline">Hiển thị</span>
+                </div>
+                <div className="flex items-center gap-3 bg-muted/30 rounded-full px-4 py-2">
+                  <span className="text-xs font-medium w-4 text-center">{columnsPerRow}</span>
+                  <Slider
+                    value={[columnsPerRow]}
+                    onValueChange={(value) => setColumnsPerRow(value[0])}
+                    min={1}
+                    max={4}
+                    step={1}
+                    className="w-24"
+                  />
+                </div>
+              </div>
+            </div>
+
             {isError ? (
               <div className="text-center text-sm text-muted-foreground">
                 Không tải được bộ sưu tập lúc này.
               </div>
             ) : (
               <div 
-                className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 transition-all duration-300`}
+                className={`grid gap-8 md:gap-10 transition-all duration-300`}
+                style={{
+                  gridTemplateColumns: `repeat(${columnsPerRow}, minmax(0, 1fr))`,
+                }}
                 onMouseLeave={() => setHoveredWineId(null)}
               >
                 {sortedWines.map((wine, index) => {
