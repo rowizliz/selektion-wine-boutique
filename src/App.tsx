@@ -33,6 +33,7 @@ import PublicInvitation from "./pages/PublicInvitation";
 import CollaboratorPortal from "./pages/CollaboratorPortal";
 import Recruitment from "./pages/Recruitment";
 import AdminRecruitment from "./pages/AdminRecruitment";
+import AdminContactMessages from "./pages/AdminContactMessages";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ const App = () => (
             <Route path="/thiep/:slug" element={<PublicInvitation />} />
             <Route path="/ctv" element={<CollaboratorRoute><CollaboratorPortal /></CollaboratorRoute>} />
             <Route path="/admin/tuyen-dung" element={<AdminRoute><AdminRecruitment /></AdminRoute>} />
+            <Route path="/admin/contact-messages" element={<AdminRoute><AdminContactMessages /></AdminRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
