@@ -60,9 +60,7 @@ const BlogArticleCard = ({ article, variant = "default" }: BlogArticleCardProps)
 
           {/* Meta */}
           <div className="flex items-center gap-4 text-xs text-background/70 font-sans">
-            {article.author?.display_name && (
-              <span>{article.author.display_name}</span>
-            )}
+            <span>{article.author?.display_name || "Tác giả"}</span>
             {article.published_at && (
               <span>
                 {format(new Date(article.published_at), "dd MMM yyyy", { locale: vi })}
