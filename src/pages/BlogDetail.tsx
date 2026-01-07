@@ -94,10 +94,10 @@ const BlogDetail = () => {
             {/* Back link */}
             <Link
               to="/blog"
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-border text-muted-foreground hover:text-foreground hover:border-foreground mb-8 transition-colors"
+              aria-label="Quay lại Blog"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Quay lại Blog
+              <ArrowLeft className="h-5 w-5" />
             </Link>
 
             {/* Category */}
