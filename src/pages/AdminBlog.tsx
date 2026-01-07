@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Plus, Pencil, Trash2, Check, X, Eye, FolderOpen } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Check, X, Eye, FolderOpen, FileEdit } from "lucide-react";
+import ArticleFormDialog from "@/components/blog/ArticleFormDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,6 +45,7 @@ const AdminBlog = () => {
   const { updateArticle, deleteArticle } = useArticleMutations();
   const [articleDialog, setArticleDialog] = useState<{ open: boolean; article?: BlogArticle; action?: "approve" | "reject" }>({ open: false });
   const [adminNotes, setAdminNotes] = useState("");
+  const [articleFormDialog, setArticleFormDialog] = useState<{ open: boolean; article?: BlogArticle }>({ open: false });
 
   // Filter articles by status
   const pendingArticles = articles?.filter(a => a.status === "pending") || [];
@@ -189,11 +191,21 @@ const AdminBlog = () => {
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
+                  {/* Edit button */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setArticleFormDialog({ open: true, article })}
+                    title="Chỉnh sửa"
+                  >
+                    <FileEdit className="h-4 w-4" />
+                  </Button>
                   {article.status === "published" && (
                     <Button
                       variant="ghost"
                       size="icon"
                       asChild
+                      title="Xem bài viết"
                     >
                       <a href={`/blog/${article.slug}`} target="_blank" rel="noopener noreferrer">
                         <Eye className="h-4 w-4" />
@@ -265,8 +277,12 @@ const AdminBlog = () => {
             {/* Main Content - Articles */}
             <div className="lg:col-span-2">
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-lg font-sans">Bài Viết</CardTitle>
+                  <Button onClick={() => setArticleFormDialog({ open: true })}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Viết Bài Mới
+                  </Button>
                 </CardHeader>
                 <CardContent>
                   <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -458,6 +474,14 @@ const AdminBlog = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Article Form Dialog */}
+      <ArticleFormDialog
+        open={articleFormDialog.open}
+        onOpenChange={(open) => setArticleFormDialog({ open })}
+        article={articleFormDialog.article}
+        isAdmin={true}
+      />
     </>
   );
 };

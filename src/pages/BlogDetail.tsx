@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BlogLikeButton from "@/components/blog/BlogLikeButton";
 import BlogComments from "@/components/blog/BlogComments";
+import ArticleContent from "@/components/blog/ArticleContent";
 import { useBlogArticle } from "@/hooks/useBlogArticles";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
@@ -149,18 +150,7 @@ const BlogDetail = () => {
             )}
 
             {/* Content */}
-            <div 
-              className="prose prose-lg max-w-none 
-                prose-headings:font-serif prose-headings:font-normal
-                prose-p:text-foreground/90 prose-p:leading-relaxed
-                prose-a:text-foreground prose-a:underline
-                prose-strong:text-foreground prose-strong:font-medium
-                prose-img:rounded-none
-                dark:prose-invert"
-              style={{ whiteSpace: "pre-wrap" }}
-            >
-              {article.content}
-            </div>
+            <ArticleContent content={article.content} />
 
             {/* Like Button */}
             <div className="mt-12 pt-8 border-t border-border flex justify-center">
