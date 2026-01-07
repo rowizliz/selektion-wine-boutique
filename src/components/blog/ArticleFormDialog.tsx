@@ -43,6 +43,7 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
     excerpt: "",
     category_id: "",
     cover_image_url: "",
+    author_name: "",
   });
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
   const [coverUploading, setCoverUploading] = useState(false);
@@ -59,6 +60,7 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
           excerpt: article.excerpt || "",
           category_id: article.category_id || "",
           cover_image_url: article.cover_image_url || "",
+          author_name: article.author?.display_name || "",
         });
         
         // Parse content blocks
@@ -74,12 +76,28 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
           setBlocks([{ type: "text", content: article.content }]);
         }
       } else {
+        // Load current user's display name for new articles
+        (async () => {
+          const { data: user } = await supabase.auth.getUser();
+          if (user.user) {
+            const { data: profile } = await supabase
+              .from("user_profiles")
+              .select("display_name")
+              .eq("user_id", user.user.id)
+              .single();
+            if (profile?.display_name) {
+              setForm(prev => ({ ...prev, author_name: profile.display_name || "" }));
+            }
+          }
+        })();
+        
         setForm({
           title: "",
           slug: "",
           excerpt: "",
           category_id: "",
           cover_image_url: "",
+          author_name: "",
         });
         setBlocks([]);
       }
@@ -146,10 +164,24 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
       return;
     }
 
+    if (!form.author_name.trim()) {
+      toast({ title: "Vui lòng nhập tên tác giả", variant: "destructive" });
+      return;
+    }
+
     const content = JSON.stringify({ blocks });
 
     setSaving(true);
     try {
+      // Update author display name in user_profiles
+      const { data: user } = await supabase.auth.getUser();
+      if (user.user) {
+        await supabase
+          .from("user_profiles")
+          .update({ display_name: form.author_name.trim() })
+          .eq("user_id", user.user.id);
+      }
+
       if (article) {
         await updateArticle.mutateAsync({
           id: article.id,
@@ -205,6 +237,18 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
                   placeholder="Nhập tiêu đề bài viết"
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="author_name">Tên tác giả *</Label>
+                <Input
+                  id="author_name"
+                  value={form.author_name}
+                  onChange={(e) => setForm((prev) => ({ ...prev, author_name: e.target.value }))}
+                  placeholder="Nhập tên hiển thị của bạn"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="slug">Slug (URL) *</Label>
                 <Input
