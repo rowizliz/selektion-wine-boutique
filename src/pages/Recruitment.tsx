@@ -25,7 +25,16 @@ const applicationSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
   phone: z.string().min(10, "Số điện thoại không hợp lệ"),
   address: z.string().optional(),
-  date_of_birth: z.string().optional(),
+  date_of_birth: z.string().min(1, "Vui lòng nhập ngày sinh").refine((date) => {
+    if (!date) return false;
+    const birthDate = new Date(date);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const dayDiff = today.getDate() - birthDate.getDate();
+    const actualAge = monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
+    return actualAge >= 16;
+  }, "Bạn phải từ 16 tuổi trở lên"),
   occupation: z.string().optional(),
   experience: z.string().optional(),
   motivation: z.string().optional(),
@@ -188,8 +197,9 @@ const Recruitment = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="date_of_birth">Ngày sinh</Label>
+                <Label htmlFor="date_of_birth">Ngày sinh *</Label>
                 <Input id="date_of_birth" type="date" {...register("date_of_birth")} />
+                {errors.date_of_birth && <p className="text-sm text-destructive">{errors.date_of_birth.message}</p>}
               </div>
             </div>
 
