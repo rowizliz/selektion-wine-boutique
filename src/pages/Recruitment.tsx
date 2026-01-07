@@ -208,7 +208,7 @@ const Recruitment = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="experience">Kinh nghiệm bán hàng / bạn có thực sự yêu thích rượu vang </Label>
+              <Label htmlFor="experience">Kinh nghiệm bán hàng / bạn có thực sự yêu thích rượu vang? </Label>
               <Textarea
                 id="experience"
                 {...register("experience")}
@@ -222,7 +222,7 @@ const Recruitment = () => {
               <Textarea
                 id="motivation"
                 {...register("motivation")}
-                placeholder="Chia sẻ lý do bạn muốn gia nhập đội ngũ SÉLECTION"
+                placeholder="Chia sẻ lý do bạn muốn gia nhập đội ngũ SÉLECTION, (nếu được ứng tuyển, xin vui lòng note hình thức liên hệ lại qua đây)"
                 rows={3}
               />
             </div>
