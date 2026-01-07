@@ -31,6 +31,8 @@ import PersonalizedWineConsultation from "./pages/PersonalizedWineConsultation";
 import CustomerWineRecommendation from "./pages/CustomerWineRecommendation";
 import PublicInvitation from "./pages/PublicInvitation";
 import CollaboratorPortal from "./pages/CollaboratorPortal";
+import Recruitment from "./pages/Recruitment";
+import AdminRecruitment from "./pages/AdminRecruitment";
 
 const queryClient = new QueryClient();
 
@@ -62,9 +64,11 @@ const App = () => (
             <Route path="/admin/profile-updates" element={<AdminRoute><AdminProfileUpdates /></AdminRoute>} />
             <Route path="/admin/export-data" element={<AdminRoute><AdminExportData /></AdminRoute>} />
             <Route path="/tu-van-ca-nhan" element={<PersonalizedWineConsultation />} />
+            <Route path="/tuyen-dung" element={<Recruitment />} />
             <Route path="/tuvan/:slug" element={<CustomerWineRecommendation />} />
             <Route path="/thiep/:slug" element={<PublicInvitation />} />
             <Route path="/ctv" element={<CollaboratorRoute><CollaboratorPortal /></CollaboratorRoute>} />
+            <Route path="/admin/tuyen-dung" element={<AdminRoute><AdminRecruitment /></AdminRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

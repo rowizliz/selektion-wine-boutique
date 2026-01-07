@@ -5,7 +5,7 @@ export const usePendingRequestCounts = () => {
   return useQuery({
     queryKey: ['pending-request-counts'],
     queryFn: async () => {
-      const [birthdayResult, personalizedResult, profileUpdatesResult, withdrawalsResult, collaboratorOrdersResult, passwordRequestsResult] = await Promise.all([
+      const [birthdayResult, personalizedResult, profileUpdatesResult, withdrawalsResult, collaboratorOrdersResult, passwordRequestsResult, applicationsResult] = await Promise.all([
         supabase
           .from('birthday_gift_requests')
           .select('id', { count: 'exact', head: true })
@@ -29,6 +29,10 @@ export const usePendingRequestCounts = () => {
         supabase
           .from('password_change_requests')
           .select('id', { count: 'exact', head: true })
+          .eq('status', 'pending'),
+        supabase
+          .from('collaborator_applications')
+          .select('id', { count: 'exact', head: true })
           .eq('status', 'pending')
       ]);
 
@@ -38,7 +42,8 @@ export const usePendingRequestCounts = () => {
         profileUpdatesPending: profileUpdatesResult.count ?? 0,
         withdrawalsPending: withdrawalsResult.count ?? 0,
         collaboratorOrdersPending: collaboratorOrdersResult.count ?? 0,
-        passwordRequestsPending: passwordRequestsResult.count ?? 0
+        passwordRequestsPending: passwordRequestsResult.count ?? 0,
+        applicationsPending: applicationsResult.count ?? 0
       };
     },
     refetchInterval: 30000 // Refresh every 30 seconds
