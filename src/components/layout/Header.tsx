@@ -77,7 +77,7 @@ const Header = () => {
   const menuLinks = [
     { name: "Bộ Sưu Tập", href: "/collection", hideOnDesktop: true },
     { name: "Quà Tặng", href: "/gifts", hideOnDesktop: true },
-    { name: "Blog", href: "/blog", hideOnDesktop: true },
+    { name: "Blog", href: "/blog" },
     { name: "Tư Vấn Cá Nhân Hoá", href: "/tu-van-ca-nhan" },
     { name: "Tuyển Dụng CTV", href: "/tuyen-dung" },
     { name: "Về Chúng Tôi", href: "/about" },
@@ -99,7 +99,7 @@ const Header = () => {
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
-            {/* Desktop: "Bộ Sưu Tập", "Quà Tặng", "Blog" links on left */}
+            {/* Desktop: "Bộ Sưu Tập" và "Quà Tặng" links on left */}
             <div className="hidden lg:flex items-center gap-6">
               <Link
                 to="/collection"
@@ -112,12 +112,6 @@ const Header = () => {
                 className="text-xs font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors duration-300"
               >
                 Quà Tặng
-              </Link>
-              <Link
-                to="/blog"
-                className="text-xs font-sans tracking-widest uppercase text-foreground hover:text-muted-foreground transition-colors duration-300"
-              >
-                Blog
               </Link>
             </div>
           </div>
