@@ -92,6 +92,57 @@ export type Database = {
         }
         Relationships: []
       }
+      collaborator_applications: {
+        Row: {
+          address: string | null
+          admin_notes: string | null
+          created_at: string
+          cv_url: string | null
+          date_of_birth: string | null
+          email: string
+          experience: string | null
+          full_name: string
+          id: string
+          motivation: string | null
+          occupation: string | null
+          phone: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          cv_url?: string | null
+          date_of_birth?: string | null
+          email: string
+          experience?: string | null
+          full_name: string
+          id?: string
+          motivation?: string | null
+          occupation?: string | null
+          phone: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          cv_url?: string | null
+          date_of_birth?: string | null
+          email?: string
+          experience?: string | null
+          full_name?: string
+          id?: string
+          motivation?: string | null
+          occupation?: string | null
+          phone?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       collaborator_order_items: {
         Row: {
           collaborator_price: number
