@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog, Volume2, VolumeX, Download, UserPlus, MessageSquare, FileText } from "lucide-react";
+import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog, Volume2, VolumeX, Download, UserPlus, MessageSquare, FileText, GiftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
@@ -45,6 +45,13 @@ const adminModules: AdminModule[] = [
     icon: Wine,
     href: "/admin/wines",
     color: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+  },
+  {
+    title: "Quản lý Quà Tặng",
+    description: "Thêm, sửa, xóa set quà tặng rượu vang",
+    icon: GiftIcon,
+    href: "/admin/gift-sets",
+    color: "bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400"
   },
   {
     title: "Quà Tặng Sinh Nhật",

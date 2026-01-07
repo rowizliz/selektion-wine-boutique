@@ -15,6 +15,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Gifts from "./pages/Gifts";
+import AdminGiftSets from "./pages/AdminGiftSets";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminFlavorIcons from "./pages/AdminFlavorIcons";
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
             <Route path="/admin/wines" element={<AdminRoute><AdminWines /></AdminRoute>} />
+            <Route path="/admin/gift-sets" element={<AdminRoute><AdminGiftSets /></AdminRoute>} />
             <Route path="/admin/import-wines" element={<AdminRoute><AdminImportWines /></AdminRoute>} />
             <Route path="/admin/flavor-icons" element={<AdminRoute><AdminFlavorIcons /></AdminRoute>} />
             <Route path="/admin/birthday-gifts" element={<AdminRoute><AdminBirthdayGifts /></AdminRoute>} />
