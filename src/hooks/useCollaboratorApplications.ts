@@ -50,9 +50,20 @@ export const useApplications = () => {
 export const useCreateApplication = () => {
   return useMutation({
     mutationFn: async (applicationData: CreateApplicationData) => {
+      // Clean up data - convert empty strings to null for optional fields
+      const cleanData = {
+        ...applicationData,
+        status: 'pending' as const, // Required by RLS policy
+        date_of_birth: applicationData.date_of_birth?.trim() || null,
+        address: applicationData.address?.trim() || null,
+        occupation: applicationData.occupation?.trim() || null,
+        experience: applicationData.experience?.trim() || null,
+        motivation: applicationData.motivation?.trim() || null,
+      };
+
       const { data, error } = await supabase
         .from('collaborator_applications')
-        .insert(applicationData)
+        .insert(cleanData)
         .select()
         .single();
 
