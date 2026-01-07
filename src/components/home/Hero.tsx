@@ -81,7 +81,7 @@ const Hero = () => {
                 {/* Main heading */}
                 <h1 className="text-[clamp(32px,9vw,96px)] font-serif font-light tracking-wide leading-[1.1]">
                   {slide.heading}<br />
-                  <span className="font-script text-[clamp(28px,8vw,80px)]">{slide.headingItalic}</span>
+                  <span className="italic">{slide.headingItalic}</span>
                 </h1>
 
                 {/* Description */}
