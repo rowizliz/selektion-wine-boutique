@@ -26,6 +26,7 @@ import AdminInvitations from "./pages/AdminInvitations";
 import AdminInventory from "./pages/AdminInventory";
 import AdminCollaborators from "./pages/AdminCollaborators";
 import AdminProfileUpdates from "./pages/AdminProfileUpdates";
+import AdminExportData from "./pages/AdminExportData";
 import PersonalizedWineConsultation from "./pages/PersonalizedWineConsultation";
 import CustomerWineRecommendation from "./pages/CustomerWineRecommendation";
 import PublicInvitation from "./pages/PublicInvitation";
@@ -59,6 +60,7 @@ const App = () => (
             <Route path="/admin/inventory" element={<AdminRoute><AdminInventory /></AdminRoute>} />
             <Route path="/admin/collaborators" element={<AdminRoute><AdminCollaborators /></AdminRoute>} />
             <Route path="/admin/profile-updates" element={<AdminRoute><AdminProfileUpdates /></AdminRoute>} />
+            <Route path="/admin/export-data" element={<AdminRoute><AdminExportData /></AdminRoute>} />
             <Route path="/tu-van-ca-nhan" element={<PersonalizedWineConsultation />} />
             <Route path="/tuvan/:slug" element={<CustomerWineRecommendation />} />
             <Route path="/thiep/:slug" element={<PublicInvitation />} />

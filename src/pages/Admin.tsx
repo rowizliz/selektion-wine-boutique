@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog, Volume2, VolumeX } from "lucide-react";
+import { Wine, Gift, Palette, Upload, ArrowLeft, Sparkles, Mail, Package, Users, UserCog, Volume2, VolumeX, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePendingRequestCounts } from "@/hooks/usePendingRequestCounts";
 import { useNotificationSound } from "@/hooks/useNotificationSound";
@@ -82,6 +82,13 @@ const adminModules: AdminModule[] = [
     icon: Upload,
     href: "/admin/import-wines",
     color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+  },
+  {
+    title: "Export Data",
+    description: "Xuất data để migrate sang Supabase khác",
+    icon: Download,
+    href: "/admin/export-data",
+    color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400"
   }
 ];
 
