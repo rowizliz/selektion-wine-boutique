@@ -16,7 +16,7 @@ const WineCharacteristics = ({ characteristics }: WineCharacteristicsProps) => {
   return (
     <div className="space-y-3">
       <WineCharacteristicsBar label="Độ ngọt" value={sweetness} />
-      <WineCharacteristicsBar label="Thân" value={body} />
+      <WineCharacteristicsBar label="Đậm đà" value={body} />
       <WineCharacteristicsBar label="Tannin" value={tannin} />
       <WineCharacteristicsBar label="Độ chua" value={acidity} />
       {fizzy !== null && fizzy !== undefined && fizzy > 0 && (
