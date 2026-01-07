@@ -7,13 +7,13 @@ import { useWines } from "@/hooks/useWines";
 import logo from "@/assets/logo2.png";
 import PersonalizedWineCard from "@/components/personalized-wine/PersonalizedWineCard";
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import WineCharacteristics from "@/components/wine/WineCharacteristics";
 import FlavorNotes from "@/components/wine/FlavorNotes";
-import { LayoutGrid } from "lucide-react";
 
 const parsePrice = (price: string): number => {
   // Remove currency symbol and commas, parse as number
@@ -174,90 +174,83 @@ const Collection = () => {
                         animationFillMode: 'forwards',
                       }}
                     >
-                      {/* Ảnh - không trigger hover */}
+                      {/* Ảnh */}
                       <Link to={`/collection/${wine.id}`} className="group block">
-                        <div className="aspect-[3/4] bg-white mb-5 overflow-hidden flex items-end justify-center p-6 rounded-sm">
+                        <div className={`aspect-[3/4] bg-white mb-5 overflow-hidden flex items-end justify-center p-6 rounded-sm transition-all duration-300 ${
+                          columnsPerRow === 1 ? 'md:aspect-auto md:h-[500px]' : ''
+                        }`}>
                           <img
                             src={withImgCacheBust(img, wine.updated_at)}
                             alt={`Rượu vang ${wine.name}`}
                             loading="lazy"
-                            className="w-auto h-[280px] object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                            className={`w-auto object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out ${
+                              columnsPerRow === 1 ? 'h-full max-h-[450px]' : 'h-[280px]'
+                            }`}
                           />
                         </div>
                       </Link>
 
-                      {/* Tiêu đề - trigger hover */}
-                      <HoverCard openDelay={150} closeDelay={100}>
-                        <HoverCardTrigger asChild>
-                          <Link
-                            to={`/collection/${wine.id}`}
-                            className="block space-y-2 group"
-                            onMouseEnter={() => setHoveredWineId(wine.id)}
-                            onMouseLeave={() => setHoveredWineId(null)}
-                          >
-                            <h3 className="text-base font-serif group-hover:text-primary transition-colors duration-300 leading-tight cursor-pointer">
-                              {wine.name}
-                              {wine.vintage && (
-                                <span className="text-muted-foreground font-normal ml-1">
-                                  ({wine.vintage})
-                                </span>
-                              )}
-                            </h3>
-                            <p className="text-[10px] tracking-widest text-muted-foreground uppercase">
-                              {wine.origin}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {wine.grapes}
-                            </p>
-                            <p className="text-sm font-sans pt-1">{wine.price}</p>
-                          </Link>
-                        </HoverCardTrigger>
-                        
-                        {(hasCharacteristics || hasFlavorNotes) && (
-                          <HoverCardContent 
-                            side="bottom" 
-                            align="start"
-                            sideOffset={8}
-                            className="w-80 p-0 bg-background border-border/50 shadow-2xl hidden md:block rounded-xl overflow-hidden"
-                          >
-                            {/* Header */}
-                            <div className="bg-primary/5 px-5 py-4 border-b border-border/30">
-                              <h4 className="font-serif text-base font-medium text-foreground">
+                      {/* Tiêu đề với Tooltip */}
+                      <TooltipProvider delayDuration={200}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Link
+                              to={`/collection/${wine.id}`}
+                              className="block space-y-2 group"
+                              onMouseEnter={() => setHoveredWineId(wine.id)}
+                              onMouseLeave={() => setHoveredWineId(null)}
+                            >
+                              <h3 className={`font-serif group-hover:text-primary transition-colors duration-300 leading-tight cursor-pointer ${
+                                columnsPerRow === 1 ? 'text-xl md:text-2xl' : 'text-base'
+                              }`}>
                                 {wine.name}
                                 {wine.vintage && (
-                                  <span className="text-muted-foreground font-normal ml-1.5 text-sm">
+                                  <span className="text-muted-foreground font-normal ml-1.5">
                                     ({wine.vintage})
                                   </span>
                                 )}
-                              </h4>
-                              <p className="text-[10px] tracking-widest text-muted-foreground uppercase mt-1">
+                              </h3>
+                              <p className="text-[10px] tracking-widest text-muted-foreground uppercase">
                                 {wine.origin}
                               </p>
-                            </div>
-                            
-                            {/* Content */}
-                            <div className="p-5 space-y-5">
-                              {hasCharacteristics && (
-                                <div className="space-y-3">
-                                  <p className="text-[10px] tracking-[0.15em] text-muted-foreground uppercase font-medium">
-                                    Đặc tính
-                                  </p>
-                                  <WineCharacteristics characteristics={characteristics} />
-                                </div>
-                              )}
-                              
-                              {hasFlavorNotes && (
-                                <div className="space-y-3">
-                                  <p className="text-[10px] tracking-[0.15em] text-muted-foreground uppercase font-medium">
-                                    Nốt hương
-                                  </p>
-                                  <FlavorNotes notes={wine.flavor_notes!} />
-                                </div>
-                              )}
-                            </div>
-                          </HoverCardContent>
-                        )}
-                      </HoverCard>
+                              <p className={`text-muted-foreground ${columnsPerRow === 1 ? 'text-sm' : 'text-xs'}`}>
+                                {wine.grapes}
+                              </p>
+                              <p className={`font-sans pt-1 ${columnsPerRow === 1 ? 'text-lg' : 'text-sm'}`}>{wine.price}</p>
+                            </Link>
+                          </TooltipTrigger>
+                          
+                          {(hasCharacteristics || hasFlavorNotes) && (
+                            <TooltipContent 
+                              side="right" 
+                              align="start"
+                              sideOffset={16}
+                              className="w-72 p-0 bg-background border border-border/60 shadow-xl hidden md:block rounded-lg overflow-hidden z-50"
+                            >
+                              {/* Compact Content */}
+                              <div className="p-4 space-y-4">
+                                {hasCharacteristics && (
+                                  <div className="space-y-2.5">
+                                    <p className="text-[9px] tracking-[0.2em] text-muted-foreground uppercase font-medium">
+                                      Đặc tính
+                                    </p>
+                                    <WineCharacteristics characteristics={characteristics} />
+                                  </div>
+                                )}
+                                
+                                {hasFlavorNotes && (
+                                  <div className="space-y-2.5">
+                                    <p className="text-[9px] tracking-[0.2em] text-muted-foreground uppercase font-medium">
+                                      Nốt hương
+                                    </p>
+                                    <FlavorNotes notes={wine.flavor_notes!} />
+                                  </div>
+                                )}
+                              </div>
+                            </TooltipContent>
+                          )}
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   );
                 })}
