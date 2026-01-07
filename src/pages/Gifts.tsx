@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
-import { Gift, Wine, Sparkles, Phone, CheckCircle, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, Building, Cake } from "lucide-react";
+import { Gift, Wine, Sparkles, Phone, CheckCircle, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, Building, Cake, Loader2 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { giftSets, formatPrice, GiftSet } from "@/data/giftSets";
+import { formatPrice } from "@/data/giftSets";
+import { useActiveGiftSets, GiftSetDB } from "@/hooks/useGiftSets";
 import {
   Dialog,
   DialogContent,
@@ -26,10 +27,13 @@ const Gifts = () => {
   const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
 
+  const { data: giftSets, isLoading } = useActiveGiftSets();
+
   const filteredGifts = useMemo(() => {
+    if (!giftSets) return [];
     if (filter === "all") return giftSets;
     return giftSets.filter((gift) => gift.category === filter);
-  }, [filter]);
+  }, [filter, giftSets]);
 
   const sortedGifts = useMemo(() => {
     return [...filteredGifts].sort((a, b) => a.price - b.price);
@@ -68,7 +72,7 @@ const Gifts = () => {
     if (selectedImage && selectedImage.index > 0) {
       const prevGift = sortedGifts[selectedImage.index - 1];
       setSelectedImage({
-        src: prevGift.image,
+        src: prevGift.image_url || '',
         name: prevGift.name,
         index: selectedImage.index - 1,
       });
@@ -80,7 +84,7 @@ const Gifts = () => {
     if (selectedImage && selectedImage.index < sortedGifts.length - 1) {
       const nextGift = sortedGifts[selectedImage.index + 1];
       setSelectedImage({
-        src: nextGift.image,
+        src: nextGift.image_url || '',
         name: nextGift.name,
         index: selectedImage.index + 1,
       });
@@ -225,16 +229,22 @@ const Gifts = () => {
             </div>
 
             {/* Gift Sets Grid - 3 columns max for better card size */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-6xl mx-auto">
-              {sortedGifts.map((gift, index) => (
-                <GiftCard
-                  key={gift.id}
-                  gift={gift}
-                  index={index}
-                  onImageClick={(image) => handleImageClick({ ...image, index })}
-                />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-24">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-6xl mx-auto">
+                {sortedGifts.map((gift, index) => (
+                  <GiftCard
+                    key={gift.id}
+                    gift={gift}
+                    index={index}
+                    onImageClick={(image) => handleImageClick({ ...image, index })}
+                  />
+                ))}
+              </div>
+            )}
 
             {/* Contact CTA */}
             <div className="mt-16 lg:mt-24 text-center">
@@ -393,19 +403,19 @@ const Gifts = () => {
 };
 
 interface GiftCardProps {
-  gift: GiftSet;
+  gift: GiftSetDB;
   index: number;
   onImageClick: (image: { src: string; name: string }) => void;
 }
 
 const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
-  const categoryLabel = {
+  const categoryLabel: Record<string, string> = {
     standard: "Tiêu chuẩn",
     premium: "Cao cấp",
     luxury: "Sang trọng",
   };
 
-  const categoryStyles = {
+  const categoryStyles: Record<string, { badge: string; accent: string }> = {
     standard: {
       badge: "bg-stone-100 text-stone-700 border-stone-200",
       accent: "from-stone-400/20 to-stone-300/10",
@@ -420,7 +430,7 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
     },
   };
 
-  const styles = categoryStyles[gift.category];
+  const styles = categoryStyles[gift.category] || categoryStyles.standard;
 
   return (
     <article
@@ -433,12 +443,12 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
         {/* Image Section */}
         <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
           <button
-            onClick={() => onImageClick({ src: gift.image, name: gift.name })}
+            onClick={() => onImageClick({ src: gift.image_url || '', name: gift.name })}
             className="w-full h-full cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-inset"
             aria-label={`Xem ảnh ${gift.name}`}
           >
             <img
-              src={gift.image}
+              src={gift.image_url || ''}
               alt={gift.name}
               className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-1000 ease-out"
             />
@@ -462,7 +472,7 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
           {/* Category Badge - Top Left */}
           <div className="absolute top-3 left-3 pointer-events-none">
             <span className={`px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-wider uppercase border backdrop-blur-sm ${styles.badge}`}>
-              {categoryLabel[gift.category]}
+              {categoryLabel[gift.category] || gift.category}
             </span>
           </div>
           
