@@ -34,6 +34,9 @@ import CollaboratorPortal from "./pages/CollaboratorPortal";
 import Recruitment from "./pages/Recruitment";
 import AdminRecruitment from "./pages/AdminRecruitment";
 import AdminContactMessages from "./pages/AdminContactMessages";
+import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
+import AdminBlog from "./pages/AdminBlog";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +74,9 @@ const App = () => (
             <Route path="/ctv" element={<CollaboratorRoute><CollaboratorPortal /></CollaboratorRoute>} />
             <Route path="/admin/tuyen-dung" element={<AdminRoute><AdminRecruitment /></AdminRoute>} />
             <Route path="/admin/contact-messages" element={<AdminRoute><AdminContactMessages /></AdminRoute>} />
+            <Route path="/admin/blog" element={<AdminRoute><AdminBlog /></AdminRoute>} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
