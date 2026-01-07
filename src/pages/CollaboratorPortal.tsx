@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Package, DollarSign, ShoppingCart, Plus, Minus, Wallet, CreditCard, Landmark, Settings, Key } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -411,7 +411,15 @@ const CollaboratorPortal = () => {
                                 />
                               </div>
                             </TableCell>
-                            <TableCell className="font-medium">{wine.name}</TableCell>
+                            <TableCell className="font-medium">
+                              <Link 
+                                to={`/collection/${wine.id}`}
+                                className="hover:text-primary hover:underline transition-colors"
+                                target="_blank"
+                              >
+                                {wine.name}
+                              </Link>
+                            </TableCell>
                             <TableCell className="text-muted-foreground">
                               {formatPrice(originalPrice)}
                             </TableCell>
