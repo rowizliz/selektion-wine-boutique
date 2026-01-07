@@ -70,12 +70,12 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="mailto:hello@selection.vn"
+                  <Link
+                    to="/contact"
                     className="hover:text-foreground transition-colors duration-300"
                   >
-                    hello@selection.vn
-                  </a>
+                    Gửi tin nhắn
+                  </Link>
                 </li>
               </ul>
             </div>
