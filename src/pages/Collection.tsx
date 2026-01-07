@@ -1,11 +1,18 @@
 import { Helmet } from "react-helmet-async";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { useWines } from "@/hooks/useWines";
 import logo from "@/assets/logo2.png";
 import PersonalizedWineCard from "@/components/personalized-wine/PersonalizedWineCard";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import WineCharacteristics from "@/components/wine/WineCharacteristics";
+import FlavorNotes from "@/components/wine/FlavorNotes";
 
 const parsePrice = (price: string): number => {
   // Remove currency symbol and commas, parse as number
@@ -14,6 +21,7 @@ const parsePrice = (price: string): number => {
 
 const Collection = () => {
   const { data: wines = [], isLoading, isError } = useWines();
+  const [hoveredWineId, setHoveredWineId] = useState<string | null>(null);
 
   const canonicalUrl =
     typeof window !== "undefined"
@@ -102,44 +110,103 @@ const Collection = () => {
                 Không tải được bộ sưu tập lúc này.
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+              <div 
+                className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 transition-all duration-300`}
+                onMouseLeave={() => setHoveredWineId(null)}
+              >
                 {sortedWines.map((wine, index) => {
                   const img = wine.image_url ?? "/placeholder.svg";
+                  const isHovered = hoveredWineId === wine.id;
+                  const hasHover = hoveredWineId !== null;
+                  const characteristics = {
+                    sweetness: wine.sweetness ?? 0,
+                    body: wine.body ?? 0,
+                    tannin: wine.tannin ?? 0,
+                    acidity: wine.acidity ?? 0,
+                    fizzy: wine.fizzy,
+                  };
+                  const hasCharacteristics = characteristics.sweetness > 0 || characteristics.body > 0 || characteristics.tannin > 0 || characteristics.acidity > 0;
+                  const hasFlavorNotes = wine.flavor_notes && wine.flavor_notes.length > 0;
+                  
                   return (
-                    <Link
-                      key={wine.id}
-                      to={`/collection/${wine.id}`}
-                      className="group opacity-0 animate-slide-up"
-                      style={{
-                        animationDelay: `${Math.min(index * 0.05, 0.5)}s`,
-                      }}
-                    >
-                      <div className="aspect-[3/4] bg-white mb-5 overflow-hidden flex items-end justify-center p-6 rounded-sm">
-                        <img
-                          src={withImgCacheBust(img, wine.updated_at)}
-                          alt={`Rượu vang ${wine.name}`}
-                          loading="lazy"
-                          className="w-auto h-[280px] object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <h3 className="text-base font-serif group-hover:text-muted-foreground transition-colors duration-300 leading-tight">
-                          {wine.name}
-                          {wine.vintage && (
-                            <span className="text-muted-foreground font-normal ml-1">
-                              ({wine.vintage})
-                            </span>
-                          )}
-                        </h3>
-                        <p className="text-[10px] tracking-widest text-muted-foreground uppercase">
-                          {wine.origin}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {wine.grapes}
-                        </p>
-                        <p className="text-sm font-sans pt-1">{wine.price}</p>
-                      </div>
-                    </Link>
+                    <HoverCard key={wine.id} openDelay={100} closeDelay={50}>
+                      <HoverCardTrigger asChild>
+                        <Link
+                          to={`/collection/${wine.id}`}
+                          className={`group opacity-0 animate-slide-up transition-all duration-300 ${
+                            hasHover && !isHovered 
+                              ? 'opacity-40 blur-[1px] scale-[0.98]' 
+                              : isHovered 
+                                ? 'opacity-100 scale-[1.02] z-10 relative' 
+                                : ''
+                          }`}
+                          style={{
+                            animationDelay: `${Math.min(index * 0.05, 0.5)}s`,
+                            animationFillMode: 'forwards',
+                          }}
+                          onMouseEnter={() => setHoveredWineId(wine.id)}
+                        >
+                          <div className="aspect-[3/4] bg-white mb-5 overflow-hidden flex items-end justify-center p-6 rounded-sm">
+                            <img
+                              src={withImgCacheBust(img, wine.updated_at)}
+                              alt={`Rượu vang ${wine.name}`}
+                              loading="lazy"
+                              className="w-auto h-[280px] object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <h3 className="text-base font-serif group-hover:text-muted-foreground transition-colors duration-300 leading-tight">
+                              {wine.name}
+                              {wine.vintage && (
+                                <span className="text-muted-foreground font-normal ml-1">
+                                  ({wine.vintage})
+                                </span>
+                              )}
+                            </h3>
+                            <p className="text-[10px] tracking-widest text-muted-foreground uppercase">
+                              {wine.origin}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {wine.grapes}
+                            </p>
+                            <p className="text-sm font-sans pt-1">{wine.price}</p>
+                          </div>
+                        </Link>
+                      </HoverCardTrigger>
+                      
+                      {(hasCharacteristics || hasFlavorNotes) && (
+                        <HoverCardContent 
+                          side="right" 
+                          align="start"
+                          sideOffset={12}
+                          className="w-72 p-4 bg-background/95 backdrop-blur-sm border-border shadow-xl hidden md:block"
+                        >
+                          <div className="space-y-4">
+                            <h4 className="font-serif text-sm font-medium border-b border-border pb-2">
+                              {wine.name}
+                            </h4>
+                            
+                            {hasCharacteristics && (
+                              <div className="space-y-2">
+                                <p className="text-[10px] tracking-widest text-muted-foreground uppercase">
+                                  Đặc tính
+                                </p>
+                                <WineCharacteristics characteristics={characteristics} />
+                              </div>
+                            )}
+                            
+                            {hasFlavorNotes && (
+                              <div className="space-y-2">
+                                <p className="text-[10px] tracking-widest text-muted-foreground uppercase">
+                                  Nốt hương
+                                </p>
+                                <FlavorNotes notes={wine.flavor_notes!} />
+                              </div>
+                            )}
+                          </div>
+                        </HoverCardContent>
+                      )}
+                    </HoverCard>
                   );
                 })}
                 
