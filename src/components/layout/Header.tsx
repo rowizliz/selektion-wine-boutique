@@ -15,7 +15,10 @@ const Header = () => {
       (event, session) => {
         setUser(session?.user ?? null);
         if (session?.user) {
-          checkCollaboratorStatus(session.user.id);
+          // Defer DB calls to avoid auth callback deadlocks
+          setTimeout(() => {
+            checkCollaboratorStatus(session.user);
+          }, 0);
         } else {
           setIsCollaborator(false);
         }
@@ -25,25 +28,52 @@ const Header = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkCollaboratorStatus(session.user.id);
+        checkCollaboratorStatus(session.user);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const checkCollaboratorStatus = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('collaborators')
-      .select('id, is_active')
-      .eq('user_id', userId)
+  const checkCollaboratorStatus = async (authUser: SupabaseUser) => {
+    // 1) Check if already linked by user_id
+    const { data: linked } = await supabase
+      .from("collaborators")
+      .select("id, is_active")
+      .eq("user_id", authUser.id)
+      .eq("is_active", true)
       .maybeSingle();
-    
-    if (!error && data && data.is_active) {
+
+    if (linked) {
       setIsCollaborator(true);
-    } else {
-      setIsCollaborator(false);
+      return;
     }
+
+    // 2) If not linked yet (common with Google login), link by email
+    const email = authUser.email;
+    if (email) {
+      const { data: unlinked } = await supabase
+        .from("collaborators")
+        .select("id")
+        .eq("email", email)
+        .eq("is_active", true)
+        .is("user_id", null)
+        .maybeSingle();
+
+      if (unlinked) {
+        const { error: updateError } = await supabase
+          .from("collaborators")
+          .update({ user_id: authUser.id })
+          .eq("id", unlinked.id);
+
+        if (!updateError) {
+          setIsCollaborator(true);
+          return;
+        }
+      }
+    }
+
+    setIsCollaborator(false);
   };
 
   const handleLogout = async () => {
