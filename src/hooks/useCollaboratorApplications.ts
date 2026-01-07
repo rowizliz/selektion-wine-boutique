@@ -61,15 +61,16 @@ export const useCreateApplication = () => {
         motivation: applicationData.motivation?.trim() || null,
       };
 
-      const { data, error } = await supabase
+      // Important: do NOT request the inserted row back.
+      // Anonymous users don't have SELECT access to this table (by design),
+      // so `.select()` would fail with an RLS error even if INSERT is allowed.
+      const { error } = await supabase
         .from('collaborator_applications')
-        .insert(cleanData)
-        .select()
-        .single();
+        .insert(cleanData);
 
       if (error) throw error;
-      return data;
-    }
+      return { ok: true };
+    },
   });
 };
 
