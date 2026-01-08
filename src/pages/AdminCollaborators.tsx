@@ -95,6 +95,7 @@ const AdminCollaborators = () => {
     email: "",
     phone: "",
     discount_percent: 15,
+    wallet_balance: 0,
   });
   const [tierFormData, setTierFormData] = useState({
     min_quantity: 1,
@@ -117,7 +118,7 @@ const AdminCollaborators = () => {
       await addCollaborator.mutateAsync(formData);
       toast.success("Đã thêm cộng tác viên thành công!");
       setIsAddDialogOpen(false);
-      setFormData({ name: "", email: "", phone: "", discount_percent: 15 });
+      setFormData({ name: "", email: "", phone: "", discount_percent: 15, wallet_balance: 0 });
     } catch (error: any) {
       toast.error(error.message || "Lỗi khi thêm cộng tác viên");
     }
@@ -195,6 +196,7 @@ const AdminCollaborators = () => {
       email: collab.email,
       phone: collab.phone || "",
       discount_percent: collab.discount_percent,
+      wallet_balance: collab.wallet_balance,
     });
     setEditingCollaborator(collab);
   };
@@ -572,7 +574,7 @@ const AdminCollaborators = () => {
           if (!open) {
             setIsAddDialogOpen(false);
             setEditingCollaborator(null);
-            setFormData({ name: "", email: "", phone: "", discount_percent: 15 });
+            setFormData({ name: "", email: "", phone: "", discount_percent: 15, wallet_balance: 0 });
           }
         }}
       >
@@ -626,6 +628,19 @@ const AdminCollaborators = () => {
                 max={100}
               />
             </div>
+            {editingCollaborator && (
+              <div>
+                <Label>Số dư ví (đ)</Label>
+                <Input
+                  type="number"
+                  value={formData.wallet_balance}
+                  onChange={(e) =>
+                    setFormData({ ...formData, wallet_balance: Number(e.target.value) })
+                  }
+                  min={0}
+                />
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button
