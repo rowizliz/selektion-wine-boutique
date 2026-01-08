@@ -199,7 +199,7 @@ export const useInvitationBySlug = (slug: string, pin: string) => {
   });
 };
 
-// Submit RSVP
+// Submit RSVP (public endpoint - do not return row data to avoid SELECT/RLS issues)
 export const useSubmitRSVP = () => {
   return useMutation({
     mutationFn: async (input: {
@@ -210,21 +210,16 @@ export const useSubmitRSVP = () => {
       guest_count?: number;
       note?: string;
     }) => {
-      const { data, error } = await supabase
-        .from("invitation_rsvps")
-        .insert({
-          invitation_id: input.invitation_id,
-          guest_name: input.guest_name,
-          phone: input.phone || null,
-          attending: input.attending,
-          guest_count: input.guest_count || 1,
-          note: input.note || null,
-        })
-        .select()
-        .single();
+      const { error } = await supabase.from("invitation_rsvps").insert({
+        invitation_id: input.invitation_id,
+        guest_name: input.guest_name,
+        phone: input.phone || null,
+        attending: input.attending,
+        guest_count: input.guest_count || 1,
+        note: input.note || null,
+      });
 
       if (error) throw error;
-      return data as InvitationRSVP;
     },
   });
 };
