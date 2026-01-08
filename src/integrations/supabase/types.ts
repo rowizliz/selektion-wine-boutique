@@ -1291,6 +1291,7 @@ export type Database = {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
       }
+      invitation_exists: { Args: { p_invitation_id: string }; Returns: boolean }
       is_admin: { Args: never; Returns: boolean }
       is_collaborator: { Args: never; Returns: boolean }
       link_collaborator_for_current_user: { Args: never; Returns: boolean }
