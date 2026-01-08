@@ -31,8 +31,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { toast } from "sonner";
-import { useInvitations, useDeleteInvitation, useInvitationRSVPs, useCheckInGuest, Invitation, InvitationRSVP } from "@/hooks/useInvitations";
+import { useInvitations, useDeleteInvitation, useInvitationRSVPs, useCheckInGuest, useDeleteRSVP, Invitation, InvitationRSVP } from "@/hooks/useInvitations";
 import InvitationFormDialog from "@/components/invitations/InvitationFormDialog";
 
 const AdminInvitations = () => {
@@ -265,6 +271,8 @@ interface RSVPDetailDialogProps {
 
 const RSVPDetailDialog = ({ invitation, open, onOpenChange, onCheckIn }: RSVPDetailDialogProps) => {
   const { data: rsvps, isLoading } = useInvitationRSVPs(invitation.id);
+  const deleteRSVP = useDeleteRSVP();
+  const [deleteRsvpId, setDeleteRsvpId] = useState<string | null>(null);
 
   const attendingCount = rsvps?.filter(r => r.attending).reduce((sum, r) => sum + r.guest_count, 0) || 0;
   const notAttendingCount = rsvps?.filter(r => !r.attending).length || 0;
@@ -276,121 +284,177 @@ const RSVPDetailDialog = ({ invitation, open, onOpenChange, onCheckIn }: RSVPDet
     toast.success("Đã sao chép link QR check-in");
   };
 
+  const handleDeleteRSVP = async () => {
+    if (!deleteRsvpId) return;
+    try {
+      await deleteRSVP.mutateAsync({ rsvpId: deleteRsvpId, invitationId: invitation.id });
+      toast.success("Đã xóa khách mời");
+      setDeleteRsvpId(null);
+    } catch (error) {
+      toast.error("Lỗi khi xóa khách mời");
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            {invitation.title} - Danh sách RSVP
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              {invitation.title} - Danh sách RSVP
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="space-y-4">
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4">
-            <Card>
-              <CardContent className="pt-4 text-center">
-                <p className="text-2xl font-bold text-green-600">{attendingCount}</p>
-                <p className="text-sm text-muted-foreground">Tham dự</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-4 text-center">
-                <p className="text-2xl font-bold text-red-600">{notAttendingCount}</p>
-                <p className="text-sm text-muted-foreground">Không tham dự</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-4 text-center">
-                <p className="text-2xl font-bold text-blue-600">{checkedInCount}</p>
-                <p className="text-sm text-muted-foreground">Đã check-in</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* QR Link */}
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleCopyQRLink}>
-              <QrCode className="h-4 w-4 mr-2" />
-              Link QR Check-in
-            </Button>
-            <span className="text-sm text-muted-foreground">
-              PIN: <code className="bg-muted px-2 py-1 rounded">{invitation.pin_code}</code>
-            </span>
-          </div>
-
-          {/* RSVP Table */}
-          {isLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin" />
+          <div className="space-y-4">
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="pt-4 text-center">
+                  <p className="text-2xl font-bold text-green-600">{attendingCount}</p>
+                  <p className="text-sm text-muted-foreground">Tham dự</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-4 text-center">
+                  <p className="text-2xl font-bold text-red-600">{notAttendingCount}</p>
+                  <p className="text-sm text-muted-foreground">Không tham dự</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-4 text-center">
+                  <p className="text-2xl font-bold text-blue-600">{checkedInCount}</p>
+                  <p className="text-sm text-muted-foreground">Đã check-in</p>
+                </CardContent>
+              </Card>
             </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Khách</TableHead>
-                  <TableHead>SĐT</TableHead>
-                  <TableHead>Số người</TableHead>
-                  <TableHead>Trạng thái</TableHead>
-                  <TableHead>Ghi chú</TableHead>
-                  <TableHead>Check-in</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rsvps?.map((rsvp) => (
-                  <TableRow key={rsvp.id}>
-                    <TableCell className="font-medium">{rsvp.guest_name}</TableCell>
-                    <TableCell>{rsvp.phone || "-"}</TableCell>
-                    <TableCell>{rsvp.guest_count}</TableCell>
-                    <TableCell>
-                      {rsvp.attending ? (
-                        <Badge className="bg-green-100 text-green-700">
-                          <Check className="h-3 w-3 mr-1" />
-                          Tham dự
-                        </Badge>
-                      ) : (
-                        <Badge variant="destructive">
-                          <X className="h-3 w-3 mr-1" />
-                          Không
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="max-w-[150px] truncate">
-                      {rsvp.note || "-"}
-                    </TableCell>
-                    <TableCell>
-                      {rsvp.checked_in_at ? (
-                        <Badge className="bg-blue-100 text-blue-700">
-                          {format(new Date(rsvp.checked_in_at), "HH:mm")}
-                        </Badge>
-                      ) : rsvp.attending ? (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onCheckIn(rsvp.id)}
-                        >
-                          Check-in
-                        </Button>
-                      ) : (
-                        "-"
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {(!rsvps || rsvps.length === 0) && (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                      Chưa có khách nào phản hồi
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
+
+            {/* QR Link */}
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleCopyQRLink}>
+                <QrCode className="h-4 w-4 mr-2" />
+                Link QR Check-in
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                PIN: <code className="bg-muted px-2 py-1 rounded">{invitation.pin_code}</code>
+              </span>
+            </div>
+
+            {/* RSVP Table */}
+            {isLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </div>
+            ) : (
+              <TooltipProvider>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Khách</TableHead>
+                      <TableHead>SĐT</TableHead>
+                      <TableHead>Số người</TableHead>
+                      <TableHead>Trạng thái</TableHead>
+                      <TableHead>Ghi chú</TableHead>
+                      <TableHead>Check-in</TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {rsvps?.map((rsvp) => (
+                      <TableRow key={rsvp.id}>
+                        <TableCell className="font-medium">{rsvp.guest_name}</TableCell>
+                        <TableCell>{rsvp.phone || "-"}</TableCell>
+                        <TableCell>{rsvp.guest_count}</TableCell>
+                        <TableCell>
+                          {rsvp.attending ? (
+                            <Badge className="bg-green-100 text-green-700">
+                              <Check className="h-3 w-3 mr-1" />
+                              Tham dự
+                            </Badge>
+                          ) : (
+                            <Badge variant="destructive">
+                              <X className="h-3 w-3 mr-1" />
+                              Không
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="max-w-[200px]">
+                          {rsvp.note ? (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="block truncate cursor-help">{rsvp.note}</span>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="max-w-[300px] whitespace-pre-wrap">
+                                {rsvp.note}
+                              </TooltipContent>
+                            </Tooltip>
+                          ) : (
+                            "-"
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {rsvp.checked_in_at ? (
+                            <Badge className="bg-blue-100 text-blue-700">
+                              {format(new Date(rsvp.checked_in_at), "HH:mm")}
+                            </Badge>
+                          ) : rsvp.attending ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => onCheckIn(rsvp.id)}
+                            >
+                              Check-in
+                            </Button>
+                          ) : (
+                            "-"
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteRsvpId(rsvp.id)}
+                            className="text-destructive hover:text-destructive h-8 w-8"
+                            title="Xóa khách"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {(!rsvps || rsvps.length === 0) && (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                          Chưa có khách nào phản hồi
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TooltipProvider>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete RSVP Confirmation */}
+      <AlertDialog open={!!deleteRsvpId} onOpenChange={(open) => !open && setDeleteRsvpId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc muốn xóa khách mời này? Hành động này không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteRSVP} className="bg-destructive text-destructive-foreground">
+              Xóa
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 

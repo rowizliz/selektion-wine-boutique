@@ -245,3 +245,23 @@ export const useCheckInGuest = () => {
     },
   });
 };
+
+// Delete RSVP
+export const useDeleteRSVP = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ rsvpId, invitationId }: { rsvpId: string; invitationId: string }) => {
+      const { error } = await supabase
+        .from("invitation_rsvps")
+        .delete()
+        .eq("id", rsvpId);
+
+      if (error) throw error;
+      return { invitationId };
+    },
+    onSuccess: ({ invitationId }) => {
+      queryClient.invalidateQueries({ queryKey: ["invitation-rsvps", invitationId] });
+    },
+  });
+};
