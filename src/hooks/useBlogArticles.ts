@@ -119,7 +119,19 @@ export const useMyArticles = () => {
       const { data, error } = await supabase
         .from("blog_articles")
         .select(`
-          *,
+          id,
+          author_id,
+          category_id,
+          title,
+          slug,
+          excerpt,
+          content,
+          cover_image_url,
+          status,
+          view_count,
+          published_at,
+          created_at,
+          updated_at,
           author:user_profiles!blog_articles_author_id_fkey(id, display_name, avatar_url),
           category:blog_categories!blog_articles_category_id_fkey(id, name, slug)
         `)
