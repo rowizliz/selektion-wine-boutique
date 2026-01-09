@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { ArrowLeft, Plus, Eye, Trash2, Copy, QrCode, Users, Check, X, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Eye, Trash2, Copy, QrCode, Users, Check, X, Loader2, Calendar, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -45,7 +45,7 @@ const AdminInvitations = () => {
   const { data: invitations, isLoading } = useInvitations();
   const deleteInvitation = useDeleteInvitation();
   const checkInGuest = useCheckInGuest();
-  
+
   const [showForm, setShowForm] = useState(false);
   const [editingInvitation, setEditingInvitation] = useState<Invitation | null>(null);
   const [selectedInvitation, setSelectedInvitation] = useState<Invitation | null>(null);
@@ -97,10 +97,10 @@ const AdminInvitations = () => {
         <title>Quản lý Thiệp Mời | Admin</title>
       </Helmet>
 
-      <main className="min-h-screen bg-background p-6">
+      <main className="min-h-screen bg-background p-4 md:p-6">
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Header */}
-          <header className="flex items-center justify-between">
+          <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <Link to="/admin">
                 <Button variant="ghost" size="icon">
@@ -114,7 +114,7 @@ const AdminInvitations = () => {
                 </p>
               </div>
             </div>
-            <Button onClick={() => setShowForm(true)}>
+            <Button onClick={() => setShowForm(true)} className="w-full md:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Tạo thiệp mới
             </Button>
@@ -134,90 +134,163 @@ const AdminInvitations = () => {
             </Card>
           </div>
 
-          {/* Table */}
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Sự kiện</TableHead>
-                    <TableHead>Ngày</TableHead>
-                    <TableHead>Địa điểm</TableHead>
-                    <TableHead>Mã PIN</TableHead>
-                    <TableHead className="text-right">Thao tác</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {invitations?.map((invitation) => (
-                    <TableRow key={invitation.id}>
-                      <TableCell className="font-medium">
-                        {invitation.title}
-                      </TableCell>
-                      <TableCell>
-                        {format(new Date(invitation.event_date), "dd/MM/yyyy HH:mm", { locale: vi })}
-                      </TableCell>
-                      <TableCell className="max-w-[200px] truncate">
-                        {invitation.location}
-                      </TableCell>
-                      <TableCell>
-                        <Badge 
-                          variant="outline" 
-                          className="cursor-pointer font-mono"
-                          onClick={() => handleCopyPIN(invitation.pin_code)}
-                        >
-                          {invitation.pin_code}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleCopyLink(invitation)}
-                            title="Sao chép link"
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setSelectedInvitation(invitation)}
-                            title="Xem chi tiết & RSVP"
-                          >
-                            <Users className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleEdit(invitation)}
-                            title="Chỉnh sửa"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setDeleteId(invitation.id)}
-                            className="text-destructive hover:text-destructive"
-                            title="Xóa"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {(!invitations || invitations.length === 0) && (
+          {/* Table / Card List */}
+          <div className="space-y-4">
+            {/* Desktop Table */}
+            <Card className="hidden md:block">
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                        Chưa có thiệp mời nào. Bấm "Tạo thiệp mới" để bắt đầu.
-                      </TableCell>
+                      <TableHead>Sự kiện</TableHead>
+                      <TableHead>Ngày</TableHead>
+                      <TableHead>Địa điểm</TableHead>
+                      <TableHead>Mã PIN</TableHead>
+                      <TableHead className="text-right">Thao tác</TableHead>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {invitations?.map((invitation) => (
+                      <TableRow key={invitation.id}>
+                        <TableCell className="font-medium">
+                          {invitation.title}
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(invitation.event_date), "dd/MM/yyyy HH:mm", { locale: vi })}
+                        </TableCell>
+                        <TableCell className="max-w-[200px] truncate">
+                          {invitation.location}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant="outline"
+                            className="cursor-pointer font-mono"
+                            onClick={() => handleCopyPIN(invitation.pin_code)}
+                          >
+                            {invitation.pin_code}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleCopyLink(invitation)}
+                              title="Sao chép link"
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setSelectedInvitation(invitation)}
+                              title="Xem chi tiết & RSVP"
+                            >
+                              <Users className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(invitation)}
+                              title="Chỉnh sửa"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setDeleteId(invitation.id)}
+                              className="text-destructive hover:text-destructive"
+                              title="Xóa"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {(!invitations || invitations.length === 0) && (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                          Chưa có thiệp mời nào. Bấm "Tạo thiệp mới" để bắt đầu.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden grid gap-4">
+              {invitations?.map((invitation) => (
+                <Card key={invitation.id}>
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex justify-between items-start">
+                      <h3 className="font-semibold text-lg">{invitation.title}</h3>
+                      <Badge
+                        variant="outline"
+                        className="cursor-pointer font-mono"
+                        onClick={() => handleCopyPIN(invitation.pin_code)}
+                      >
+                        {invitation.pin_code}
+                      </Badge>
+                    </div>
+
+                    <div className="text-sm space-y-2 text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        {format(new Date(invitation.event_date), "dd/MM/yyyy HH:mm", { locale: vi })}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        <span className="truncate">{invitation.location}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-2 pt-2 border-t mt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleCopyLink(invitation)}
+                        className="flex-1"
+                      >
+                        <Copy className="h-3 w-3 mr-1" /> Link
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedInvitation(invitation)}
+                        className="flex-1"
+                      >
+                        <Users className="h-3 w-3 mr-1" /> RSVP
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEdit(invitation)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDeleteId(invitation.id)}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              {(!invitations || invitations.length === 0) && (
+                <div className="text-center py-8 text-muted-foreground bg-muted/20 rounded-lg">
+                  Chưa có thiệp mời nào. Bấm "Tạo thiệp mới" để bắt đầu.
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </main>
 
@@ -298,7 +371,7 @@ const RSVPDetailDialog = ({ invitation, open, onOpenChange, onCheckIn }: RSVPDet
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
@@ -308,68 +381,147 @@ const RSVPDetailDialog = ({ invitation, open, onOpenChange, onCheckIn }: RSVPDet
 
           <div className="space-y-4">
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 md:gap-4">
               <Card>
-                <CardContent className="pt-4 text-center">
-                  <p className="text-2xl font-bold text-green-600">{attendingCount}</p>
-                  <p className="text-sm text-muted-foreground">Tham dự</p>
+                <CardContent className="p-3 md:pt-4 text-center">
+                  <p className="text-xl md:text-2xl font-bold text-green-600">{attendingCount}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">Tham dự</p>
                 </CardContent>
               </Card>
               <Card>
-                <CardContent className="pt-4 text-center">
-                  <p className="text-2xl font-bold text-red-600">{notAttendingCount}</p>
-                  <p className="text-sm text-muted-foreground">Không tham dự</p>
+                <CardContent className="p-3 md:pt-4 text-center">
+                  <p className="text-xl md:text-2xl font-bold text-red-600">{notAttendingCount}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">Không</p>
                 </CardContent>
               </Card>
               <Card>
-                <CardContent className="pt-4 text-center">
-                  <p className="text-2xl font-bold text-blue-600">{checkedInCount}</p>
-                  <p className="text-sm text-muted-foreground">Đã check-in</p>
+                <CardContent className="p-3 md:pt-4 text-center">
+                  <p className="text-xl md:text-2xl font-bold text-blue-600">{checkedInCount}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground">Check-in</p>
                 </CardContent>
               </Card>
             </div>
 
             {/* QR Link */}
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleCopyQRLink}>
+            <div className="flex flex-col md:flex-row md:items-center gap-2 border p-2 rounded bg-muted/20">
+              <Button variant="outline" size="sm" onClick={handleCopyQRLink} className="w-full md:w-auto">
                 <QrCode className="h-4 w-4 mr-2" />
                 Link QR Check-in
               </Button>
-              <span className="text-sm text-muted-foreground">
-                PIN: <code className="bg-muted px-2 py-1 rounded">{invitation.pin_code}</code>
+              <span className="text-sm text-muted-foreground text-center md:text-left">
+                PIN: <code className="bg-background border px-2 py-1 rounded font-mono">{invitation.pin_code}</code>
               </span>
             </div>
 
-            {/* RSVP Table */}
+            {/* RSVP List */}
             {isLoading ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin" />
               </div>
             ) : (
               <TooltipProvider>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Khách</TableHead>
-                      <TableHead>SĐT</TableHead>
-                      <TableHead>Số người</TableHead>
-                      <TableHead>Trạng thái</TableHead>
-                      <TableHead>Ghi chú</TableHead>
-                      <TableHead>Check-in</TableHead>
-                      <TableHead className="w-[50px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {rsvps?.map((rsvp) => (
-                      <TableRow key={rsvp.id}>
-                        <TableCell className="font-medium">{rsvp.guest_name}</TableCell>
-                        <TableCell>{rsvp.phone || "-"}</TableCell>
-                        <TableCell>{rsvp.guest_count}</TableCell>
-                        <TableCell>
+                {/* Desktop Table */}
+                <div className="hidden md:block border rounded-md">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Khách</TableHead>
+                        <TableHead>SĐT</TableHead>
+                        <TableHead>Số người</TableHead>
+                        <TableHead>Trạng thái</TableHead>
+                        <TableHead>Ghi chú</TableHead>
+                        <TableHead>Check-in</TableHead>
+                        <TableHead className="w-[50px]"></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {rsvps?.map((rsvp) => (
+                        <TableRow key={rsvp.id}>
+                          <TableCell className="font-medium">{rsvp.guest_name}</TableCell>
+                          <TableCell>{rsvp.phone || "-"}</TableCell>
+                          <TableCell>{rsvp.guest_count}</TableCell>
+                          <TableCell>
+                            {rsvp.attending ? (
+                              <Badge className="bg-green-100 text-green-700">
+                                <Check className="h-3 w-3 mr-1" />
+                                Tham dự
+                              </Badge>
+                            ) : (
+                              <Badge variant="destructive">
+                                <X className="h-3 w-3 mr-1" />
+                                Không
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="max-w-[200px]">
+                            {rsvp.note ? (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="block truncate cursor-help">{rsvp.note}</span>
+                                </TooltipTrigger>
+                                <TooltipContent side="top" className="max-w-[300px] whitespace-pre-wrap">
+                                  {rsvp.note}
+                                </TooltipContent>
+                              </Tooltip>
+                            ) : (
+                              "-"
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {rsvp.checked_in_at ? (
+                              <Badge className="bg-blue-100 text-blue-700">
+                                {format(new Date(rsvp.checked_in_at), "HH:mm")}
+                              </Badge>
+                            ) : rsvp.attending ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => onCheckIn(rsvp.id)}
+                              >
+                                Check-in
+                              </Button>
+                            ) : (
+                              "-"
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setDeleteRsvpId(rsvp.id)}
+                              className="text-destructive hover:text-destructive h-8 w-8"
+                              title="Xóa khách"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {(!rsvps || rsvps.length === 0) && (
+                        <TableRow>
+                          <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                            Chưa có khách nào phản hồi
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden grid gap-4">
+                  {rsvps?.map((rsvp) => (
+                    <Card key={rsvp.id}>
+                      <CardContent className="p-4 space-y-3">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-medium">{rsvp.guest_name}</h4>
+                            <p className="text-sm text-muted-foreground">{rsvp.phone || "Không có SĐT"}</p>
+                          </div>
                           {rsvp.attending ? (
                             <Badge className="bg-green-100 text-green-700">
                               <Check className="h-3 w-3 mr-1" />
-                              Tham dự
+                              {rsvp.guest_count} người
                             </Badge>
                           ) : (
                             <Badge variant="destructive">
@@ -377,60 +529,50 @@ const RSVPDetailDialog = ({ invitation, open, onOpenChange, onCheckIn }: RSVPDet
                               Không
                             </Badge>
                           )}
-                        </TableCell>
-                        <TableCell className="max-w-[200px]">
-                          {rsvp.note ? (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span className="block truncate cursor-help">{rsvp.note}</span>
-                              </TooltipTrigger>
-                              <TooltipContent side="top" className="max-w-[300px] whitespace-pre-wrap">
-                                {rsvp.note}
-                              </TooltipContent>
-                            </Tooltip>
-                          ) : (
-                            "-"
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {rsvp.checked_in_at ? (
-                            <Badge className="bg-blue-100 text-blue-700">
-                              {format(new Date(rsvp.checked_in_at), "HH:mm")}
-                            </Badge>
-                          ) : rsvp.attending ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => onCheckIn(rsvp.id)}
-                            >
-                              Check-in
-                            </Button>
-                          ) : (
-                            "-"
-                          )}
-                        </TableCell>
-                        <TableCell>
+                        </div>
+
+                        {rsvp.note && (
+                          <div className="text-sm bg-muted/30 p-2 rounded italic">
+                            "{rsvp.note}"
+                          </div>
+                        )}
+
+                        <div className="flex justify-between items-center pt-2 border-t mt-2">
+                          <div>
+                            {rsvp.checked_in_at ? (
+                              <Badge className="bg-blue-100 text-blue-700">
+                                Check-in: {format(new Date(rsvp.checked_in_at), "HH:mm")}
+                              </Badge>
+                            ) : rsvp.attending ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => onCheckIn(rsvp.id)}
+                              >
+                                Check-in Ngay
+                              </Button>
+                            ) : (
+                              <span className="text-sm text-muted-foreground">-</span>
+                            )}
+                          </div>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setDeleteRsvpId(rsvp.id)}
                             className="text-destructive hover:text-destructive h-8 w-8"
-                            title="Xóa khách"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    {(!rsvps || rsvps.length === 0) && (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                          Chưa có khách nào phản hồi
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {(!rsvps || rsvps.length === 0) && (
+                    <p className="text-center py-8 text-muted-foreground">
+                      Chưa có khách nào phản hồi
+                    </p>
+                  )}
+                </div>
               </TooltipProvider>
             )}
           </div>

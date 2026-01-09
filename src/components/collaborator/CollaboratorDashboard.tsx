@@ -183,7 +183,7 @@ export const CollaboratorDashboard = ({
             <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 rounded-lg p-3 border border-amber-200 dark:border-amber-800">
                 <h3 className="font-semibold mb-1 text-sm text-amber-800 dark:text-amber-200">Blog của tôi về rượu vang</h3>
                 <p className="text-xs text-muted-foreground mb-2">Quản lý bài viết</p>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                     <Button
                         size="sm"
                         variant="outline"

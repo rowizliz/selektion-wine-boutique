@@ -165,7 +165,7 @@ const AdminCollaborators = () => {
     if (!commissionTiers) return;
     const totalQuantity = order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
     const commission = calculateCommission(commissionTiers, totalQuantity, order.total_amount);
-    
+
     try {
       await updateOrderStatus.mutateAsync({
         id: order.id,
@@ -311,7 +311,7 @@ const AdminCollaborators = () => {
           </header>
 
           <Tabs defaultValue="collaborators" className="space-y-4">
-            <TabsList className="flex-wrap">
+            <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
               <TabsTrigger value="collaborators">Danh sách CTV</TabsTrigger>
               <TabsTrigger value="orders">Đơn hàng CTV</TabsTrigger>
               <TabsTrigger value="withdrawals">Yêu cầu rút tiền</TabsTrigger>
@@ -322,11 +322,12 @@ const AdminCollaborators = () => {
             {/* Collaborators Tab */}
             <TabsContent value="collaborators">
               <Card>
-                <CardHeader className="flex-row items-center justify-between">
+                <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle>Danh sách Cộng Tác Viên</CardTitle>
-                  <Button onClick={() => setIsAddDialogOpen(true)}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Thêm CTV
+                  <Button onClick={() => setIsAddDialogOpen(true)} size="sm">
+                    <Plus className="h-4 w-4 mr-1" />
+                    <span className="hidden sm:inline">Thêm CTV</span>
+                    <span className="sm:hidden">Thêm</span>
                   </Button>
                 </CardHeader>
                 <CardContent>
@@ -335,71 +336,153 @@ const AdminCollaborators = () => {
                   ) : !collaborators?.length ? (
                     <p className="text-center py-8 text-muted-foreground">Chưa có CTV nào</p>
                   ) : (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Tên</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>SĐT</TableHead>
-                          <TableHead>Giảm giá</TableHead>
-                          <TableHead>Số dư ví</TableHead>
-                          <TableHead>Trạng thái</TableHead>
-                          <TableHead className="text-right">Thao tác</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
+                    <>
+                      {/* Desktop Table View */}
+                      <div className="hidden md:block">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Tên</TableHead>
+                              <TableHead>Email</TableHead>
+                              <TableHead>SĐT</TableHead>
+                              <TableHead>Giảm giá</TableHead>
+                              <TableHead>Số dư ví</TableHead>
+                              <TableHead>Trạng thái</TableHead>
+                              <TableHead className="text-right">Thao tác</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {collaborators.map((collab) => (
+                              <TableRow key={collab.id}>
+                                <TableCell
+                                  className="font-medium cursor-pointer hover:text-primary hover:underline"
+                                  onClick={() => setViewingCollaborator(collab)}
+                                >
+                                  {collab.name}
+                                </TableCell>
+                                <TableCell>{collab.email}</TableCell>
+                                <TableCell>{collab.phone || "-"}</TableCell>
+                                <TableCell>{collab.discount_percent}%</TableCell>
+                                <TableCell className="font-semibold text-primary">
+                                  {formatPrice(collab.wallet_balance)}
+                                </TableCell>
+                                <TableCell>
+                                  {collab.is_active ? (
+                                    <Badge variant="default">Hoạt động</Badge>
+                                  ) : (
+                                    <Badge variant="secondary">Vô hiệu</Badge>
+                                  )}
+                                </TableCell>
+                                <TableCell className="text-right space-x-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => handleToggleActive(collab)}
+                                  >
+                                    {collab.is_active ? (
+                                      <UserX className="h-4 w-4" />
+                                    ) : (
+                                      <UserCheck className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => openEditDialog(collab)}
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setDeleteId(collab.id)}
+                                  >
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+
+                      {/* Mobile Card View */}
+                      <div className="md:hidden grid gap-4">
                         {collaborators.map((collab) => (
-                          <TableRow key={collab.id}>
-                            <TableCell 
-                              className="font-medium cursor-pointer hover:text-primary hover:underline"
-                              onClick={() => setViewingCollaborator(collab)}
-                            >
-                              {collab.name}
-                            </TableCell>
-                            <TableCell>{collab.email}</TableCell>
-                            <TableCell>{collab.phone || "-"}</TableCell>
-                            <TableCell>{collab.discount_percent}%</TableCell>
-                            <TableCell className="font-semibold text-primary">
-                              {formatPrice(collab.wallet_balance)}
-                            </TableCell>
-                            <TableCell>
-                              {collab.is_active ? (
-                                <Badge variant="default">Hoạt động</Badge>
-                              ) : (
-                                <Badge variant="secondary">Vô hiệu</Badge>
-                              )}
-                            </TableCell>
-                            <TableCell className="text-right space-x-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleToggleActive(collab)}
-                              >
+                          <Card key={collab.id} className="overflow-hidden">
+                            <div className="p-4 space-y-3">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h3
+                                    className="font-semibold text-lg cursor-pointer hover:text-primary"
+                                    onClick={() => setViewingCollaborator(collab)}
+                                  >
+                                    {collab.name}
+                                  </h3>
+                                  <p className="text-sm text-muted-foreground">{collab.email}</p>
+                                </div>
                                 {collab.is_active ? (
-                                  <UserX className="h-4 w-4" />
+                                  <Badge variant="default">Hoạt động</Badge>
                                 ) : (
-                                  <UserCheck className="h-4 w-4" />
+                                  <Badge variant="secondary">Vô hiệu</Badge>
                                 )}
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => openEditDialog(collab)}
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => setDeleteId(collab.id)}
-                              >
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                  <span className="text-muted-foreground block">SĐT:</span>
+                                  {collab.phone || "-"}
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground block">Giảm giá:</span>
+                                  {collab.discount_percent}%
+                                </div>
+                                <div className="col-span-2">
+                                  <span className="text-muted-foreground block">Số dư ví:</span>
+                                  <span className="font-semibold text-primary text-lg">
+                                    {formatPrice(collab.wallet_balance)}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="flex justify-end gap-2 pt-2 border-t mt-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleToggleActive(collab)}
+                                  className="flex-1"
+                                >
+                                  {collab.is_active ? (
+                                    <>
+                                      <UserX className="h-4 w-4 mr-2" /> Vô hiệu
+                                    </>
+                                  ) : (
+                                    <>
+                                      <UserCheck className="h-4 w-4 mr-2" /> Kích hoạt
+                                    </>
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => openEditDialog(collab)}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-destructive hover:text-destructive"
+                                  onClick={() => setDeleteId(collab.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </Card>
                         ))}
-                      </TableBody>
-                    </Table>
+                      </div>
+                    </>
                   )}
                 </CardContent>
               </Card>
@@ -417,77 +500,161 @@ const AdminCollaborators = () => {
                   ) : !orders?.length ? (
                     <p className="text-center py-8 text-muted-foreground">Chưa có đơn hàng nào</p>
                   ) : (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>CTV</TableHead>
-                          <TableHead>Khách hàng</TableHead>
-                          <TableHead>SĐT</TableHead>
-                          <TableHead>Số SP</TableHead>
-                          <TableHead>Tổng tiền</TableHead>
-                          <TableHead>Hoa hồng</TableHead>
-                          <TableHead>Trạng thái</TableHead>
-                          <TableHead className="text-right">Thao tác</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
+                    <>
+                      {/* Desktop Table View */}
+                      <div className="hidden md:block">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>CTV</TableHead>
+                              <TableHead>Khách hàng</TableHead>
+                              <TableHead>SĐT</TableHead>
+                              <TableHead>Số SP</TableHead>
+                              <TableHead>Tổng tiền</TableHead>
+                              <TableHead>Hoa hồng</TableHead>
+                              <TableHead>Trạng thái</TableHead>
+                              <TableHead className="text-right">Thao tác</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {orders.map((order) => (
+                              <TableRow key={order.id}>
+                                <TableCell>{getCollaboratorName(order.collaborator_id)}</TableCell>
+                                <TableCell className="font-medium">{order.customer_name}</TableCell>
+                                <TableCell>{order.customer_phone || "-"}</TableCell>
+                                <TableCell>
+                                  {order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0}
+                                </TableCell>
+                                <TableCell>{formatPrice(order.total_amount)}</TableCell>
+                                <TableCell>{formatPrice(order.commission_amount)}</TableCell>
+                                <TableCell>
+                                  <Badge
+                                    variant={
+                                      order.status === "approved"
+                                        ? "default"
+                                        : order.status === "rejected"
+                                          ? "destructive"
+                                          : "secondary"
+                                    }
+                                  >
+                                    {order.status === "pending"
+                                      ? "Chờ duyệt"
+                                      : order.status === "approved"
+                                        ? "Đã duyệt"
+                                        : "Từ chối"}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-right space-x-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => openEditOrderDialog(order)}
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                  {order.status === "pending" && (
+                                    <>
+                                      <Button
+                                        size="sm"
+                                        onClick={() => handleApproveOrder(order)}
+                                      >
+                                        Duyệt
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="destructive"
+                                        onClick={() => handleRejectOrder(order.id)}
+                                      >
+                                        Từ chối
+                                      </Button>
+                                    </>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+
+                      {/* Mobile Card View */}
+                      <div className="md:hidden grid gap-4">
                         {orders.map((order) => (
-                          <TableRow key={order.id}>
-                            <TableCell>{getCollaboratorName(order.collaborator_id)}</TableCell>
-                            <TableCell className="font-medium">{order.customer_name}</TableCell>
-                            <TableCell>{order.customer_phone || "-"}</TableCell>
-                            <TableCell>
-                              {order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0}
-                            </TableCell>
-                            <TableCell>{formatPrice(order.total_amount)}</TableCell>
-                            <TableCell>{formatPrice(order.commission_amount)}</TableCell>
-                            <TableCell>
-                              <Badge
-                                variant={
-                                  order.status === "approved"
-                                    ? "default"
-                                    : order.status === "rejected"
-                                    ? "destructive"
-                                    : "secondary"
-                                }
-                              >
-                                {order.status === "pending"
-                                  ? "Chờ duyệt"
-                                  : order.status === "approved"
-                                  ? "Đã duyệt"
-                                  : "Từ chối"}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-right space-x-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => openEditOrderDialog(order)}
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
-                              {order.status === "pending" && (
-                                <>
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleApproveOrder(order)}
-                                  >
-                                    Duyệt
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="destructive"
-                                    onClick={() => handleRejectOrder(order.id)}
-                                  >
-                                    Từ chối
-                                  </Button>
-                                </>
-                              )}
-                            </TableCell>
-                          </TableRow>
+                          <Card key={order.id} className="overflow-hidden">
+                            <div className="p-4 space-y-3">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h4 className="font-medium">{order.customer_name}</h4>
+                                  <p className="text-xs text-muted-foreground">CTV: {getCollaboratorName(order.collaborator_id)}</p>
+                                </div>
+                                <Badge
+                                  variant={
+                                    order.status === "approved"
+                                      ? "default"
+                                      : order.status === "rejected"
+                                        ? "destructive"
+                                        : "secondary"
+                                  }
+                                >
+                                  {order.status === "pending"
+                                    ? "Chờ duyệt"
+                                    : order.status === "approved"
+                                      ? "Đã duyệt"
+                                      : "Từ chối"}
+                                </Badge>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2 text-sm bg-muted/30 p-2 rounded">
+                                <div>
+                                  <span className="text-muted-foreground text-xs block">SĐT Khách:</span>
+                                  {order.customer_phone || "-"}
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground text-xs block">Số sản phẩm:</span>
+                                  {order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0}
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground text-xs block">Tổng tiền:</span>
+                                  <span className="font-medium">{formatPrice(order.total_amount)}</span>
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground text-xs block">Hoa hồng:</span>
+                                  <span className="font-semibold text-green-600">{formatPrice(order.commission_amount)}</span>
+                                </div>
+                              </div>
+
+                              <div className="flex justify-end gap-2 pt-2 border-t mt-1">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => openEditOrderDialog(order)}
+                                  className="flex-1"
+                                >
+                                  <Pencil className="h-3 w-3 mr-1" /> Chi tiết
+                                </Button>
+                                {order.status === "pending" && (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      onClick={() => handleApproveOrder(order)}
+                                      className="flex-1"
+                                    >
+                                      Duyệt
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      onClick={() => handleRejectOrder(order.id)}
+                                    >
+                                      Từ chối
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </Card>
                         ))}
-                      </TableBody>
-                    </Table>
+                      </div>
+                    </>
                   )}
                 </CardContent>
               </Card>
@@ -508,7 +675,7 @@ const AdminCollaborators = () => {
               <Card>
                 <CardHeader className="flex-row items-center justify-between">
                   <CardTitle>Bậc Hoa Hồng</CardTitle>
-                  <Button onClick={() => setIsAddTierDialogOpen(true)}>
+                  <Button onClick={() => setIsAddTierDialogOpen(true)} size="sm">
                     <Plus className="h-4 w-4 mr-2" />
                     Thêm bậc
                   </Button>
@@ -517,48 +684,96 @@ const AdminCollaborators = () => {
                   {loadingTiers ? (
                     <p className="text-center py-8 text-muted-foreground">Đang tải...</p>
                   ) : (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Từ (SP)</TableHead>
-                          <TableHead>Đến (SP)</TableHead>
-                          <TableHead>% Hoa hồng</TableHead>
-                          <TableHead className="text-right">Thao tác</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
+                    <>
+                      {/* Desktop Table View */}
+                      <div className="hidden md:block">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Từ (SP)</TableHead>
+                              <TableHead>Đến (SP)</TableHead>
+                              <TableHead>% Hoa hồng</TableHead>
+                              <TableHead className="text-right">Thao tác</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {commissionTiers?.map((tier) => (
+                              <TableRow key={tier.id}>
+                                <TableCell>{tier.min_quantity}</TableCell>
+                                <TableCell>{tier.max_quantity ?? "∞"}</TableCell>
+                                <TableCell>{tier.commission_percent}%</TableCell>
+                                <TableCell className="text-right space-x-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                      setTierFormData({
+                                        min_quantity: tier.min_quantity,
+                                        max_quantity: tier.max_quantity,
+                                        commission_percent: tier.commission_percent,
+                                      });
+                                      setEditingTier(tier);
+                                    }}
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => deleteTier.mutate(tier.id)}
+                                  >
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+
+                      {/* Mobile Card View */}
+                      <div className="md:hidden grid gap-4">
                         {commissionTiers?.map((tier) => (
-                          <TableRow key={tier.id}>
-                            <TableCell>{tier.min_quantity}</TableCell>
-                            <TableCell>{tier.max_quantity ?? "∞"}</TableCell>
-                            <TableCell>{tier.commission_percent}%</TableCell>
-                            <TableCell className="text-right space-x-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => {
-                                  setTierFormData({
-                                    min_quantity: tier.min_quantity,
-                                    max_quantity: tier.max_quantity,
-                                    commission_percent: tier.commission_percent,
-                                  });
-                                  setEditingTier(tier);
-                                }}
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => deleteTier.mutate(tier.id)}
-                              >
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
+                          <Card key={tier.id} className="overflow-hidden">
+                            <div className="p-4 flex items-center justify-between">
+                              <div>
+                                <div className="text-sm font-medium text-muted-foreground mb-1">
+                                  {tier.min_quantity} - {tier.max_quantity ?? "Không giới hạn"} sản phẩm
+                                </div>
+                                <div className="text-2xl font-bold text-primary">
+                                  {tier.commission_percent}%
+                                </div>
+                                <div className="text-xs text-muted-foreground">Hoa hồng</div>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() => {
+                                    setTierFormData({
+                                      min_quantity: tier.min_quantity,
+                                      max_quantity: tier.max_quantity,
+                                      commission_percent: tier.commission_percent,
+                                    });
+                                    setEditingTier(tier);
+                                  }}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="text-destructive hover:text-destructive"
+                                  onClick={() => deleteTier.mutate(tier.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          </Card>
                         ))}
-                      </TableBody>
-                    </Table>
+                      </div>
+                    </>
                   )}
                 </CardContent>
               </Card>
@@ -855,14 +1070,14 @@ const AdminCollaborators = () => {
               </div>
               <div>
                 <Label>Hoa hồng (đ)</Label>
-              <Input
-                type="number"
-                value={orderFormData.commission_amount}
-                onChange={(e) => {
-                  setCommissionManuallyEdited(true);
-                  setOrderFormData({ ...orderFormData, commission_amount: Number(e.target.value) });
-                }}
-              />
+                <Input
+                  type="number"
+                  value={orderFormData.commission_amount}
+                  onChange={(e) => {
+                    setCommissionManuallyEdited(true);
+                    setOrderFormData({ ...orderFormData, commission_amount: Number(e.target.value) });
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -928,7 +1143,7 @@ const AdminCollaborators = () => {
                       {viewingCollaborator.is_active ? "Hoạt động" : "Vô hiệu"}
                     </Badge>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                     <div>
                       <p className="text-xs text-muted-foreground">Số điện thoại</p>
@@ -1001,8 +1216,8 @@ const AdminCollaborators = () => {
 
               {/* Orders Tab */}
               <TabsContent value="orders">
-                <CollaboratorOrdersHistory 
-                  collaboratorId={viewingCollaborator.id} 
+                <CollaboratorOrdersHistory
+                  collaboratorId={viewingCollaborator.id}
                   orders={orders?.filter(o => o.collaborator_id === viewingCollaborator.id) || []}
                   formatPrice={formatPrice}
                 />
@@ -1035,12 +1250,12 @@ const AdminCollaborators = () => {
 };
 
 // Sub-component for order history in profile
-function CollaboratorOrdersHistory({ 
-  collaboratorId, 
+function CollaboratorOrdersHistory({
+  collaboratorId,
   orders,
-  formatPrice 
-}: { 
-  collaboratorId: string; 
+  formatPrice
+}: {
+  collaboratorId: string;
   orders: CollaboratorOrder[];
   formatPrice: (price: number) => string;
 }) {
@@ -1100,15 +1315,15 @@ function CollaboratorOrdersHistory({
                     order.status === "approved"
                       ? "default"
                       : order.status === "rejected"
-                      ? "destructive"
-                      : "secondary"
+                        ? "destructive"
+                        : "secondary"
                   }
                 >
                   {order.status === "pending"
                     ? "Chờ duyệt"
                     : order.status === "approved"
-                    ? "Đã duyệt"
-                    : "Từ chối"}
+                      ? "Đã duyệt"
+                      : "Từ chối"}
                 </Badge>
               </TableCell>
             </TableRow>
@@ -1176,15 +1391,15 @@ function CollaboratorWithdrawalsHistory({ collaboratorId }: { collaboratorId: st
                     withdrawal.status === "approved"
                       ? "default"
                       : withdrawal.status === "rejected"
-                      ? "destructive"
-                      : "secondary"
+                        ? "destructive"
+                        : "secondary"
                   }
                 >
                   {withdrawal.status === "pending"
                     ? "Chờ duyệt"
                     : withdrawal.status === "approved"
-                    ? "Đã duyệt"
-                    : "Từ chối"}
+                      ? "Đã duyệt"
+                      : "Từ chối"}
                 </Badge>
               </TableCell>
               <TableCell>
