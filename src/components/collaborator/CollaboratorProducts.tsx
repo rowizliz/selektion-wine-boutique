@@ -73,7 +73,7 @@ export const CollaboratorProducts = ({
     const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
     return (
-        <div className="flex-1 overflow-y-auto pb-16">
+        <div className="flex-1 overflow-y-auto pb-4 md:pb-0">
             {/* Search & Cart Header */}
             <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm px-3 py-2 border-b">
                 <div className="flex gap-2 items-center">
@@ -98,7 +98,7 @@ export const CollaboratorProducts = ({
             </div>
 
             {/* Product Grid - Responsive */}
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-2">
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3 p-3">
                 {filteredProducts.map((product) => (
                     <div key={product.id} className="bg-card rounded-lg overflow-hidden border shadow-sm">
                         {/* Fixed height image container */}

@@ -325,8 +325,11 @@ export const CollaboratorPortalDesktop = () => {
         </header>
 
         {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-8">
-          <div className="max-w-5xl mx-auto space-y-6">
+        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
+          <div className={cn(
+            "mx-auto space-y-6",
+            currentTab === "products" ? "max-w-none px-4" : "max-w-5xl"
+          )}>
             {currentTab === "dashboard" && (
               <div className="grid grid-cols-1 gap-6">
                 <CollaboratorDashboard
@@ -349,7 +352,7 @@ export const CollaboratorPortalDesktop = () => {
             )}
 
             {currentTab === "products" && (
-              <Card className="border-none shadow-md overflow-hidden h-[calc(100vh-160px)]">
+              <Card className="border-none shadow-md overflow-hidden h-[calc(100vh-160px)] flex flex-col">
                 <CollaboratorProducts
                   products={wines?.map(w => ({
                     ...w,

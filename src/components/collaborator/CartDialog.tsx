@@ -135,7 +135,7 @@ export const CartDialog = ({
                                         <span>{formatPrice(totalAmount)}</span>
                                     </div>
                                     <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                                        <span>Tiết kiệm:</span>
+                                        <span>Chiết khấu:</span>
                                         <span>{formatPrice(totalOriginal - totalAmount)}</span>
                                     </div>
                                 </div>
