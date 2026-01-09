@@ -21,6 +21,7 @@ import { InventoryItem, useUpsertInventory } from "@/hooks/useInventory";
 interface InventoryTableProps {
   inventory: InventoryItem[];
   isLoading: boolean;
+  soldCounts?: Record<string, number>;
 }
 
 function formatCurrency(amount: number) {
@@ -36,24 +37,30 @@ function parsePrice(priceStr: string): number {
   return parseInt(num, 10) || 0;
 }
 
-const InventoryTable = ({ inventory, isLoading }: InventoryTableProps) => {
+const InventoryTable = ({ inventory, isLoading, soldCounts = {} }: InventoryTableProps) => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState({ quantity: 0, price: 0 });
+  const [editValues, setEditValues] = useState({ totalImported: 0, price: 0 });
   const [selectedImage, setSelectedImage] = useState<{ url: string; name: string } | null>(null);
   const upsertInventory = useUpsertInventory();
 
   const handleEdit = (item: InventoryItem) => {
+    const soldQuantity = soldCounts[item.wine_id] || 0;
+    const totalImported = item.quantity_in_stock + soldQuantity;
+
     setEditingId(item.id);
     setEditValues({
-      quantity: item.quantity_in_stock,
+      totalImported: totalImported,
       price: item.purchase_price,
     });
   };
 
   const handleSave = async (wineId: string) => {
+    const soldQuantity = soldCounts[wineId] || 0;
+    const quantityInStock = editValues.totalImported - soldQuantity;
+
     await upsertInventory.mutateAsync({
       wine_id: wineId,
-      quantity_in_stock: editValues.quantity,
+      quantity_in_stock: quantityInStock,
       purchase_price: editValues.price,
     });
     setEditingId(null);
@@ -104,134 +111,148 @@ const InventoryTable = ({ inventory, isLoading }: InventoryTableProps) => {
         </DialogContent>
       </Dialog>
       <Card>
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Sản Phẩm</TableHead>
-              <TableHead>Loại</TableHead>
-              <TableHead className="text-right">Giá Bán</TableHead>
-              <TableHead className="text-right">Giá Nhập</TableHead>
-              <TableHead className="text-right">Tồn Kho</TableHead>
-              <TableHead className="text-right">Lợi Nhuận/Chai</TableHead>
-              <TableHead className="text-right">Tổng Giá Trị</TableHead>
-              <TableHead className="w-24"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {inventory.map((item) => {
-              const sellingPrice = parsePrice(item.wine?.price ?? "0");
-              const profitPerBottle = sellingPrice - item.purchase_price;
-              const totalValue = item.quantity_in_stock * item.purchase_price;
-              const isEditing = editingId === item.id;
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Sản Phẩm</TableHead>
+                <TableHead>Loại</TableHead>
+                <TableHead className="text-right">Giá Bán</TableHead>
+                <TableHead className="text-right">Giá Nhập</TableHead>
+                <TableHead className="text-right">Tổng SLL nhập vào</TableHead>
+                <TableHead className="text-right">Tồn Kho</TableHead>
+                <TableHead className="text-right">Lợi Nhuận/Chai</TableHead>
+                <TableHead className="text-right">Tổng Giá Trị</TableHead>
+                <TableHead className="w-24"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {inventory.map((item) => {
+                const sellingPrice = parsePrice(item.wine?.price ?? "0");
+                const profitPerBottle = sellingPrice - item.purchase_price;
+                const totalValue = item.quantity_in_stock * item.purchase_price;
+                const isEditing = editingId === item.id;
 
-              return (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      {item.wine?.image_url && (
-                        <img
-                          src={item.wine.image_url}
-                          alt={item.wine.name}
-                          className="w-12 h-16 object-contain cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => setSelectedImage({ url: item.wine!.image_url!, name: item.wine!.name })}
-                        />
-                      )}
-                      <span className="font-medium">{item.wine?.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{item.wine?.category}</TableCell>
-                  <TableCell className="text-right">
-                    {item.wine?.price}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {isEditing ? (
-                      <Input
-                        type="number"
-                        value={editValues.price}
-                        onChange={(e) =>
-                          setEditValues({
-                            ...editValues,
-                            price: Number(e.target.value),
-                          })
-                        }
-                        className="w-28 text-right"
-                      />
-                    ) : (
-                      formatCurrency(item.purchase_price)
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {isEditing ? (
-                      <Input
-                        type="number"
-                        value={editValues.quantity}
-                        onChange={(e) =>
-                          setEditValues({
-                            ...editValues,
-                            quantity: Number(e.target.value),
-                          })
-                        }
-                        className="w-20 text-right"
-                      />
-                    ) : (
-                      <span
-                        className={
-                          item.quantity_in_stock < 5
-                            ? "text-red-600 font-semibold"
-                            : ""
-                        }
-                      >
-                        {item.quantity_in_stock}
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell
-                    className={`text-right ${
-                      profitPerBottle >= 0 ? "text-green-600" : "text-red-600"
-                    }`}
-                  >
-                    {formatCurrency(profitPerBottle)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(totalValue)}
-                  </TableCell>
-                  <TableCell>
-                    {isEditing ? (
-                      <div className="flex gap-1 justify-end">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => handleSave(item.wine_id)}
-                          disabled={upsertInventory.isPending}
-                        >
-                          <Save className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          onClick={handleCancel}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
+                // Calculate total imported (Stock + Sold)
+                // Note: This is an estimation. It assumes no other inventory exits (damage, loss)
+                const soldQuantity = soldCounts[item.wine_id] || 0;
+                const totalImported = item.quantity_in_stock + soldQuantity;
+
+                return (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        {item.wine?.image_url && (
+                          <img
+                            src={item.wine.image_url}
+                            alt={item.wine.name}
+                            className="w-12 h-16 object-contain cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => setSelectedImage({ url: item.wine!.image_url!, name: item.wine!.name })}
+                          />
+                        )}
+                        <span className="font-medium">{item.wine?.name}</span>
                       </div>
-                    ) : (
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => handleEdit(item)}
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+                    </TableCell>
+                    <TableCell>{item.wine?.category}</TableCell>
+                    <TableCell className="text-right">
+                      {item.wine?.price}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {isEditing ? (
+                        <Input
+                          type="number"
+                          value={editValues.price}
+                          onChange={(e) =>
+                            setEditValues({
+                              ...editValues,
+                              price: Number(e.target.value),
+                            })
+                          }
+                          className="w-28 text-right"
+                        />
+                      ) : (
+                        formatCurrency(item.purchase_price)
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      {isEditing ? (
+                        <Input
+                          type="number"
+                          value={editValues.totalImported}
+                          onChange={(e) =>
+                            setEditValues({
+                              ...editValues,
+                              totalImported: Number(e.target.value),
+                            })
+                          }
+                          className="w-20 ml-auto text-right"
+                        />
+                      ) : (
+                        totalImported
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {isEditing ? (
+                        <span className="text-muted-foreground italic">
+                          {editValues.totalImported - soldQuantity}
+                        </span>
+                      ) : (
+                        <span
+                          className={
+                            item.quantity_in_stock < 5
+                              ? "text-red-600 font-semibold"
+                              : ""
+                          }
+                        >
+                          {item.quantity_in_stock}
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell
+                      className={`text-right ${profitPerBottle >= 0 ? "text-green-600" : "text-red-600"
+                        }`}
+                    >
+                      {formatCurrency(profitPerBottle)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(totalValue)}
+                    </TableCell>
+                    <TableCell>
+                      {isEditing ? (
+                        <div className="flex gap-1 justify-end">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => handleSave(item.wine_id)}
+                            disabled={upsertInventory.isPending}
+                          >
+                            <Save className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={handleCancel}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => handleEdit(item)}
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </>
   );
 };

@@ -7,6 +7,7 @@ import { InventoryItem, useUpsertInventory } from "@/hooks/useInventory";
 
 interface MobileInventoryCardProps {
   item: InventoryItem;
+  soldCount?: number;
 }
 
 function formatCurrency(amount: number) {
@@ -22,19 +23,20 @@ function parsePrice(priceStr: string): number {
   return parseInt(num, 10) || 0;
 }
 
-const MobileInventoryCard = ({ item }: MobileInventoryCardProps) => {
+const MobileInventoryCard = ({ item, soldCount = 0 }: MobileInventoryCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [editValues, setEditValues] = useState({ quantity: 0, price: 0 });
+  const [editValues, setEditValues] = useState({ totalImported: 0, price: 0 });
   const upsertInventory = useUpsertInventory();
 
   const sellingPrice = parsePrice(item.wine?.price ?? "0");
   const profitPerBottle = sellingPrice - item.purchase_price;
   const totalValue = item.quantity_in_stock * item.purchase_price;
+  const totalImported = item.quantity_in_stock + soldCount;
 
   const handleEdit = () => {
     setEditValues({
-      quantity: item.quantity_in_stock,
+      totalImported: totalImported,
       price: item.purchase_price,
     });
     setIsEditing(true);
@@ -42,9 +44,10 @@ const MobileInventoryCard = ({ item }: MobileInventoryCardProps) => {
   };
 
   const handleSave = async () => {
+    const quantityInStock = editValues.totalImported - soldCount;
     await upsertInventory.mutateAsync({
       wine_id: item.wine_id,
-      quantity_in_stock: editValues.quantity,
+      quantity_in_stock: quantityInStock,
       purchase_price: editValues.price,
     });
     setIsEditing(false);
@@ -54,7 +57,7 @@ const MobileInventoryCard = ({ item }: MobileInventoryCardProps) => {
     <Card className="overflow-hidden">
       <CardContent className="p-0">
         {/* Main row - always visible */}
-        <div 
+        <div
           className="flex items-center gap-3 p-3 cursor-pointer"
           onClick={() => !isEditing && setExpanded(!expanded)}
         >
@@ -71,11 +74,11 @@ const MobileInventoryCard = ({ item }: MobileInventoryCardProps) => {
           </div>
           <div className="text-right flex-shrink-0">
             <p className={`font-bold ${item.quantity_in_stock < 5 ? "text-red-600" : ""}`}>
-              {item.quantity_in_stock}
+              {totalImported} / {item.quantity_in_stock}
             </p>
-            <p className="text-xs text-muted-foreground">chai</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Nhập / Tồn</p>
           </div>
-          <Button variant="ghost" size="icon" className="flex-shrink-0">
+          <Button variant="ghost" size="icon" className="flex-shrink-0 h-8 w-8">
             {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </Button>
         </div>
@@ -95,40 +98,54 @@ const MobileInventoryCard = ({ item }: MobileInventoryCardProps) => {
                     type="number"
                     value={editValues.price}
                     onChange={(e) => setEditValues({ ...editValues, price: Number(e.target.value) })}
-                    className="h-8 text-sm"
+                    className="h-8 text-sm px-2 mt-1"
                   />
                 ) : (
                   <p className="font-medium">{formatCurrency(item.purchase_price)}</p>
                 )}
               </div>
-              <div>
-                <p className="text-muted-foreground text-xs">Lợi Nhuận/Chai</p>
-                <p className={`font-medium ${profitPerBottle >= 0 ? "text-green-600" : "text-red-600"}`}>
-                  {formatCurrency(profitPerBottle)}
-                </p>
-              </div>
-              <div>
-                <p className="text-muted-foreground text-xs">Tồn Kho</p>
+              <div className="col-span-1">
+                <p className="text-muted-foreground text-xs">Tổng nhập</p>
                 {isEditing ? (
                   <Input
                     type="number"
-                    value={editValues.quantity}
-                    onChange={(e) => setEditValues({ ...editValues, quantity: Number(e.target.value) })}
-                    className="h-8 text-sm"
+                    value={editValues.totalImported}
+                    onChange={(e) => setEditValues({ ...editValues, totalImported: Number(e.target.value) })}
+                    className="h-8 text-sm px-2 mt-1"
                   />
                 ) : (
-                  <p className="font-medium">{item.quantity_in_stock}</p>
+                  <p className="font-medium">{totalImported}</p>
                 )}
               </div>
-            </div>
-            
-            <div className="flex justify-between items-center pt-2 border-t">
-              <div>
-                <p className="text-muted-foreground text-xs">Tổng Giá Trị</p>
-                <p className="font-bold">{formatCurrency(totalValue)}</p>
+              <div className="col-span-1">
+                <p className="text-muted-foreground text-xs">Tồn Kho</p>
+                {isEditing ? (
+                  <p className="font-medium mt-1">{editValues.totalImported - soldCount}</p>
+                ) : (
+                  <p className={`font-medium ${item.quantity_in_stock < 5 ? "text-red-600" : ""}`}>
+                    {item.quantity_in_stock}
+                  </p>
+                )}
               </div>
+              <div className="col-span-2 border-t pt-2 mt-1">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-muted-foreground text-xs">Lợi Nhuận/Chai</p>
+                    <p className={`font-medium ${profitPerBottle >= 0 ? "text-green-600" : "text-red-600"}`}>
+                      {formatCurrency(profitPerBottle)}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-muted-foreground text-xs">Tổng Giá Trị</p>
+                    <p className="font-bold">{formatCurrency(totalValue)}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end items-center pt-2 border-t gap-2">
               {isEditing ? (
-                <div className="flex gap-2">
+                <>
                   <Button size="sm" variant="outline" onClick={() => setIsEditing(false)}>
                     <X className="h-4 w-4 mr-1" />
                     Hủy
@@ -137,7 +154,7 @@ const MobileInventoryCard = ({ item }: MobileInventoryCardProps) => {
                     <Save className="h-4 w-4 mr-1" />
                     Lưu
                   </Button>
-                </div>
+                </>
               ) : (
                 <Button size="sm" variant="outline" onClick={handleEdit}>
                   <Edit2 className="h-4 w-4 mr-1" />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Package, TrendingUp, TrendingDown, DollarSign, ShoppingCart, Gift, Plus, Percent, Upload, FileSpreadsheet, ChevronDown, ChevronUp } from "lucide-react";
@@ -80,16 +80,35 @@ const AdminInventory = () => {
   }, 0) ?? 0;
 
   const totalStock = inventory?.reduce((sum, item) => sum + item.quantity_in_stock, 0) ?? 0;
+  const totalImported = totalStock + (financials?.totalBottlesSold ?? 0);
 
   const isLoading = profileLoading || !selectedProfile;
+
+  // Calculate sold counts for each wine to determine total imported
+  const soldCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    if (!orders) return counts;
+
+    orders.forEach((order) => {
+      if (order.status === "cancelled") return;
+
+      order.order_items?.forEach((item) => {
+        if (item.wine_id) {
+          counts[item.wine_id] = (counts[item.wine_id] || 0) + item.quantity;
+        }
+      });
+    });
+
+    return counts;
+  }, [orders]);
 
   // Stats data for easier rendering
   const stats = [
     {
       icon: Package,
-      label: "Tồn Kho",
-      value: totalStock.toString(),
-      subtext: "chai",
+      label: "Nhập / Tồn",
+      value: `${totalImported} / ${totalStock}`,
+      subtext: "tổng nhập / tồn kho",
       color: "",
     },
     {
@@ -192,7 +211,7 @@ const AdminInventory = () => {
             <>
               {/* Stats Cards - Mobile optimized */}
               <div className="space-y-2">
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 md:gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
                   {visibleStats.map((stat, index) => {
                     const Icon = stat.icon;
                     return (
@@ -202,7 +221,7 @@ const AdminInventory = () => {
                             <Icon className="h-3 w-3" />
                             <span className="text-xs font-medium truncate">{stat.label}</span>
                           </div>
-                          <p className={`text-lg md:text-xl font-bold truncate ${stat.color}`}>
+                          <p className={`text-lg md:text-xl font-bold ${stat.color} break-words`}>
                             {stat.value}
                           </p>
                           {stat.subtext && (
@@ -213,7 +232,7 @@ const AdminInventory = () => {
                     );
                   })}
                 </div>
-                
+
                 {/* Show more/less button on mobile */}
                 {isMobile && (
                   <Button
@@ -280,12 +299,20 @@ const AdminInventory = () => {
                         </Card>
                       ) : (
                         inventory?.map((item) => (
-                          <MobileInventoryCard key={item.id} item={item} />
+                          <MobileInventoryCard
+                            key={item.id}
+                            item={item}
+                            soldCount={soldCounts[item.wine_id] || 0}
+                          />
                         ))
                       )}
                     </div>
                   ) : (
-                    <InventoryTable inventory={inventory ?? []} isLoading={inventoryLoading} />
+                    <InventoryTable
+                      inventory={inventory ?? []}
+                      isLoading={inventoryLoading}
+                      soldCounts={soldCounts}
+                    />
                   )}
                 </TabsContent>
 
@@ -303,9 +330,9 @@ const AdminInventory = () => {
                         </Card>
                       ) : (
                         orders?.map((order) => (
-                          <MobileOrderCard 
-                            key={order.id} 
-                            order={order} 
+                          <MobileOrderCard
+                            key={order.id}
+                            order={order}
                             onEdit={setEditingOrder}
                           />
                         ))
