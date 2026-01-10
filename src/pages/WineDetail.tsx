@@ -95,14 +95,14 @@ const WineDetail = () => {
       updatedAt: wineDB.updated_at,
       characteristics: hasCharacteristics
         ? {
-            sweetness: wineDB.sweetness ?? 0,
-            body: wineDB.body ?? 0,
-            tannin: wineDB.tannin ?? 0,
-            acidity: wineDB.acidity ?? 0,
-            ...(wineDB.category === "sparkling" && wineDB.fizzy != null
-              ? { fizzy: wineDB.fizzy }
-              : {}),
-          }
+          sweetness: wineDB.sweetness ?? 0,
+          body: wineDB.body ?? 0,
+          tannin: wineDB.tannin ?? 0,
+          acidity: wineDB.acidity ?? 0,
+          ...(wineDB.category === "sparkling" && wineDB.fizzy != null
+            ? { fizzy: wineDB.fizzy }
+            : {}),
+        }
         : undefined,
     };
   }, [wineDB]);
@@ -110,9 +110,8 @@ const WineDetail = () => {
   const relatedWines = useMemo(() => {
     if (!wineDB) return [];
     const all = winesQuery.data ?? [];
-    return all
-      .filter((w) => w.category === wineDB.category && w.id !== wineDB.id)
-      .slice(0, 4);
+    // Show all wines except current one
+    return all.filter((w) => w.id !== wineDB.id);
   }, [winesQuery.data, wineDB]);
 
   const isLoading = isUuid ? wineByUuidQuery.isLoading : winesQuery.isLoading;
@@ -256,7 +255,7 @@ const WineDetail = () => {
                 <div className="relative mb-8 p-6 rounded-2xl bg-gradient-to-br from-secondary/40 via-secondary/20 to-transparent border border-border/20 shadow-sm">
                   {/* Decorative corner accent */}
                   <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-primary/5 to-transparent rounded-tr-2xl" />
-                  
+
                   {/* Grapes Section */}
                   <div className="relative mb-6">
                     <div className="flex items-center gap-2.5 mb-3">
@@ -466,33 +465,39 @@ const WineDetail = () => {
 
         {/* Related Wines */}
         {relatedWines.length > 0 && (
-          <section className="py-16 md:py-24 bg-background border-t border-border/30">
+          <section className="py-16 md:py-24 bg-background border-t border-border/30 overflow-hidden">
             <div className="container">
               <h2 className="text-2xl md:text-3xl font-serif font-light text-center mb-12">
                 Có Thể Bạn Cũng Thích
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+              <div className="flex gap-6 md:gap-8 overflow-x-auto pb-8 -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth snap-x snap-mandatory hide-scrollbar">
                 {relatedWines.map((relatedWine, index) => {
                   const img = relatedWine.image_url ?? "/placeholder.svg";
                   return (
                     <Link
                       key={relatedWine.id}
                       to={`/collection/${relatedWine.id}`}
-                      className="group opacity-0 animate-slide-up"
-                      style={{ animationDelay: `${index * 0.1}s` }}
+                      className="group flex-shrink-0 w-[240px] md:w-[280px] opacity-0 animate-slide-up snap-start"
+                      style={{
+                        animationDelay: `${Math.min(index * 0.05, 0.5)}s`,
+                        animationFillMode: 'forwards'
+                      }}
                     >
-                      <div className="aspect-[3/4] bg-white mb-4 overflow-hidden flex items-center justify-center p-4 rounded-sm shadow-sm">
+                      <div className="aspect-[3/4] bg-white mb-4 overflow-hidden flex items-end justify-center p-6 rounded-sm shadow-sm border border-border/10">
                         <img
                           src={withImgCacheBust(img, relatedWine.updated_at)}
                           alt={`Rượu vang ${relatedWine.name}`}
                           loading="lazy"
-                          className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                          className="w-auto h-full max-h-[180px] md:max-h-[220px] object-contain group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
-                      <h3 className="text-sm font-serif group-hover:text-muted-foreground transition-colors line-clamp-2">
+                      <h3 className="text-sm md:text-base font-serif group-hover:text-primary transition-colors line-clamp-1">
                         {relatedWine.name}
                       </h3>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-[10px] tracking-widest text-muted-foreground uppercase mt-1">
+                        {relatedWine.origin}
+                      </p>
+                      <p className="text-sm font-sans mt-2">
                         {relatedWine.price}
                       </p>
                     </Link>
