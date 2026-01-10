@@ -167,7 +167,7 @@ const Recruitment = () => {
           <div className="bg-secondary/50 rounded-lg p-6 mb-8">
             <h2 className="text-lg font-medium mb-4">Quyền lợi Cộng Tác Viên:</h2>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>• Chiết khấu hấp dẫn từ 20% trở lên</li>
+              <li>• Hoa hồng hấp dẫn</li>
               <li>• Hoa hồng theo bậc thang doanh số</li>
               <li>• Đào tạo kiến thức về rượu vang</li>
               <li>• Hỗ trợ marketing và bán hàng</li>
