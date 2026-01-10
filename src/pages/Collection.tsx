@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
@@ -7,10 +7,12 @@ import { useWines } from "@/hooks/useWines";
 import logo from "@/assets/logo2.png";
 import PersonalizedWineCard from "@/components/personalized-wine/PersonalizedWineCard";
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverAnchor,
+} from "@/components/ui/popover";
+import { Info } from "lucide-react";
 import WineCharacteristics from "@/components/wine/WineCharacteristics";
 import FlavorNotes from "@/components/wine/FlavorNotes";
 
@@ -22,6 +24,25 @@ const parsePrice = (price: string): number => {
 const Collection = () => {
   const { data: wines = [], isLoading, isError } = useWines();
   const [hoveredWineId, setHoveredWineId] = useState<string | null>(null);
+  const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
+
+  // Close popover on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (openPopoverId) {
+        setOpenPopoverId(null);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [openPopoverId]);
+
+  // Close popover when hovering a different product
+  useEffect(() => {
+    if (openPopoverId && hoveredWineId && hoveredWineId !== openPopoverId) {
+      setOpenPopoverId(null);
+    }
+  }, [hoveredWineId, openPopoverId]);
 
   const canonicalUrl =
     typeof window !== "undefined"
@@ -94,9 +115,9 @@ const Collection = () => {
             </p>
 
             {/* Logo */}
-            <img 
-              src={logo} 
-              alt="SÉLECTION Logo" 
+            <img
+              src={logo}
+              alt="SÉLECTION Logo"
               className="h-[280px] md:h-[400px] w-auto mx-auto mt-12 md:mt-16"
             />
           </div>
@@ -110,8 +131,8 @@ const Collection = () => {
                 Không tải được bộ sưu tập lúc này.
               </div>
             ) : (
-              <div 
-                className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 transition-all duration-300`}
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 transition-all duration-300"
                 onMouseLeave={() => setHoveredWineId(null)}
               >
                 {sortedWines.map((wine, index) => {
@@ -127,24 +148,25 @@ const Collection = () => {
                   };
                   const hasCharacteristics = characteristics.sweetness > 0 || characteristics.body > 0 || characteristics.tannin > 0 || characteristics.acidity > 0;
                   const hasFlavorNotes = wine.flavor_notes && wine.flavor_notes.length > 0;
-                  
+
                   return (
-                    <div 
+                    <div
                       key={wine.id}
-                      className={`opacity-0 animate-slide-up transition-all duration-500 ease-out ${
-                        hasHover && !isHovered 
-                          ? 'opacity-[0.15] blur-[2px] scale-[0.98]' 
-                          : isHovered 
-                            ? 'opacity-100 scale-[1.02] z-10 relative' 
+                      className={`opacity-0 animate-slide-up transition-all duration-500 ease-out group relative ${hasHover && !isHovered
+                          ? 'lg:opacity-[0.15] lg:blur-[2px] lg:scale-[0.98]'
+                          : isHovered
+                            ? 'lg:opacity-100 lg:scale-[1.02] lg:z-10'
                             : ''
-                      }`}
+                        }`}
                       style={{
                         animationDelay: `${Math.min(index * 0.05, 0.5)}s`,
                         animationFillMode: 'forwards',
                       }}
+                      onMouseEnter={() => setHoveredWineId(wine.id)}
+                      onMouseLeave={() => setHoveredWineId(null)}
                     >
-                      {/* Ảnh - không trigger hover */}
-                      <Link to={`/collection/${wine.id}`} className="group block">
+                      {/* Ảnh */}
+                      <Link to={`/collection/${wine.id}`} className="block">
                         <div className="aspect-[3/4] bg-white mb-5 overflow-hidden flex items-end justify-center p-6 rounded-sm">
                           <img
                             src={withImgCacheBust(img, wine.updated_at)}
@@ -155,82 +177,111 @@ const Collection = () => {
                         </div>
                       </Link>
 
-                      {/* Tiêu đề - trigger hover */}
-                      <HoverCard openDelay={150} closeDelay={100}>
-                        <HoverCardTrigger asChild>
-                          <Link
-                            to={`/collection/${wine.id}`}
-                            className="block space-y-2 group"
-                            onMouseEnter={() => setHoveredWineId(wine.id)}
-                            onMouseLeave={() => setHoveredWineId(null)}
-                          >
-                            <h3 className="text-base font-serif group-hover:text-primary transition-colors duration-300 leading-tight cursor-pointer">
-                              {wine.name}
-                              {wine.vintage && (
-                                <span className="text-muted-foreground font-normal ml-1">
-                                  ({wine.vintage})
-                                </span>
-                              )}
-                            </h3>
-                            <p className="text-[10px] tracking-widest text-muted-foreground uppercase">
-                              {wine.origin}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {wine.grapes}
-                            </p>
-                            <p className="text-sm font-sans pt-1">{wine.price}</p>
-                          </Link>
-                        </HoverCardTrigger>
-                        
-                        {(hasCharacteristics || hasFlavorNotes) && (
-                          <HoverCardContent 
-                            side="bottom" 
-                            align="start"
-                            sideOffset={8}
-                            className="w-80 p-0 bg-background border-border/50 shadow-2xl hidden md:block rounded-xl overflow-hidden"
-                          >
-                            {/* Header */}
-                            <div className="bg-primary/5 px-5 py-4 border-b border-border/30">
-                              <h4 className="font-serif text-base font-medium text-foreground">
+                      {/* Thông tin sản phẩm */}
+                      <div className="space-y-2">
+                        {(hasCharacteristics || hasFlavorNotes) ? (
+                          <Popover open={openPopoverId === wine.id} onOpenChange={(open) => setOpenPopoverId(open ? wine.id : null)}>
+                            <PopoverAnchor asChild>
+                              <div className="flex items-start justify-between gap-2">
+                                <Link
+                                  to={`/collection/${wine.id}`}
+                                  className="block flex-1"
+                                >
+                                  <h3 className="text-base font-serif group-hover:text-primary transition-colors duration-300 leading-tight cursor-pointer">
+                                    {wine.name}
+                                    {wine.vintage && (
+                                      <span className="text-muted-foreground font-normal ml-1">
+                                        ({wine.vintage})
+                                      </span>
+                                    )}
+                                  </h3>
+                                </Link>
+                                <PopoverTrigger asChild>
+                                  <button
+                                    className="text-muted-foreground hover:text-primary transition-colors p-1 -mt-1 -mr-1 rounded-full hover:bg-muted/50 focus:outline-none shrink-0"
+                                    onMouseEnter={() => setOpenPopoverId(wine.id)}
+                                  >
+                                    <Info className="h-4 w-4" />
+                                    <span className="sr-only">Thông tin</span>
+                                  </button>
+                                </PopoverTrigger>
+                              </div>
+                            </PopoverAnchor>
+                            <PopoverContent
+                              side="bottom"
+                              align="start"
+                              sideOffset={8}
+                              className="w-[calc(100vw-2rem)] sm:w-72 max-w-[300px] p-0 bg-background/95 backdrop-blur-sm border-border/40 shadow-xl rounded-lg overflow-hidden"
+                            >
+                              {/* Header nhỏ gọn */}
+                              <div className="bg-primary/5 px-3 py-2 border-b border-border/20">
+                                <h4 className="font-serif text-sm font-medium text-foreground truncate">
+                                  {wine.name}
+                                  {wine.vintage && (
+                                    <span className="text-muted-foreground font-normal ml-1 text-xs">
+                                      ({wine.vintage})
+                                    </span>
+                                  )}
+                                </h4>
+                              </div>
+
+                              {/* Nội dung compact */}
+                              <div className="p-3 space-y-3 max-h-[336px] overflow-y-auto">
+                                {hasCharacteristics && (
+                                  <div className="space-y-2">
+                                    <p className="text-[9px] tracking-[0.15em] text-muted-foreground uppercase font-medium">
+                                      Đặc tính
+                                    </p>
+                                    <WineCharacteristics characteristics={characteristics} />
+                                  </div>
+                                )}
+
+                                {hasFlavorNotes && (
+                                  <div className="space-y-2">
+                                    <p className="text-[9px] tracking-[0.15em] text-muted-foreground uppercase font-medium">
+                                      Nốt hương
+                                    </p>
+                                    <FlavorNotes notes={wine.flavor_notes!} />
+                                  </div>
+                                )}
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        ) : (
+                          <div className="flex items-start justify-between gap-2">
+                            <Link
+                              to={`/collection/${wine.id}`}
+                              className="block flex-1"
+                            >
+                              <h3 className="text-base font-serif group-hover:text-primary transition-colors duration-300 leading-tight cursor-pointer">
                                 {wine.name}
                                 {wine.vintage && (
-                                  <span className="text-muted-foreground font-normal ml-1.5 text-sm">
+                                  <span className="text-muted-foreground font-normal ml-1">
                                     ({wine.vintage})
                                   </span>
                                 )}
-                              </h4>
-                              <p className="text-[10px] tracking-widest text-muted-foreground uppercase mt-1">
-                                {wine.origin}
-                              </p>
-                            </div>
-                            
-                            {/* Content */}
-                            <div className="p-5 space-y-5">
-                              {hasCharacteristics && (
-                                <div className="space-y-3">
-                                  <p className="text-[10px] tracking-[0.15em] text-muted-foreground uppercase font-medium">
-                                    Đặc tính
-                                  </p>
-                                  <WineCharacteristics characteristics={characteristics} />
-                                </div>
-                              )}
-                              
-                              {hasFlavorNotes && (
-                                <div className="space-y-3">
-                                  <p className="text-[10px] tracking-[0.15em] text-muted-foreground uppercase font-medium">
-                                    Nốt hương
-                                  </p>
-                                  <FlavorNotes notes={wine.flavor_notes!} />
-                                </div>
-                              )}
-                            </div>
-                          </HoverCardContent>
+                              </h3>
+                            </Link>
+                          </div>
                         )}
-                      </HoverCard>
+
+                        <Link
+                          to={`/collection/${wine.id}`}
+                          className="block"
+                        >
+                          <p className="text-[10px] tracking-widest text-muted-foreground uppercase">
+                            {wine.origin}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {wine.grapes}
+                          </p>
+                          <p className="text-sm font-sans pt-1">{wine.price}</p>
+                        </Link>
+                      </div>
                     </div>
                   );
                 })}
-                
+
                 {/* Personalized Wine Card - appears at the end */}
                 <PersonalizedWineCard />
               </div>
