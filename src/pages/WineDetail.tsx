@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -40,6 +40,43 @@ const withImgCacheBust = (url: string, version?: string) => {
 const WineDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleWheel = (e: React.WheelEvent) => {
+    if (scrollRef.current && e.deltaY !== 0) {
+      e.preventDefault();
+      scrollRef.current.scrollBy({
+        left: e.deltaY,
+        behavior: 'auto'
+      });
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll-fast multiplier
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
 
   const paramId = id ?? "";
   const isUuid = UUID_REGEX.test(paramId);
@@ -466,18 +503,26 @@ const WineDetail = () => {
         {/* Related Wines */}
         {relatedWines.length > 0 && (
           <section className="py-16 md:py-24 bg-background border-t border-border/30 overflow-hidden">
-            <div className="container">
+            <div className="container relative">
               <h2 className="text-2xl md:text-3xl font-serif font-light text-center mb-12">
                 Có Thể Bạn Cũng Thích
               </h2>
-              <div className="flex gap-6 md:gap-8 overflow-x-auto pb-8 -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth snap-x snap-mandatory hide-scrollbar">
+              <div
+                ref={scrollRef}
+                onWheel={handleWheel}
+                onMouseDown={handleMouseDown}
+                onMouseLeave={handleMouseLeave}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                className="flex gap-6 md:gap-8 overflow-x-auto pb-8 -mx-4 px-[calc(50%-120px)] md:mx-0 md:px-0 snap-x snap-proximity hide-scrollbar lg:cursor-grab active:lg:cursor-grabbing"
+              >
                 {relatedWines.map((relatedWine, index) => {
                   const img = relatedWine.image_url ?? "/placeholder.svg";
                   return (
                     <Link
                       key={relatedWine.id}
                       to={`/collection/${relatedWine.id}`}
-                      className="group flex-shrink-0 w-[240px] md:w-[280px] opacity-0 animate-slide-up snap-start"
+                      className="group flex-shrink-0 w-[240px] md:w-[280px] opacity-0 animate-slide-up snap-center"
                       style={{
                         animationDelay: `${Math.min(index * 0.05, 0.5)}s`,
                         animationFillMode: 'forwards'
@@ -491,15 +536,17 @@ const WineDetail = () => {
                           className="w-auto h-full max-h-[180px] md:max-h-[220px] object-contain group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
-                      <h3 className="text-sm md:text-base font-serif group-hover:text-primary transition-colors line-clamp-1">
-                        {relatedWine.name}
-                      </h3>
-                      <p className="text-[10px] tracking-widest text-muted-foreground uppercase mt-1">
-                        {relatedWine.origin}
-                      </p>
-                      <p className="text-sm font-sans mt-2">
-                        {relatedWine.price}
-                      </p>
+                      <div className="text-center px-2">
+                        <h3 className="text-sm md:text-base font-serif group-hover:text-primary transition-colors line-clamp-1">
+                          {relatedWine.name}
+                        </h3>
+                        <p className="text-[10px] tracking-widest text-muted-foreground uppercase mt-1">
+                          {relatedWine.origin}
+                        </p>
+                        <p className="text-sm font-sans mt-2">
+                          {relatedWine.price}
+                        </p>
+                      </div>
                     </Link>
                   );
                 })}
