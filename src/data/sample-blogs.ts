@@ -52,7 +52,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/wine_selection_tips_1768167708896.png",
+        cover_image_url: "/blog-images/wine_selection_tips_1768167708896.jpg",
         view_count: 0
     },
     {
@@ -107,7 +107,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/corporate_gift_wine_1768167725836.png",
+        cover_image_url: "/blog-images/corporate_gift_wine_1768167725836.jpg",
         view_count: 0
     },
     {
@@ -148,7 +148,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/french_wine_journey_1768167747650.png",
+        cover_image_url: "/blog-images/french_wine_journey_1768167747650.jpg",
         view_count: 0
     },
     {
@@ -185,7 +185,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/wine_tasting_guide_1768167764592.png",
+        cover_image_url: "/blog-images/wine_tasting_guide_1768167764592.jpg",
         view_count: 0
     },
     {
@@ -223,7 +223,7 @@ export const SAMPLE_BLOG_POSTS = [
         <p>Hãy đến và trải nghiệm không gian văn hóa rượu vang đẳng cấp tại Selection Wine!</p>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/selection_wine_store_1768167782615.png",
+        cover_image_url: "/blog-images/selection_wine_store_1768167782615.jpg",
         view_count: 0
     },
     {
@@ -289,7 +289,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/wine_cellar_storage_1768166718635.png",
+        cover_image_url: "/blog-images/wine_cellar_storage_1768166718635.jpg",
         view_count: 0
     },
     {
@@ -352,7 +352,7 @@ export const SAMPLE_BLOG_POSTS = [
         <p>Ghé <strong>Selection Wine Thủ Đức</strong> để được tư vấn chi tiết về ghép rượu - món Việt phù hợp. Chúng tôi có đội ngũ am hiểu cả rượu vang và ẩm thực địa phương để hướng dẫn bạn.</p>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/wine_food_pairing_1768166735721.png",
+        cover_image_url: "/blog-images/wine_food_pairing_1768166735721.jpg",
         view_count: 0
     },
     {
@@ -420,7 +420,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/italian_vineyard_1768166750792.png",
+        cover_image_url: "/blog-images/italian_vineyard_1768166750792.jpg",
         view_count: 0
     },
     {
@@ -496,7 +496,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/tet_wine_gifts_1768166767468.png",
+        cover_image_url: "/blog-images/tet_wine_gifts_1768166767468.jpg",
         view_count: 0
     },
     {
@@ -579,7 +579,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "/blog-images/wine_tasting_event_1768166785915.png",
+        cover_image_url: "/blog-images/wine_tasting_event_1768166785915.jpg",
         view_count: 0
     }
 ];
