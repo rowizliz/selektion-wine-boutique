@@ -152,13 +152,31 @@ export const useAllArticles = () => {
         .from("blog_articles")
         .select(`
           *,
-          author:user_profiles!blog_articles_author_id_fkey(id, display_name, avatar_url),
           category:blog_categories!blog_articles_category_id_fkey(id, name, slug)
         `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as BlogArticle[];
+
+      // Fetch authors separately to avoid RLS issues
+      const authorIds = [...new Set(data?.map(a => a.author_id).filter(Boolean))];
+      let authorsMap: Record<string, { id: string; display_name: string | null; avatar_url: string | null }> = {};
+
+      if (authorIds.length > 0) {
+        const { data: authors } = await supabase
+          .from("user_profiles")
+          .select("id, display_name, avatar_url")
+          .in("id", authorIds);
+
+        if (authors) {
+          authorsMap = Object.fromEntries(authors.map(a => [a.id, a]));
+        }
+      }
+
+      return (data || []).map(article => ({
+        ...article,
+        author: authorsMap[article.author_id] || null
+      })) as BlogArticle[];
     },
   });
 };
