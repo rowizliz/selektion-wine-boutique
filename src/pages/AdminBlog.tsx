@@ -44,7 +44,7 @@ const AdminBlog = () => {
 
   // Articles
   const { data: articles, isLoading: isLoadingArticles } = useAllArticles();
-  const { updateArticle, deleteArticle } = useArticleMutations();
+  const { updateArticle, deleteArticle, createArticle } = useArticleMutations();
   const [articleDialog, setArticleDialog] = useState<{ open: boolean; article?: BlogArticle; action?: "approve" | "reject" }>({ open: false });
   const [adminNotes, setAdminNotes] = useState("");
   const [articleFormDialog, setArticleFormDialog] = useState<{ open: boolean; article?: BlogArticle }>({ open: false });
@@ -114,28 +114,6 @@ const AdminBlog = () => {
     if (!confirm("Bạn có muốn import 5 bài viết mẫu không?")) return;
 
     try {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) throw new Error("Chưa đăng nhập");
-
-      // Get or create profile
-      let { data: profile } = await supabase
-        .from("user_profiles")
-        .select("id")
-        .eq("user_id", user.user.id)
-        .single();
-
-      if (!profile) {
-        // Auto-create profile for this user
-        const { data: newProfile, error: profileError } = await supabase
-          .from("user_profiles")
-          .insert({ user_id: user.user.id })
-          .select("id")
-          .single();
-
-        if (profileError) throw new Error("Không thể tạo profile: " + profileError.message);
-        profile = newProfile;
-      }
-
       let successCount = 0;
 
       for (const post of SAMPLE_BLOG_POSTS) {
@@ -147,19 +125,36 @@ const AdminBlog = () => {
           .single();
 
         if (!existing) {
-          await supabase.from("blog_articles").insert({
-            ...post,
-            author_id: profile.id,
-            category_id: null,
-            published_at: new Date().toISOString()
+          // Use createArticle mutation which handles profile creation
+          await createArticle.mutateAsync({
+            title: post.title,
+            slug: post.slug,
+            excerpt: post.excerpt,
+            content: post.content,
+            cover_image_url: post.cover_image_url,
+            status: "published" as "draft" | "pending",
           });
+
+          // Update to published status immediately
+          const { data: inserted } = await supabase
+            .from("blog_articles")
+            .select("id")
+            .eq("slug", post.slug)
+            .single();
+
+          if (inserted) {
+            await supabase.from("blog_articles").update({
+              status: "published",
+              published_at: new Date().toISOString()
+            }).eq("id", inserted.id);
+          }
+
           successCount++;
         }
       }
 
       if (successCount > 0) {
         toast({ title: `Đã import thành công ${successCount} bài viết` });
-        // Refresh by invalidating queries (hacky way: reload or use queryClient)
         window.location.reload();
       } else {
         toast({ title: "Các bài viết mẫu đã tồn tại", variant: "default" });
