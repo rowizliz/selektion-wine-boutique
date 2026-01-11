@@ -19,23 +19,59 @@ const SEO = ({
     type = "website",
     schema,
     keywords = [
-        // Brand keywords
+        // Brand keywords với địa phương
         "selection wine", "shop selection wine", "rượu vang selection", "sélection wine", "selection wine vietnam",
+        "selection thủ đức", "selection thu duc", "selection bình dương", "selection binh duong",
+        "selection wine thủ đức", "selection wine bình dương", "selection wine biên hòa",
+
         // Địa phương - ưu tiên cao
-        "rượu vang thủ đức", "rượu vang bình dương", "rượu vang biên hòa",
-        "rượu vang hồ chí minh", "showroom rượu vang thủ đức", "cửa hàng rượu vang thủ đức",
-        "mua rượu vang thủ đức", "đại lý rượu vang bình dương", "rượu vang quận thủ đức",
+        "rượu vang thủ đức", "rượu vang thu duc", "rượu vang bình dương", "rượu vang binh duong", "rượu vang biên hòa",
+        "rượu vang hồ chí minh", "rượu vang tp hcm", "rượu vang sài gòn",
+        "showroom rượu vang thủ đức", "showroom rượu vang bình dương", "showroom rượu vang biên hòa",
+        "cửa hàng rượu vang thủ đức", "cửa hàng rượu vang bình dương", "cửa hàng rượu vang biên hòa",
+        "mua rượu vang thủ đức", "mua rượu vang bình dương", "mua rượu vang biên hòa",
+        "đại lý rượu vang thủ đức", "đại lý rượu vang bình dương", "đại lý rượu vang biên hòa",
+        "rượu vang quận thủ đức", "rượu vang tp thủ đức", "rượu vang dĩ an", "rượu vang thủ dầu một",
+        "giao rượu vang thủ đức", "giao rượu vang bình dương", "ship rượu vang thủ đức",
+
         // Loại sản phẩm
-        "rượu vang cao cấp", "rượu vang tuyển chọn", "rượu vang tuyển lựa",
-        "vang pháp", "vang ý", "vang chile", "vang đỏ", "vang trắng", "vang sủi bọt",
-        "vang chát", "vang ngọt", "rượu vang nhập khẩu", "rượu vang chính hãng", "rượu vang ngon",
-        "rượu vang pháp", "wine", "rượu champagne", "rượu pháp",
-        // Từ Google Ads
-        "cửa hàng rượu", "quà tặng sếp nhật", "quà tặng ý nghĩa", "quà tết",
-        "rượu vang úc", "giỏ quà doanh nghiệp",
-        // Dịch vụ
-        "quà tặng rượu vang", "quà tặng doanh nghiệp", "quà tặng sếp",
-        "quà tặng đối tác", "quà tết rượu vang", "hộp quà rượu vang"
+        "rượu vang cao cấp", "rượu vang sang trọng", "rượu vang hảo hạng", "rượu vang đắt",
+        "rượu vang tuyển chọn", "rượu vang tuyển lựa", "rượu vang chọn lọc",
+        "vang pháp", "vang ý", "vang chile", "vang úc", "vang mỹ", "vang tây ban nha",
+        "vang đỏ", "vang trắng", "vang sủi bọt", "vang hồng",
+        "vang chát", "vang ngọt", "vang khô",
+        "rượu vang nhập khẩu", "rượu vang chính hãng", "rượu vang ngon", "rượu vang ngon nhất",
+        "rượu vang pháp", "wine", "red wine", "white wine", "champagne",
+        "rượu champagne", "rượu pháp", "rượu ý", "bordeaux", "burgundy",
+
+        // Quà tặng sếp - keywords quan trọng
+        "quà tặng sếp", "quà tặng sếp nam", "quà tặng sếp nữ",
+        "rượu vang tặng sếp", "rượu tặng sếp", "rượu biếu sếp",
+        "rượu vang tặng sếp nước ngoài", "quà tặng sếp nước ngoài", "quà biếu sếp ngoại quốc",
+        "rượu vang tặng sếp nhật", "quà tặng sếp nhật", "quà tặng sếp hàn quốc",
+        "rượu vang tặng sếp mỹ", "rượu vang tặng sếp pháp", "rượu vang tặng sếp châu âu",
+        "quà tặng sếp sang trọng", "quà tặng sếp cao cấp", "quà tặng sếp ý nghĩa",
+        "quà tặng giám đốc", "quà tặng tổng giám đốc", "quà tặng cấp trên",
+        "quà tặng lãnh đạo", "quà biếu lãnh đạo", "rượu vang tặng lãnh đạo",
+
+        // Quà tặng doanh nghiệp
+        "quà tặng doanh nghiệp", "quà tặng công ty", "quà tặng đối tác",
+        "quà tặng khách hàng", "quà tặng đối tác nước ngoài",
+        "giỏ quà doanh nghiệp", "giỏ quà tết doanh nghiệp", "giỏ quà cao cấp",
+        "hộp quà rượu vang", "set quà rượu vang", "bộ quà rượu vang",
+        "quà tặng doanh nghiệp cao cấp", "quà tặng doanh nghiệp sang trọng",
+        "quà tặng tri ân", "quà tri ân khách hàng", "quà tri ân đối tác",
+
+        // Dịp quà tặng
+        "quà tết", "quà tết cao cấp", "quà tết sang trọng", "quà tết rượu vang",
+        "quà giáng sinh", "quà noel", "quà sinh nhật sếp", "quà khai trương",
+        "quà tặng ý nghĩa", "quà tặng thành công", "quà tặng thăng chức",
+        "quà tặng 20/10", "quà tặng 8/3", "quà tặng nam giới", "quà tặng nữ giới",
+
+        // Từ khóa thương hiệu và uy tín
+        "cửa hàng rượu", "shop rượu", "đại lý rượu uy tín",
+        "mua rượu vang ở đâu", "mua rượu vang chính hãng", "rượu vang giá tốt",
+        "rượu vang giao tận nơi", "rượu vang ship nhanh", "rượu vang giao hàng nhanh"
     ],
     author = "Sélection",
 }: SEOProps) => {
