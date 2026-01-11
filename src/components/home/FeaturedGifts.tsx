@@ -26,7 +26,7 @@ const FeaturedGifts = () => {
             Quà Tặng Rượu Vang
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Bộ sưu tập quà tặng cao cấp kết hợp rượu vang hảo hạng cùng các sản phẩm tinh tuyển, 
+            Bộ sưu tập quà tặng cao cấp kết hợp rượu vang hảo hạng cùng các sản phẩm tinh tuyển,
             hoàn hảo cho đối tác và khách hàng thân quý.
           </p>
         </div>
@@ -40,9 +40,9 @@ const FeaturedGifts = () => {
               className={`group opacity-0 animate-slide-up stagger-${Math.min(index + 1, 4)}`}
             >
               <div className="aspect-square bg-white mb-4 overflow-hidden rounded-lg shadow-sm group-hover:shadow-md transition-shadow duration-500">
-                <img 
-                  src={gift.image} 
-                  alt={gift.name}
+                <img
+                  src={gift.image}
+                  alt={`Set Hộp Quà Tặng Rượu Vang ${gift.name} Cao Cấp - Quà Tết Doanh Nghiệp Sang Trọng - Selection Wine`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxury"
                 />
               </div>

@@ -19,9 +19,10 @@ const SEO = ({
     type = "website",
     schema,
     keywords = [
-        "rượu vang", "selection wine", "rượu vang selection", "vang pháp", "vang ý",
-        "rượu vang thủ đức", "rượu vang hồ chí minh", "quà tặng rượu vang",
-        "quà tặng doanh nghiệp", "rượu vang tuyển lựa", "vang chát", "vang ngọt"
+        "selection wine", "shop selection wine", "rượu vang selection",
+        "rượu vang", "vang pháp", "vang ý", "rượu vang thủ đức",
+        "rượu vang hồ chí minh", "quà tặng rượu vang", "quà tặng doanh nghiệp",
+        "vang chát", "vang ngọt", "cửa hàng rượu vang"
     ],
     author = "Sélection",
 }: SEOProps) => {

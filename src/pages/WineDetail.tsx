@@ -248,7 +248,7 @@ const WineDetail = () => {
                 <div className="flex items-center justify-center min-h-[500px] lg:min-h-[700px]">
                   <img
                     src={withImgCacheBust(wine.image, wine.updatedAt)}
-                    alt={`Rượu vang ${wine.name}`}
+                    alt={`Rượu vang ${wine.name} ${wine.origin} - Vang ${wine.category === 'red' ? 'Đỏ' : wine.category === 'white' ? 'Trắng' : 'Sủi'} Nhập Khẩu Cao Cấp - Shop Rượu Vang Uy Tín Thủ Đức TP.HCM - Selection Wine`}
                     className="w-auto h-full max-h-[420px] lg:max-h-[600px] object-contain animate-fade-in"
                   />
                 </div>
@@ -528,7 +528,7 @@ const WineDetail = () => {
                       <div className="aspect-[3/4] bg-white mb-4 overflow-hidden flex items-end justify-center p-6 rounded-sm shadow-sm border border-border/10">
                         <img
                           src={withImgCacheBust(img, relatedWine.updated_at)}
-                          alt={`Rượu vang ${relatedWine.name}`}
+                          alt={`Rượu vang ${relatedWine.name} - Vang Nhập Khẩu Giá Tốt - Selection Wine Thủ Đức`}
                           loading="lazy"
                           className="w-auto h-full max-h-[180px] md:max-h-[220px] object-contain group-hover:scale-105 transition-transform duration-500"
                         />

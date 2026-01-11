@@ -56,7 +56,7 @@ const About = () => {
                 <div className="space-y-6 text-muted-foreground leading-relaxed">
                   <p>
                     Chúng tôi tin rằng rượu vang tuyệt vời nên dễ tiếp cận.
-                    Bộ sưu tập của chúng tôi trải dài từ rượu bàn hàng ngày
+                    Là shop rượu vang uy tín tại Thủ Đức, bộ sưu tập của chúng tôi trải dài từ rượu bàn hàng ngày
                     đến những chai đặc biệt cho các dịp quan trọng, mỗi chai
                     được chọn lọc cẩn thận vì tính cách và giá trị của nó.
                   </p>

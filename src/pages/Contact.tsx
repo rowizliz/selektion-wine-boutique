@@ -60,7 +60,7 @@ const Contact = () => {
                   </p>
                   <h1 className="text-4xl md:text-5xl font-serif font-light mb-8">Liên Hệ</h1>
                   <p className="text-muted-foreground leading-relaxed mb-12">
-                    Chúng tôi rất vui được nghe từ bạn. Dù bạn có câu hỏi về rượu vang, muốn đặt hàng, hay chỉ muốn trò
+                    Ghé thăm showroom rượu vang của chúng tôi tại trung tâm Thủ Đức. Dù bạn có câu hỏi về rượu vang, muốn đặt hàng, hay chỉ muốn trò
                     chuyện về rượu, chúng tôi luôn sẵn sàng hỗ trợ.
                   </p>
 

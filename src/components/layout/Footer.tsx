@@ -2,7 +2,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-export interface FooterProps extends React.HTMLAttributes<HTMLElement> {}
+export interface FooterProps extends React.HTMLAttributes<HTMLElement> { }
 
 const Footer = React.forwardRef<HTMLElement, FooterProps>(
   ({ className, ...props }, ref) => {
@@ -26,7 +26,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
                 SÉLECTION
               </Link>
               <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-sm">
-                Rượu vang hảo hạng được tuyển chọn từ những vườn nho danh tiếng của Pháp và Ý.
+                SÉLECTION - Shop Rượu Vang Uy Tín tại Thủ Đức.
                 Mỗi chai rượu là một câu chuyện về di sản và nghệ thuật làm rượu.
               </p>
               <p className="mt-6 text-xs text-muted-foreground tracking-wider uppercase">

@@ -345,7 +345,7 @@ const Gifts = () => {
 
             <img
               src={selectedImage?.src}
-              alt={selectedImage?.name || ""}
+              alt={selectedImage ? `Chi tiết set quà ${selectedImage.name} - Quà tặng rượu vang cao cấp - Selection Wine` : ""}
               style={{
                 transform: `scale(${zoomLevel})`,
                 transformOrigin: "center",
@@ -443,7 +443,7 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
           >
             <img
               src={gift.image_url || ''}
-              alt={gift.name}
+              alt={`Set Hộp Quà Tặng ${gift.name} - Quà Tết Doanh Nghiệp - Selection Wine`}
               className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-1000 ease-out"
             />
 
