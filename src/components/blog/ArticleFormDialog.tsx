@@ -36,7 +36,7 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
   const { toast } = useToast();
   const { data: categories } = useBlogCategories();
   const { createArticle, updateArticle } = useArticleMutations();
-  
+
   const [form, setForm] = useState({
     title: "",
     slug: "",
@@ -62,7 +62,7 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
           cover_image_url: article.cover_image_url || "",
           author_name: article.author?.display_name || "",
         });
-        
+
         // Parse content blocks
         try {
           const parsed = JSON.parse(article.content);
@@ -72,8 +72,30 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
             setBlocks([{ type: "text", content: article.content }]);
           }
         } catch {
-          // Legacy plain text content
-          setBlocks([{ type: "text", content: article.content }]);
+          // Legacy HTML content - strip tags and convert to plain text
+          const stripHtml = (html: string): string => {
+            // Remove HTML tags and convert common elements to readable text
+            return html
+              .replace(/<h[1-6][^>]*>/gi, '\n\n## ')
+              .replace(/<\/h[1-6]>/gi, '\n')
+              .replace(/<li[^>]*>/gi, '\n• ')
+              .replace(/<\/li>/gi, '')
+              .replace(/<p[^>]*>/gi, '\n')
+              .replace(/<\/p>/gi, '\n')
+              .replace(/<br\s*\/?>/gi, '\n')
+              .replace(/<ul[^>]*>|<\/ul>|<ol[^>]*>|<\/ol>/gi, '')
+              .replace(/<strong[^>]*>|<\/strong>/gi, '')
+              .replace(/<em[^>]*>|<\/em>/gi, '')
+              .replace(/<[^>]+>/g, '') // Remove remaining tags
+              .replace(/&nbsp;/g, ' ')
+              .replace(/&amp;/g, '&')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/\n{3,}/g, '\n\n') // Reduce multiple newlines
+              .trim();
+          };
+          const plainText = stripHtml(article.content);
+          setBlocks([{ type: "text", content: plainText }]);
         }
       } else {
         // Load current user's display name for new articles
@@ -90,7 +112,7 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
             }
           }
         })();
-        
+
         setForm({
           title: "",
           slug: "",
@@ -133,7 +155,7 @@ const ArticleFormDialog = ({ open, onOpenChange, article, isAdmin = false }: Art
     try {
       const fileExt = file.name.split(".").pop();
       const fileName = `covers/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      
+
       const { error } = await supabase.storage
         .from("blog-images")
         .upload(fileName, file);
