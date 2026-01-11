@@ -20,7 +20,7 @@ const SEO = ({
     schema,
     keywords = [
         // Brand keywords
-        "selection wine", "rượu vang selection", "sélection wine", "selection wine vietnam",
+        "selection wine", "shop selection wine", "rượu vang selection", "sélection wine", "selection wine vietnam",
         // Địa phương - ưu tiên cao
         "rượu vang thủ đức", "rượu vang bình dương", "rượu vang biên hòa",
         "rượu vang hồ chí minh", "showroom rượu vang thủ đức", "cửa hàng rượu vang thủ đức",
@@ -28,7 +28,7 @@ const SEO = ({
         // Loại sản phẩm
         "rượu vang cao cấp", "rượu vang tuyển chọn", "rượu vang tuyển lựa",
         "vang pháp", "vang ý", "vang chile", "vang đỏ", "vang trắng", "vang sủi bọt",
-        "rượu vang nhập khẩu", "rượu vang chính hãng", "rượu vang ngon",
+        "vang chát", "vang ngọt", "rượu vang nhập khẩu", "rượu vang chính hãng", "rượu vang ngon",
         // Dịch vụ
         "quà tặng rượu vang", "quà tặng doanh nghiệp", "quà tặng sếp",
         "quà tặng đối tác", "quà tết rượu vang", "hộp quà rượu vang"

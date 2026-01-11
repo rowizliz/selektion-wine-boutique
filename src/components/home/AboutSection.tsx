@@ -9,9 +9,9 @@ const AboutSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 lg:gap-24 items-center">
           {/* Image */}
           <div className="overflow-hidden order-2 lg:order-1 group">
-            <img 
-              src={selectionCover} 
-              alt="Sélection Wine & Gift Catalog" 
+            <img
+              src={selectionCover}
+              alt="Sélection Wine & Gift Catalog"
               className="w-full h-auto max-h-[400px] md:max-h-[500px] lg:max-h-none object-contain mx-auto rounded-lg transition-transform duration-700 group-hover:scale-105"
             />
           </div>
@@ -27,14 +27,13 @@ const AboutSection = () => {
             </h2>
             <div className="space-y-4 md:space-y-6 text-muted-foreground leading-relaxed">
               <p>
-                Sélection được sinh ra từ niềm đam mê khám phá những chai rượu vang 
-                đặc biệt, mang trong mình câu chuyện về vùng đất. Chúng tôi đến tận 
-                trái tim của Pháp và Ý, tìm kiếm những nhà sản xuất thủ công tạo ra 
+                Sélection tự hào là điểm đến rượu vang hàng đầu tại Thủ Đức, mang đến những chai vang
+                đặc biệt từ trái tim của Pháp và Ý. Chúng tôi tìm kiếm những nhà sản xuất thủ công tạo ra
                 rượu vang với sự tận tâm và chân thực.
               </p>
               <p>
-                Mỗi chai rượu trong bộ sưu tập đều được chọn lọc cá nhân, đảm bảo 
-                rằng mọi chai đều đáp ứng tiêu chuẩn khắt khe về chất lượng, 
+                Mỗi chai rượu trong bộ sưu tập đều được chọn lọc cá nhân, đảm bảo
+                rằng mọi chai đều đáp ứng tiêu chuẩn khắt khe về chất lượng,
                 đặc tính và giá trị.
               </p>
             </div>

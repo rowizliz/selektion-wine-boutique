@@ -168,7 +168,7 @@ const Collection = () => {
                         <div className="aspect-[3/4] bg-white mb-5 overflow-hidden flex items-end justify-center p-6 rounded-sm">
                           <img
                             src={withImgCacheBust(img, wine.updated_at)}
-                            alt={`Rượu vang ${wine.name}`}
+                            alt={`Mua Rượu vang ${wine.name} ${wine.origin} - Vang Ngon Tuyển Chọn - Shop Rượu Vang Selection Thủ Đức`}
                             loading="lazy"
                             className="w-auto h-[280px] object-contain group-hover:scale-105 transition-transform duration-700 ease-in-out"
                           />

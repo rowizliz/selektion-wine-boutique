@@ -34,9 +34,9 @@ const FeaturedWines = () => {
             >
               <div className="aspect-[3/4] bg-white mb-4 overflow-hidden flex items-center justify-center p-4 rounded-sm">
                 {wine.image ? (
-                  <img 
-                    src={withImgCacheBust(wine.image)} 
-                    alt={wine.name}
+                  <img
+                    src={withImgCacheBust(wine.image)}
+                    alt={`Rượu vang ${wine.name} - Vang ${wine.origin} Nhập Khẩu Chính Hãng - Selection Wine Shop Rượu Vang Thủ Đức`}
                     className="max-w-full max-h-full h-[180px] md:h-[200px] object-contain group-hover:scale-105 transition-transform duration-700 ease-luxury"
                   />
                 ) : (
