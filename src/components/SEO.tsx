@@ -29,6 +29,10 @@ const SEO = ({
         "rượu vang cao cấp", "rượu vang tuyển chọn", "rượu vang tuyển lựa",
         "vang pháp", "vang ý", "vang chile", "vang đỏ", "vang trắng", "vang sủi bọt",
         "vang chát", "vang ngọt", "rượu vang nhập khẩu", "rượu vang chính hãng", "rượu vang ngon",
+        "rượu vang pháp", "wine", "rượu champagne", "rượu pháp",
+        // Từ Google Ads
+        "cửa hàng rượu", "quà tặng sếp nhật", "quà tặng ý nghĩa", "quà tết",
+        "rượu vang úc", "giỏ quà doanh nghiệp",
         // Dịch vụ
         "quà tặng rượu vang", "quà tặng doanh nghiệp", "quà tặng sếp",
         "quà tặng đối tác", "quà tết rượu vang", "hộp quà rượu vang"
