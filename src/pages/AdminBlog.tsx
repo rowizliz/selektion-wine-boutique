@@ -114,10 +114,29 @@ const AdminBlog = () => {
     if (!confirm("Bạn có muốn import 5 bài viết mẫu không?")) return;
 
     try {
+      // Find ANY existing author_id from database (existing profile)
+      let authorId: string | null = null;
+
+      const { data: anyProfile } = await supabase
+        .from("user_profiles")
+        .select("id")
+        .limit(1)
+        .single();
+
+      if (anyProfile?.id) {
+        authorId = anyProfile.id;
+      } else {
+        toast({
+          title: "Không tìm thấy author",
+          description: "Vui lòng tạo 1 bài viết thủ công trước bằng nút 'Viết Bài Mới', sau đó thử lại Import.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       let successCount = 0;
 
       for (const post of SAMPLE_BLOG_POSTS) {
-        // Check if slug exists
         const { data: existing } = await supabase
           .from("blog_articles")
           .select("id")
@@ -125,31 +144,18 @@ const AdminBlog = () => {
           .single();
 
         if (!existing) {
-          // Use createArticle mutation which handles profile creation
-          await createArticle.mutateAsync({
+          const { error } = await supabase.from("blog_articles").insert({
             title: post.title,
             slug: post.slug,
             excerpt: post.excerpt,
             content: post.content,
             cover_image_url: post.cover_image_url,
-            status: "published" as "draft" | "pending",
+            status: "published",
+            author_id: authorId,
+            category_id: null,
+            published_at: new Date().toISOString()
           });
-
-          // Update to published status immediately
-          const { data: inserted } = await supabase
-            .from("blog_articles")
-            .select("id")
-            .eq("slug", post.slug)
-            .single();
-
-          if (inserted) {
-            await supabase.from("blog_articles").update({
-              status: "published",
-              published_at: new Date().toISOString()
-            }).eq("id", inserted.id);
-          }
-
-          successCount++;
+          if (!error) successCount++;
         }
       }
 
