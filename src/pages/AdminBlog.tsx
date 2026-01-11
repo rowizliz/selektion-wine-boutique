@@ -117,14 +117,24 @@ const AdminBlog = () => {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error("Chưa đăng nhập");
 
-      // Get profile
-      const { data: profile } = await supabase
+      // Get or create profile
+      let { data: profile } = await supabase
         .from("user_profiles")
         .select("id")
         .eq("user_id", user.user.id)
         .single();
 
-      if (!profile) throw new Error("Không tìm thấy profile");
+      if (!profile) {
+        // Auto-create profile for this user
+        const { data: newProfile, error: profileError } = await supabase
+          .from("user_profiles")
+          .insert({ user_id: user.user.id })
+          .select("id")
+          .single();
+
+        if (profileError) throw new Error("Không thể tạo profile: " + profileError.message);
+        profile = newProfile;
+      }
 
       let successCount = 0;
 
