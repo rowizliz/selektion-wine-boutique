@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { Search } from "lucide-react";
+import SEO from "@/components/SEO";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BlogArticleCard from "@/components/blog/BlogArticleCard";
@@ -27,13 +27,14 @@ const Blog = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Blog | SÉLECTION - Tin Tức & Kiến Thức Rượu Vang</title>
-        <meta
-          name="description"
-          content="Khám phá thế giới rượu vang qua các bài viết chuyên sâu về vang Pháp, vang Ý, ẩm thực và cách thưởng thức."
-        />
-      </Helmet>
+      <SEO
+        title="Blog Rượu Vang | Kiến Thức & Tin Tức Selection Wine"
+        description="Khám phá kiến thức rượu vang: cách thưởng thức, food pairing, vùng vang nổi tiếng. Blog chia sẻ từ SÉLECTION Wine Thủ Đức. Bài viết chuyên sâu về vang Pháp, vang Ý."
+        keywords={[
+          "kiến thức rượu vang", "cách uống rượu vang", "blog rượu vang",
+          "tin tức rượu vang", "food pairing rượu vang", "cách thưởng thức vang"
+        ]}
+      />
 
       <Header />
       
