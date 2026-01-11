@@ -5,6 +5,7 @@ import Hero from "@/components/home/Hero";
 import FeaturedWines from "@/components/home/FeaturedWines";
 import FeaturedGifts from "@/components/home/FeaturedGifts";
 import AboutSection from "@/components/home/AboutSection";
+import LatestBlogPosts from "@/components/home/LatestBlogPosts";
 import Newsletter from "@/components/home/Newsletter";
 
 const Index = () => {
@@ -75,6 +76,7 @@ const Index = () => {
         <FeaturedWines />
         <FeaturedGifts />
         <AboutSection />
+        <LatestBlogPosts />
         <Newsletter />
       </main>
       <Footer />

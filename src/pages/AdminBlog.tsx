@@ -29,11 +29,13 @@ import { useBlogCategories, useAdminBlogCategories, BlogCategory } from "@/hooks
 import { useAllArticles, useArticleMutations, BlogArticle } from "@/hooks/useBlogArticles";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { SAMPLE_BLOG_POSTS } from "@/data/sample-blogs";
+import { supabase } from "@/integrations/supabase/client";
 
 const AdminBlog = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("pending");
-  
+
   // Categories
   const { data: categories, isLoading: isLoadingCategories } = useBlogCategories();
   const { createCategory, updateCategory, deleteCategory } = useAdminBlogCategories();
@@ -105,6 +107,56 @@ const AdminBlog = () => {
       toast({ title: "Đã xóa danh mục" });
     } catch (error: any) {
       toast({ title: "Lỗi", description: error.message, variant: "destructive" });
+    }
+  };
+
+  const handleImportSampleData = async () => {
+    if (!confirm("Bạn có muốn import 5 bài viết mẫu không?")) return;
+
+    try {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) throw new Error("Chưa đăng nhập");
+
+      // Get profile
+      const { data: profile } = await supabase
+        .from("user_profiles")
+        .select("id")
+        .eq("user_id", user.user.id)
+        .single();
+
+      if (!profile) throw new Error("Không tìm thấy profile");
+
+      let successCount = 0;
+
+      for (const post of SAMPLE_BLOG_POSTS) {
+        // Check if slug exists
+        const { data: existing } = await supabase
+          .from("blog_articles")
+          .select("id")
+          .eq("slug", post.slug)
+          .single();
+
+        if (!existing) {
+          await supabase.from("blog_articles").insert({
+            ...post,
+            author_id: profile.id,
+            category_id: null,
+            published_at: new Date().toISOString()
+          });
+          successCount++;
+        }
+      }
+
+      if (successCount > 0) {
+        toast({ title: `Đã import thành công ${successCount} bài viết` });
+        // Refresh by invalidating queries (hacky way: reload or use queryClient)
+        window.location.reload();
+      } else {
+        toast({ title: "Các bài viết mẫu đã tồn tại", variant: "default" });
+      }
+
+    } catch (error: any) {
+      toast({ title: "Lỗi import", description: error.message, variant: "destructive" });
     }
   };
 
@@ -279,10 +331,16 @@ const AdminBlog = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-lg font-sans">Bài Viết</CardTitle>
-                  <Button onClick={() => setArticleFormDialog({ open: true })}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Viết Bài Mới
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={handleImportSampleData}>
+                      <FolderOpen className="h-4 w-4 mr-2" />
+                      Import Demo
+                    </Button>
+                    <Button onClick={() => setArticleFormDialog({ open: true })}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Viết Bài Mới
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <Tabs value={activeTab} onValueChange={setActiveTab}>
