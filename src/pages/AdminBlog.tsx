@@ -111,51 +111,40 @@ const AdminBlog = () => {
   };
 
   const handleImportSampleData = async () => {
-    if (!confirm("Bạn có muốn import 5 bài viết mẫu không?")) return;
+    if (!confirm("Bạn có muốn import 5 bài viết mẫu vào Nháp không?")) return;
 
     try {
-      // Find ANY existing author_id from database (existing profile)
-      let authorId: string | null = null;
-
-      const { data: anyProfile } = await supabase
-        .from("user_profiles")
-        .select("id")
-        .limit(1)
-        .single();
-
-      if (anyProfile?.id) {
-        authorId = anyProfile.id;
-      } else {
-        toast({
-          title: "Không tìm thấy author",
-          description: "Vui lòng tạo 1 bài viết thủ công trước bằng nút 'Viết Bài Mới', sau đó thử lại Import.",
-          variant: "destructive"
-        });
+      // Get current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        toast({ title: "Vui lòng đăng nhập", variant: "destructive" });
         return;
       }
 
+      // Use current user's ID as author_id (same as auth.uid())
+      const authorId = userData.user.id;
+      const timestamp = Date.now();
       let successCount = 0;
 
       for (const post of SAMPLE_BLOG_POSTS) {
-        const { data: existing } = await supabase
-          .from("blog_articles")
-          .select("id")
-          .eq("slug", post.slug)
-          .single();
+        const newSlug = `${post.slug}-${timestamp}`;
 
-        if (!existing) {
-          const { error } = await supabase.from("blog_articles").insert({
-            title: post.title,
-            slug: post.slug,
-            excerpt: post.excerpt,
-            content: post.content,
-            cover_image_url: post.cover_image_url,
-            status: "draft",
-            author_id: authorId,
-            category_id: null,
-            published_at: null
-          });
-          if (!error) successCount++;
+        const { error } = await supabase.from("blog_articles").insert({
+          title: post.title,
+          slug: newSlug,
+          excerpt: post.excerpt,
+          content: post.content,
+          cover_image_url: post.cover_image_url,
+          status: "draft",
+          author_id: authorId,
+          category_id: null,
+          published_at: null
+        });
+
+        if (error) {
+          console.error("Insert error:", error);
+        } else {
+          successCount++;
         }
       }
 
@@ -163,7 +152,7 @@ const AdminBlog = () => {
         toast({ title: `Đã import ${successCount} bài viết vào mục Nháp` });
         window.location.reload();
       } else {
-        toast({ title: "Các bài viết mẫu đã tồn tại", variant: "default" });
+        toast({ title: "Không thể import. Kiểm tra console.", variant: "destructive" });
       }
 
     } catch (error: any) {
