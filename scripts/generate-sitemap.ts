@@ -9,6 +9,11 @@ interface Wine {
     updated_at: string;
 }
 
+interface BlogArticle {
+    slug: string;
+    updated_at: string;
+}
+
 // Manually load .env file
 const envPath = path.resolve(process.cwd(), ".env");
 if (fs.existsSync(envPath)) {
@@ -39,49 +44,73 @@ async function generateSitemap() {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     try {
-        const { data: wines, error } = await supabase
+        // Fetch wines
+        const { data: wines, error: winesError } = await supabase
             .from("wines")
             .select("id, updated_at");
 
-        if (error) {
-            throw error;
+        if (winesError) {
+            throw winesError;
+        }
+
+        // Fetch published blog articles
+        const { data: articles, error: articlesError } = await supabase
+            .from("blog_articles")
+            .select("slug, updated_at")
+            .eq("status", "published");
+
+        if (articlesError) {
+            console.warn("Warning: Could not fetch blog articles:", articlesError.message);
         }
 
         const baseUrl = "https://selection.com.vn";
-        const pages = [
-            "",
-            "/collection",
-            "/about",
-            "/contact",
-            "/gifts",
-            "/tu-van-ca-nhan",
-            "/tuyen-dung",
-            "/blog",
+        const today = new Date().toISOString().split('T')[0];
+
+        const staticPages = [
+            { path: "", priority: "1.0", changefreq: "daily" },
+            { path: "/collection", priority: "0.9", changefreq: "daily" },
+            { path: "/about", priority: "0.8", changefreq: "monthly" },
+            { path: "/contact", priority: "0.8", changefreq: "monthly" },
+            { path: "/gifts", priority: "0.9", changefreq: "weekly" },
+            { path: "/tu-van-ca-nhan", priority: "0.7", changefreq: "monthly" },
+            { path: "/tuyen-dung", priority: "0.6", changefreq: "monthly" },
+            { path: "/blog", priority: "0.9", changefreq: "daily" },
         ];
 
         const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${pages
-                .map((page) => {
-                    return `
+  <!-- Static Pages -->
+  ${staticPages
+                .map((page) => `
   <url>
-    <loc>${baseUrl}${page}</loc>
-    <changefreq>daily</changefreq>
-    <priority>${page === "" ? "1.0" : "0.8"}</priority>
-  </url>`;
-                })
+    <loc>${baseUrl}${page.path}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`)
                 .join("")}
+
+  <!-- Wine Products -->
   ${wines
-                ?.map((wine: Wine) => {
-                    return `
+                ?.map((wine: Wine) => `
   <url>
     <loc>${baseUrl}/collection/${wine.id}</loc>
-    <lastmod>${new Date(wine.updated_at).toISOString()}</lastmod>
+    <lastmod>${new Date(wine.updated_at).toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`)
+                .join("") || ""}
+
+  <!-- Blog Articles -->
+  ${articles
+                ?.map((article: BlogArticle) => `
+  <url>
+    <loc>${baseUrl}/blog/${article.slug}</loc>
+    <lastmod>${new Date(article.updated_at).toISOString().split('T')[0]}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-  </url>`;
-                })
-                .join("")}
+  </url>`)
+                .join("") || ""}
 </urlset>`;
 
         const publicDir = path.resolve(process.cwd(), "public");
@@ -91,6 +120,9 @@ async function generateSitemap() {
 
         fs.writeFileSync(path.join(publicDir, "sitemap.xml"), sitemap);
         console.log("Sitemap generated successfully at public/sitemap.xml");
+        console.log(`  - ${staticPages.length} static pages`);
+        console.log(`  - ${wines?.length || 0} wine products`);
+        console.log(`  - ${articles?.length || 0} blog articles`);
     } catch (err) {
         console.error("Error generating sitemap:", err);
         process.exit(1);
@@ -98,3 +130,4 @@ async function generateSitemap() {
 }
 
 generateSitemap();
+
