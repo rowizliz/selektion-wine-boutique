@@ -35,18 +35,18 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
     if (isHTML) {
       return (
         <div
-          className="prose prose-lg max-w-none 
+          className="prose prose-lg max-w-none font-sans
             prose-headings:font-serif prose-headings:font-normal prose-headings:text-foreground
             prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pb-3 prose-h2:border-b prose-h2:border-border
             prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-primary
-            prose-p:text-foreground/85 prose-p:leading-[1.85] prose-p:mb-5 prose-p:text-base
+            prose-p:text-foreground prose-p:leading-[1.9] prose-p:mb-6 prose-p:text-[17px]
             prose-a:text-primary prose-a:underline prose-a:underline-offset-2 hover:prose-a:text-primary/80
-            prose-strong:text-foreground prose-strong:font-semibold
+            prose-strong:text-foreground prose-strong:font-bold
             prose-ul:my-6 prose-ul:list-disc prose-ul:pl-6
             prose-ol:my-6 prose-ol:list-decimal prose-ol:pl-6
-            prose-li:text-foreground/85 prose-li:mb-2 prose-li:leading-relaxed
+            prose-li:text-foreground prose-li:mb-3 prose-li:leading-relaxed prose-li:text-[17px]
             prose-table:my-8 prose-table:border-collapse prose-table:w-full
-            prose-th:border prose-th:border-border prose-th:bg-muted prose-th:p-3 prose-th:text-left prose-th:font-medium
+            prose-th:border prose-th:border-border prose-th:bg-muted prose-th:p-3 prose-th:text-left prose-th:font-semibold
             prose-td:border prose-td:border-border prose-td:p-3
             prose-img:rounded-lg prose-img:my-8
             prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-muted-foreground
