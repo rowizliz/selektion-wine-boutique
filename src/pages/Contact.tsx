@@ -43,8 +43,56 @@ const Contact = () => {
   return (
     <>
       <SEO
-        title="Liên Hệ | SÉLECTION Wine - Rượu Vang & Quà Tặng"
-        description="Liên hệ với SÉLECTION. Showroom rượu vang tại Thủ Đức, TP.HCM. Giải đáp thắc mắc, tư vấn đặt hàng và quà tặng doanh nghiệp."
+        title="Liên Hệ | Showroom Rượu Vang Thủ Đức - Selection Wine"
+        description="Liên hệ SÉLECTION Wine tại 127/15 Hoàng Diệu 2, Thủ Đức. Tư vấn rượu vang, đặt hàng, quà tặng doanh nghiệp. Zalo: 0906 777 377. Giao hàng Bình Dương, Biên Hòa."
+        keywords={[
+          "showroom rượu vang thủ đức", "mua rượu vang thủ đức",
+          "địa chỉ rượu vang hcm", "selection wine liên hệ", "đặt rượu vang thủ đức"
+        ]}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "@id": "https://selection.com.vn/#business",
+          "name": "SÉLECTION - Rượu Vang & Quà Tặng",
+          "description": "Showroom rượu vang cao cấp tại Thủ Đức, TP.HCM",
+          "url": "https://selection.com.vn/contact",
+          "telephone": "+84-906-777-377",
+          "priceRange": "$$-$$$",
+          "image": "https://selection.com.vn/og-thumbnail.jpg",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "127/15 Hoàng Diệu 2, Phường Linh Trung",
+            "addressLocality": "Thủ Đức",
+            "addressRegion": "TP. Hồ Chí Minh",
+            "postalCode": "700000",
+            "addressCountry": "VN"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 10.8700,
+            "longitude": 106.7720
+          },
+          "openingHoursSpecification": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+              "opens": "09:00",
+              "closes": "21:00"
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": "Sunday",
+              "opens": "10:00",
+              "closes": "18:00"
+            }
+          ],
+          "areaServed": [
+            { "@type": "City", "name": "Thủ Đức" },
+            { "@type": "City", "name": "Bình Dương" },
+            { "@type": "City", "name": "Biên Hòa" },
+            { "@type": "City", "name": "TP. Hồ Chí Minh" }
+          ]
+        }}
       />
 
       <Header />

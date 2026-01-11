@@ -106,8 +106,13 @@ const Gifts = () => {
   return (
     <>
       <SEO
-        title="Quà Tặng Rượu Vang Doanh Nghiệp & Sinh Nhật | SÉLECTION"
-        description="Bộ sưu tập quà tặng rượu vang cao cấp, set quà tặng doanh nghiệp sang trọng, quà tặng sếp, đối tác tại TP.HCM. Thiết kế hộp quà tinh tế, in logo theo yêu cầu."
+        title="Quà Tặng Rượu Vang Doanh Nghiệp | Set Quà Cao Cấp Thủ Đức"
+        description="Bộ sưu tập quà tặng rượu vang cao cấp cho doanh nghiệp. In logo theo yêu cầu. Giao hàng Thủ Đức, Bình Dương, Biên Hòa. Quà tặng sếp, đối tác sang trọng."
+        keywords={[
+          "quà tặng rượu vang doanh nghiệp", "set quà rượu vang", "quà tặng sếp",
+          "quà tặng đối tác", "quà tết rượu vang", "in logo rượu vang",
+          "hộp quà rượu vang", "quà tặng rượu vang thủ đức"
+        ]}
       />
 
       <Header />

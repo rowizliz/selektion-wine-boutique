@@ -166,18 +166,30 @@ const WineDetail = () => {
 
     return {
       "@context": "https://schema.org",
-      "@type": "Product",
-      name: wine.name,
-      description: wine.description,
-      image: [imageAbs],
-      brand: { "@type": "Brand", name: "SÉLECTION" },
-      offers: {
-        "@type": "Offer",
-        url: canonicalUrl,
-        priceCurrency: "VND",
-        price: priceValue > 0 ? priceValue : undefined,
-        availability: "https://schema.org/InStock",
-      },
+      "@graph": [
+        {
+          "@type": "Product",
+          name: wine.name,
+          description: wine.description,
+          image: [imageAbs],
+          brand: { "@type": "Brand", name: "SÉLECTION" },
+          offers: {
+            "@type": "Offer",
+            url: canonicalUrl,
+            priceCurrency: "VND",
+            price: priceValue > 0 ? priceValue : undefined,
+            availability: "https://schema.org/InStock",
+          },
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Trang Chủ", "item": "https://selection.com.vn" },
+            { "@type": "ListItem", "position": 2, "name": "Bộ Sưu Tập", "item": "https://selection.com.vn/collection" },
+            { "@type": "ListItem", "position": 3, "name": wine.name, "item": canonicalUrl }
+          ]
+        }
+      ]
     };
   }, [wine, canonicalUrl]);
 
@@ -216,12 +228,19 @@ const WineDetail = () => {
   return (
     <>
       <SEO
-        title={wine.name}
-        description={`${wine.name} - ${wine.origin}. ${wine.description.slice(0, 150)}...`}
+        title={`${wine.name} | Rượu Vang ${wine.origin} - Selection Wine`}
+        description={`Mua ${wine.name} - ${wine.origin} tại SÉLECTION Wine Thủ Đức. ${wine.description.slice(0, 100)}. Giao hàng nhanh Thủ Đức, Bình Dương.`}
         image={wine.image}
         url={canonicalUrl}
         type="product"
         schema={productSchema}
+        keywords={[
+          wine.name.toLowerCase(),
+          `rượu vang ${wine.origin.toLowerCase()}`,
+          "rượu vang cao cấp",
+          "rượu vang thủ đức",
+          "mua rượu vang hcm"
+        ]}
       />
 
       <Header />

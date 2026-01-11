@@ -6,8 +6,12 @@ const About = () => {
   return (
     <>
       <SEO
-        title="Về Chúng Tôi | SÉLECTION Wine - Rượu Vang Thủ Đức, TP.HCM"
-        description="Selektion Wine - Địa chỉ rượu vang uy tín tại Thủ Đức, TP.HCM. Chuyên cung cấp các dòng vang Pháp, Ý tuyển lựa kỹ càng. Nơi chia sẻ niềm đam mê rượu vang và văn hóa thưởng thức."
+        title="Về SÉLECTION | Showroom Rượu Vang Uy Tín Thủ Đức"
+        description="SÉLECTION Wine - Đại lý rượu vang cao cấp tại Thủ Đức, TP.HCM. Chuyên cung cấp vang Pháp, Ý tuyển chọn. Phục vụ Thủ Đức, Bình Dương, Biên Hòa. Chia sẻ đam mê văn hóa rượu vang."
+        keywords={[
+          "đại lý rượu vang thủ đức", "cửa hàng rượu vang hcm",
+          "selection wine thủ đức", "rượu vang uy tín", "showroom rượu vang"
+        ]}
       />
 
       <Header />
