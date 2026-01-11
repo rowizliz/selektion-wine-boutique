@@ -150,17 +150,17 @@ const AdminBlog = () => {
             excerpt: post.excerpt,
             content: post.content,
             cover_image_url: post.cover_image_url,
-            status: "published",
+            status: "draft",
             author_id: authorId,
             category_id: null,
-            published_at: new Date().toISOString()
+            published_at: null
           });
           if (!error) successCount++;
         }
       }
 
       if (successCount > 0) {
-        toast({ title: `Đã import thành công ${successCount} bài viết` });
+        toast({ title: `Đã import ${successCount} bài viết vào mục Nháp` });
         window.location.reload();
       } else {
         toast({ title: "Các bài viết mẫu đã tồn tại", variant: "default" });
