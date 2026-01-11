@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -42,13 +42,10 @@ const Contact = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Liên Hệ | SÉLECTION</title>
-        <meta
-          name="description"
-          content="Liên hệ với SÉLECTION. Gửi câu hỏi về rượu vang, đặt hàng hoặc tìm hiểu thêm về bộ sưu tập của chúng tôi."
-        />
-      </Helmet>
+      <SEO
+        title="Liên Hệ | SÉLECTION Wine - Rượu Vang & Quà Tặng"
+        description="Liên hệ với SÉLECTION. Showroom rượu vang tại Thủ Đức, TP.HCM. Giải đáp thắc mắc, tư vấn đặt hàng và quà tặng doanh nghiệp."
+      />
 
       <Header />
       <main className="pt-20 md:pt-24 min-h-screen">
@@ -151,6 +148,20 @@ const Contact = () => {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* Google Map Section */}
+        <section className="w-full h-[400px] md:h-[500px] bg-secondary/20">
+          <iframe
+            title="SÉLECTION Wine Boutique Location"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.420663994346!2d106.76971367484646!3d10.85557475773176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175276634c0de6b%3A0xc31413b567b5e43e!2zMTggxJDGsOG7nW5nIHPhu5EgMiwgS3AgNiwgVGjhu6cgxJDhu6ljLCBI4buTIENow60gTWluaCwgVmlldG5hbQ!5e0!3m2!1sen!2s!4v1709282342834!5m2!1sen!2s"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </section>
       </main>
       <Footer />

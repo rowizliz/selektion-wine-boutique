@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/home/Hero";
@@ -10,13 +10,11 @@ import Newsletter from "@/components/home/Newsletter";
 const Index = () => {
   return (
     <>
-      <Helmet>
-        <title>SÉLECTION | Rượu Vang Hảo Hạng Từ Pháp & Ý</title>
-        <meta 
-          name="description" 
-          content="Khám phá những chai rượu vang đặc biệt từ những vườn nho danh tiếng của Pháp và Ý. Bộ sưu tập rượu vang cao cấp tại TP. Hồ Chí Minh." 
-        />
-      </Helmet>
+      <SEO
+        title="SÉLECTION Wine | Rượu Vang Tuyển Lựa Từ Pháp & Ý (Thủ Đức - HCM)"
+        description="Khám phá thế giới Selection Wine với những chai vang tuyển lựa kỹ càng từ Pháp và Ý. Showroom rượu vang uy tín tại Thủ Đức, TP.HCM. Chuyên quà tặng doanh nghiệp và các dòng vang tuyển chọn."
+        type="website"
+      />
 
       <Header />
       <main>

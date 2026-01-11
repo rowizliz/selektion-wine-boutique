@@ -1,17 +1,14 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
 const About = () => {
   return (
     <>
-      <Helmet>
-        <title>Về Chúng Tôi | SÉLECTION</title>
-        <meta 
-          name="description" 
-          content="Tìm hiểu về SÉLECTION - niềm đam mê tuyển chọn những chai rượu vang đặc biệt từ Pháp và Ý." 
-        />
-      </Helmet>
+      <SEO
+        title="Về Chúng Tôi | SÉLECTION Wine - Rượu Vang Thủ Đức, TP.HCM"
+        description="Selektion Wine - Địa chỉ rượu vang uy tín tại Thủ Đức, TP.HCM. Chuyên cung cấp các dòng vang Pháp, Ý tuyển lựa kỹ càng. Nơi chia sẻ niềm đam mê rượu vang và văn hóa thưởng thức."
+      />
 
       <Header />
       <main className="pt-20 md:pt-24 min-h-screen">
@@ -40,14 +37,14 @@ const About = () => {
                 </h2>
                 <div className="space-y-6 text-muted-foreground leading-relaxed">
                   <p>
-                    Sélection được thành lập với một niềm tin đơn giản nhưng sâu sắc: 
-                    mỗi chai rượu vang đều chứa đựng trong đó một câu chuyện về vùng đất, 
+                    Sélection được thành lập với một niềm tin đơn giản nhưng sâu sắc:
+                    mỗi chai rượu vang đều chứa đựng trong đó một câu chuyện về vùng đất,
                     về người làm rượu và những truyền thống đã định hình nên nó.
                   </p>
                   <p>
-                    Chúng tôi đi qua những vùng rượu nổi tiếng của Pháp và Ý, 
-                    từ những ngọn đồi đầy nắng của Bordeaux đến những vườn nho 
-                    cổ kính của Sardinia, tìm kiếm những nhà sản xuất chia sẻ 
+                    Chúng tôi đi qua những vùng rượu nổi tiếng của Pháp và Ý,
+                    từ những ngọn đồi đầy nắng của Bordeaux đến những vườn nho
+                    cổ kính của Sardinia, tìm kiếm những nhà sản xuất chia sẻ
                     sự cống hiến của chúng tôi cho sự chân thực và xuất sắc.
                   </p>
                 </div>
@@ -58,14 +55,14 @@ const About = () => {
                 </h2>
                 <div className="space-y-6 text-muted-foreground leading-relaxed">
                   <p>
-                    Chúng tôi tin rằng rượu vang tuyệt vời nên dễ tiếp cận. 
-                    Bộ sưu tập của chúng tôi trải dài từ rượu bàn hàng ngày 
-                    đến những chai đặc biệt cho các dịp quan trọng, mỗi chai 
+                    Chúng tôi tin rằng rượu vang tuyệt vời nên dễ tiếp cận.
+                    Bộ sưu tập của chúng tôi trải dài từ rượu bàn hàng ngày
+                    đến những chai đặc biệt cho các dịp quan trọng, mỗi chai
                     được chọn lọc cẩn thận vì tính cách và giá trị của nó.
                   </p>
                   <p>
-                    Dù bạn là người sành rượu hay mới bắt đầu hành trình 
-                    khám phá rượu vang, chúng tôi ở đây để hướng dẫn bạn 
+                    Dù bạn là người sành rượu hay mới bắt đầu hành trình
+                    khám phá rượu vang, chúng tôi ở đây để hướng dẫn bạn
                     tìm đến chai rượu yêu thích tiếp theo.
                   </p>
                 </div>
@@ -100,8 +97,8 @@ const About = () => {
                     description: "Hướng dẫn cá nhân để giúp bạn khám phá những chai rượu phù hợp với sở thích của bạn.",
                   },
                 ].map((value, index) => (
-                  <div 
-                    key={value.title} 
+                  <div
+                    key={value.title}
                     className="text-center opacity-0 animate-slide-up"
                     style={{ animationDelay: `${index * 0.15}s` }}
                   >

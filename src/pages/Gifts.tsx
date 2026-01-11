@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import { Gift, Wine, Sparkles, Phone, CheckCircle, ZoomIn, ZoomOut, RotateCcw, ChevronLeft, ChevronRight, Building, Cake, Loader2 } from "lucide-react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -105,13 +105,10 @@ const Gifts = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Quà Tặng Rượu Vang | SÉLECTION</title>
-        <meta
-          name="description"
-          content="Khám phá bộ sưu tập quà tặng rượu vang cao cấp dành cho doanh nghiệp. Set quà sang trọng, ý nghĩa cho đối tác và khách hàng."
-        />
-      </Helmet>
+      <SEO
+        title="Quà Tặng Rượu Vang Doanh Nghiệp & Sinh Nhật | SÉLECTION"
+        description="Bộ sưu tập quà tặng rượu vang cao cấp, set quà tặng doanh nghiệp sang trọng, quà tặng sếp, đối tác tại TP.HCM. Thiết kế hộp quà tinh tế, in logo theo yêu cầu."
+      />
 
       <Header />
 
@@ -122,22 +119,20 @@ const Gifts = () => {
             <div className="flex items-center justify-center gap-3 sm:gap-4">
               <button
                 onClick={() => setGiftType("corporate")}
-                className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 ${
-                  giftType === "corporate"
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                }`}
+                className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 ${giftType === "corporate"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`}
               >
                 <Building className="w-4 h-4" />
                 <span className="hidden sm:inline">Quà tặng</span> Doanh nghiệp
               </button>
               <button
                 onClick={() => setGiftType("birthday")}
-                className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 ${
-                  giftType === "birthday"
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                }`}
+                className={`flex items-center gap-2 px-5 py-3 rounded-full text-sm font-medium tracking-wide transition-all duration-300 ${giftType === "birthday"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`}
               >
                 <Cake className="w-4 h-4" />
                 <span className="hidden sm:inline">Quà tặng</span> Sinh nhật
@@ -208,77 +203,76 @@ const Gifts = () => {
               </div>
             </section>
 
-        {/* Filter & Grid Section */}
-        <section className="py-12 lg:py-20">
-          <div className="container">
-            {/* Elegant Filter Tabs */}
-            <div className="flex items-center justify-center gap-1 mb-16 p-1.5 bg-secondary/50 rounded-full max-w-lg mx-auto">
-              {categories.map((cat) => (
-                <button
-                  key={cat.value}
-                  onClick={() => setFilter(cat.value)}
-                  className={`relative px-5 py-2.5 text-xs font-medium tracking-wider uppercase rounded-full transition-all duration-300 ${
-                    filter === cat.value
-                      ? "bg-foreground text-background shadow-lg"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
+            {/* Filter & Grid Section */}
+            <section className="py-12 lg:py-20">
+              <div className="container">
+                {/* Elegant Filter Tabs */}
+                <div className="flex items-center justify-center gap-1 mb-16 p-1.5 bg-secondary/50 rounded-full max-w-lg mx-auto">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.value}
+                      onClick={() => setFilter(cat.value)}
+                      className={`relative px-5 py-2.5 text-xs font-medium tracking-wider uppercase rounded-full transition-all duration-300 ${filter === cat.value
+                        ? "bg-foreground text-background shadow-lg"
+                        : "text-muted-foreground hover:text-foreground"
+                        }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
 
-            {/* Gift Sets Grid - 3 columns max for better card size */}
-            {isLoading ? (
-              <div className="flex items-center justify-center py-24">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-6xl mx-auto">
-                {sortedGifts.map((gift, index) => (
-                  <GiftCard
-                    key={gift.id}
-                    gift={gift}
-                    index={index}
-                    onImageClick={(image) => handleImageClick({ ...image, index })}
-                  />
-                ))}
-              </div>
-            )}
+                {/* Gift Sets Grid - 3 columns max for better card size */}
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-24">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 max-w-6xl mx-auto">
+                    {sortedGifts.map((gift, index) => (
+                      <GiftCard
+                        key={gift.id}
+                        gift={gift}
+                        index={index}
+                        onImageClick={(image) => handleImageClick({ ...image, index })}
+                      />
+                    ))}
+                  </div>
+                )}
 
-            {/* Contact CTA */}
-            <div className="mt-16 lg:mt-24 text-center">
-              <div className="relative p-8 lg:p-12 rounded-3xl overflow-hidden border border-border/30">
-                {/* Background pattern */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/40 to-transparent" />
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl" />
-                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl" />
+                {/* Contact CTA */}
+                <div className="mt-16 lg:mt-24 text-center">
+                  <div className="relative p-8 lg:p-12 rounded-3xl overflow-hidden border border-border/30">
+                    {/* Background pattern */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/40 to-transparent" />
+                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl" />
 
-                <div className="relative">
-                  <Gift className="w-10 h-10 text-primary mx-auto mb-4" />
-                  <h3 className="text-xl lg:text-2xl font-serif mb-3">
-                    Đặt hàng số lượng lớn?
-                  </h3>
-                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                    Liên hệ ngay để nhận báo giá ưu đãi và dịch vụ in logo theo
-                    yêu cầu doanh nghiệp
-                  </p>
-                  <a
-                    href="https://zalo.me/0906777377"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-full text-sm font-medium tracking-wider uppercase hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg shadow-primary/25"
-                  >
-                    <Phone className="w-4 h-4" />
-                    Liên hệ tư vấn ngay
-                  </a>
+                    <div className="relative">
+                      <Gift className="w-10 h-10 text-primary mx-auto mb-4" />
+                      <h3 className="text-xl lg:text-2xl font-serif mb-3">
+                        Đặt hàng số lượng lớn?
+                      </h3>
+                      <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                        Liên hệ ngay để nhận báo giá ưu đãi và dịch vụ in logo theo
+                        yêu cầu doanh nghiệp
+                      </p>
+                      <a
+                        href="https://zalo.me/0906777377"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-full text-sm font-medium tracking-wider uppercase hover:from-primary/90 hover:to-primary/70 transition-all duration-300 shadow-lg shadow-primary/25"
+                      >
+                        <Phone className="w-4 h-4" />
+                        Liên hệ tư vấn ngay
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            </div>
-          </section>
-        </>
-      )}
+            </section>
+          </>
+        )}
       </main>
 
       <Footer />
@@ -298,7 +292,7 @@ const Gifts = () => {
                 {selectedImage ? selectedImage.index + 1 : 0} / {sortedGifts.length}
               </span>
             </div>
-            
+
             {/* Zoom controls row - Centered on mobile */}
             <div className="flex items-center justify-center sm:justify-end gap-2">
               {/* Zoom Out Button */}
@@ -439,7 +433,7 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
     >
       {/* Card Container with elegant border */}
       <div className="relative h-full bg-card rounded-xl overflow-hidden border border-border/40 hover:border-primary/20 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 flex flex-col">
-        
+
         {/* Image Section */}
         <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
           <button
@@ -452,15 +446,15 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
               alt={gift.name}
               className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-1000 ease-out"
             />
-            
+
             {/* Elegant gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
-            
+
             {/* Shimmer effect on hover */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
             </div>
-            
+
             {/* Zoom indicator */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100 p-4 rounded-full bg-white/90 backdrop-blur-sm shadow-xl">
@@ -468,14 +462,14 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
               </div>
             </div>
           </button>
-          
+
           {/* Category Badge - Top Left */}
           <div className="absolute top-3 left-3 pointer-events-none">
             <span className={`px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-wider uppercase border backdrop-blur-sm ${styles.badge}`}>
               {categoryLabel[gift.category] || gift.category}
             </span>
           </div>
-          
+
           {/* Price - Bottom of image, elegant overlay */}
           <div className="absolute bottom-0 inset-x-0 p-4 pointer-events-none">
             <div className="flex items-end justify-between">
@@ -530,7 +524,7 @@ const GiftCard = ({ gift, index, onImageClick }: GiftCardProps) => {
             <span className="relative z-10">Đặt hàng ngay</span>
           </a>
         </div>
-        
+
         {/* Decorative corner accent for luxury items */}
         {gift.category === "luxury" && (
           <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none overflow-hidden">

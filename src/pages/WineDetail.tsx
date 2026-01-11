@@ -1,5 +1,5 @@
-import { Helmet } from "react-helmet-async";
 import { useMemo, useRef, useState } from "react";
+import SEO from "@/components/SEO";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -215,17 +215,14 @@ const WineDetail = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{wine.name} | SÉLECTION</title>
-        <link rel="canonical" href={canonicalUrl} />
-        <meta
-          name="description"
-          content={`${wine.name} - ${wine.origin}. ${wine.description.slice(0, 150)}...`}
-        />
-        {productSchema && (
-          <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
-        )}
-      </Helmet>
+      <SEO
+        title={wine.name}
+        description={`${wine.name} - ${wine.origin}. ${wine.description.slice(0, 150)}...`}
+        image={wine.image}
+        url={canonicalUrl}
+        type="product"
+        schema={productSchema}
+      />
 
       <Header />
       <main className="pt-20 md:pt-24 min-h-screen">

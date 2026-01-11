@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import SEO from "@/components/SEO";
 import { useMemo, useState, useEffect } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -83,19 +83,12 @@ const Collection = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Bộ Sưu Tập Rượu Vang | SÉLECTION</title>
-        <link rel="canonical" href={canonicalUrl} />
-        <meta
-          name="description"
-          content="Khám phá bộ sưu tập hơn 25 loại rượu vang hảo hạng từ Pháp, Ý, Chile và Mỹ. Rượu vang đỏ, trắng và sủi bọt cao cấp."
-        />
-        {itemListSchema && (
-          <script type="application/ld+json">
-            {JSON.stringify(itemListSchema)}
-          </script>
-        )}
-      </Helmet>
+      <SEO
+        title="Bộ Sưu Tập Rượu Vang"
+        description="Khám phá bộ sưu tập hơn 25 loại rượu vang hảo hạng từ Pháp, Ý, Chile và Mỹ. Rượu vang đỏ, trắng và sủi bọt cao cấp."
+        url={canonicalUrl}
+        schema={itemListSchema}
+      />
 
       <Header />
       <main className="pt-20 md:pt-24 min-h-screen">
@@ -153,10 +146,10 @@ const Collection = () => {
                     <div
                       key={wine.id}
                       className={`opacity-0 animate-slide-up transition-all duration-500 ease-out group relative ${hasHover && !isHovered
-                          ? 'lg:opacity-[0.15] lg:blur-[2px] lg:scale-[0.98]'
-                          : isHovered
-                            ? 'lg:opacity-100 lg:scale-[1.02] lg:z-10'
-                            : ''
+                        ? 'lg:opacity-[0.15] lg:blur-[2px] lg:scale-[0.98]'
+                        : isHovered
+                          ? 'lg:opacity-100 lg:scale-[1.02] lg:z-10'
+                          : ''
                         }`}
                       style={{
                         animationDelay: `${Math.min(index * 0.05, 0.5)}s`,
