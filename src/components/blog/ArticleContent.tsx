@@ -27,10 +27,31 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
     isBlockContent = false;
   }
 
-  // Render plain text content
+  // Render plain text or HTML content
   if (!isBlockContent) {
+    // Check if content looks like HTML (starts with < or contains common HTML tags)
+    const isHTML = content.trim().startsWith('<') || /<[a-z][\s\S]*>/i.test(content);
+
+    if (isHTML) {
+      return (
+        <div
+          className="prose prose-lg max-w-none 
+            prose-headings:font-serif prose-headings:font-normal
+            prose-p:text-foreground/90 prose-p:leading-relaxed
+            prose-a:text-foreground prose-a:underline
+            prose-strong:text-foreground prose-strong:font-medium
+            prose-img:rounded-none
+            prose-ul:list-disc prose-ol:list-decimal
+            prose-li:text-foreground/90
+            prose-table:border-collapse prose-th:border prose-th:p-2 prose-td:border prose-td:p-2
+            dark:prose-invert"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      );
+    }
+
     return (
-      <div 
+      <div
         className="prose prose-lg max-w-none 
           prose-headings:font-serif prose-headings:font-normal
           prose-p:text-foreground/90 prose-p:leading-relaxed
@@ -51,7 +72,7 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
       {blocks.map((block, index) => {
         if (block.type === "text") {
           return (
-            <div 
+            <div
               key={index}
               className="prose prose-lg max-w-none 
                 prose-headings:font-serif prose-headings:font-normal
