@@ -1,17 +1,15 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { useBlogArticles } from "@/hooks/useBlogArticles";
-import BlogArticleCard from "@/components/blog/BlogArticleCard";
+import { SAMPLE_BLOG_POSTS } from "@/data/sample-blogs";
 import { Button } from "@/components/ui/button";
 
 const LatestBlogPosts = () => {
-    // Fetch latest 3 published articles
-    const { data: articles, isLoading } = useBlogArticles(undefined, 3);
-
-    // If loading or no articles, don't show section yet to avoid empty space or layout shift
-    if (isLoading || !articles || articles.length === 0) {
-        return null;
-    }
+    // Use first 3 static blog posts
+    const articles = SAMPLE_BLOG_POSTS.slice(0, 3).map((post, index) => ({
+        id: `static-${index}`,
+        ...post,
+        author: { display_name: "SÉLECTION Wine" },
+    }));
 
     return (
         <section className="py-20 bg-muted/30">
@@ -37,7 +35,34 @@ const LatestBlogPosts = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {articles.map((article) => (
-                        <BlogArticleCard key={article.id} article={article} />
+                        <Link
+                            key={article.id}
+                            to={`/blog/${article.slug}`}
+                            className="group block"
+                        >
+                            <article className="relative overflow-hidden aspect-[4/3] rounded-lg">
+                                <div className="absolute inset-0 bg-muted">
+                                    {article.cover_image_url ? (
+                                        <img
+                                            src={article.cover_image_url}
+                                            alt={article.title}
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full bg-gradient-to-br from-muted to-muted-foreground/10" />
+                                    )}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
+                                </div>
+                                <div className="absolute inset-0 flex flex-col justify-end p-6">
+                                    <h3 className="font-serif text-background mb-2 text-xl line-clamp-2 group-hover:underline underline-offset-4">
+                                        {article.title}
+                                    </h3>
+                                    <p className="text-background/70 text-sm line-clamp-2">
+                                        {article.excerpt}
+                                    </p>
+                                </div>
+                            </article>
+                        </Link>
                     ))}
                 </div>
 

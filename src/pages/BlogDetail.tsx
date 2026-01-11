@@ -1,50 +1,45 @@
 import { useParams, Link } from "react-router-dom";
-
-import { ArrowLeft, Eye, Calendar, User } from "lucide-react";
+import { ArrowLeft, Eye, Calendar, User, Heart } from "lucide-react";
 import SEO from "@/components/SEO";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import BlogLikeButton from "@/components/blog/BlogLikeButton";
-import BlogComments from "@/components/blog/BlogComments";
 import ArticleContent from "@/components/blog/ArticleContent";
-import { useBlogArticle } from "@/hooks/useBlogArticles";
+import { SAMPLE_BLOG_POSTS } from "@/data/sample-blogs";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const BlogDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { data: article, isLoading, error } = useBlogArticle(slug || "");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(Math.floor(Math.random() * 50) + 10);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session?.user);
-    });
+  // Find article from static data
+  const article = useMemo(() => {
+    const found = SAMPLE_BLOG_POSTS.find((post) => post.slug === slug);
+    if (!found) return null;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      setIsAuthenticated(!!session?.user);
-    });
+    return {
+      ...found,
+      id: `static-${slug}`,
+      author: { display_name: "SÉLECTION Wine", avatar_url: null },
+      category: null,
+      published_at: new Date().toISOString(),
+      view_count: Math.floor(Math.random() * 500) + 100,
+    };
+  }, [slug]);
 
-    return () => subscription.unsubscribe();
-  }, []);
+  const handleLike = () => {
+    if (liked) {
+      setLikeCount((prev) => prev - 1);
+    } else {
+      setLikeCount((prev) => prev + 1);
+    }
+    setLiked(!liked);
+  };
 
-  if (isLoading) {
-    return (
-      <>
-        <Header />
-        <main className="min-h-screen pt-20 lg:pt-24">
-          <div className="container mx-auto px-4 py-12 text-center text-muted-foreground">
-            Đang tải bài viết...
-          </div>
-        </main>
-        <Footer />
-      </>
-    );
-  }
-
-  if (error || !article) {
+  if (!article) {
     return (
       <>
         <Header />
@@ -74,7 +69,6 @@ const BlogDetail = () => {
           "headline": article.title,
           "image": article.cover_image_url ? [article.cover_image_url] : [],
           "datePublished": article.published_at,
-          "dateModified": article.updated_at,
           "author": {
             "@type": "Person",
             "name": article.author?.display_name || "SÉLECTION Wine"
@@ -109,7 +103,7 @@ const BlogDetail = () => {
         {/* Content */}
         <article className="container mx-auto px-4 py-12 lg:py-16">
           <div className="max-w-3xl mx-auto">
-            {/* Back link & Category */}
+            {/* Back link */}
             <div className="flex items-center gap-4 mb-8">
               <Link
                 to="/blog"
@@ -118,11 +112,6 @@ const BlogDetail = () => {
               >
                 <ArrowLeft className="h-5 w-5" />
               </Link>
-              {article.category && (
-                <span className="px-3 py-1 text-xs font-sans tracking-widest uppercase bg-muted text-foreground">
-                  {article.category.name}
-                </span>
-              )}
             </div>
 
             {/* Title */}
@@ -132,28 +121,16 @@ const BlogDetail = () => {
 
             {/* Meta */}
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-8 pb-8 border-b border-border">
-              {article.author?.display_name && (
-                <div className="flex items-center gap-2">
-                  {article.author.avatar_url ? (
-                    <img
-                      src={article.author.avatar_url}
-                      alt={article.author.display_name}
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                  ) : (
-                    <User className="h-4 w-4" />
-                  )}
-                  <span>{article.author.display_name}</span>
-                </div>
-              )}
-              {article.published_at && (
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>
-                    {format(new Date(article.published_at), "dd MMMM yyyy", { locale: vi })}
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                <span>{article.author?.display_name}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span>
+                  {format(new Date(article.published_at), "dd MMMM yyyy", { locale: vi })}
+                </span>
+              </div>
               <div className="flex items-center gap-2">
                 <Eye className="h-4 w-4" />
                 <span>{article.view_count} lượt xem</span>
@@ -172,12 +149,46 @@ const BlogDetail = () => {
 
             {/* Like Button */}
             <div className="mt-12 pt-8 border-t border-border flex justify-center">
-              <BlogLikeButton articleId={article.id} />
+              <Button
+                variant={liked ? "default" : "outline"}
+                onClick={handleLike}
+                className="flex items-center gap-2"
+              >
+                <Heart className={`h-5 w-5 ${liked ? "fill-current" : ""}`} />
+                <span>{likeCount} Yêu thích</span>
+              </Button>
             </div>
 
-            {/* Comments */}
+            {/* Share & Related */}
             <div className="mt-12 pt-8 border-t border-border">
-              <BlogComments articleId={article.id} isAuthenticated={isAuthenticated} />
+              <h3 className="text-xl font-serif mb-6">Bài viết liên quan</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {SAMPLE_BLOG_POSTS.filter((p) => p.slug !== slug)
+                  .slice(0, 2)
+                  .map((post) => (
+                    <Link
+                      key={post.slug}
+                      to={`/blog/${post.slug}`}
+                      className="group flex gap-4 p-4 border border-border rounded-lg hover:border-foreground transition-colors"
+                    >
+                      {post.cover_image_url && (
+                        <img
+                          src={post.cover_image_url}
+                          alt={post.title}
+                          className="w-24 h-24 object-cover rounded"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-serif text-sm group-hover:underline line-clamp-2">
+                          {post.title}
+                        </h4>
+                        <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                          {post.excerpt}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+              </div>
             </div>
           </div>
         </article>
