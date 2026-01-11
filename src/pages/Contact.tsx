@@ -154,7 +154,7 @@ const Contact = () => {
         <section className="w-full h-[400px] md:h-[500px] bg-secondary/20">
           <iframe
             title="SÉLECTION Wine Boutique Location"
-            src="https://maps.google.com/maps?q=127%2F15%20Ho%C3%A0ng%20Di%E1%BB%87u%202%2C%20Linh%20Trung%2C%20Th%E1%BB%A7%20%C4%90%E1%BB%A9c%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            src="https://maps.google.com/maps?q=S%C3%A9lection%20%7C%20R%C6%B0%E1%BB%A3u%20Vang%20%26%20Qu%C3%A0%20T%E1%BA%B7ng%20127%2F15%20Ho%C3%A0ng%20Di%E1%BB%87u%202&t=&z=15&ie=UTF8&iwloc=&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0 }}
