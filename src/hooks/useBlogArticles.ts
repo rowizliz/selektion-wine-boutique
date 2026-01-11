@@ -152,17 +152,13 @@ export const useAllArticles = () => {
         .from("blog_articles")
         .select(`
           *,
+          author:user_profiles!blog_articles_author_id_fkey(id, display_name, avatar_url),
           category:blog_categories!blog_articles_category_id_fkey(id, name, slug)
         `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-
-      // Map data to include author as null (bypasses RLS on user_profiles)
-      return (data || []).map(article => ({
-        ...article,
-        author: null
-      })) as BlogArticle[];
+      return data as BlogArticle[];
     },
   });
 };
