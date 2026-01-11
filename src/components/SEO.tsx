@@ -13,16 +13,25 @@ interface SEOProps {
 
 const SEO = ({
     title,
-    description = "Khám phá bộ sưu tập rượu vang cao cấp từ Pháp và Ý. Sélection - Nơi hội tụ những chai vang tuyệt hảo và quà tặng sang trọng tại TP. Hồ Chí Minh.",
+    description = "Showroom rượu vang cao cấp tại Thủ Đức, TP.HCM. Rượu vang tuyển chọn từ Pháp, Ý nhập khẩu chính hãng. Giao hàng nhanh Thủ Đức, Bình Dương, Biên Hòa. Quà tặng doanh nghiệp sang trọng.",
     image = "https://selection.com.vn/og-thumbnail.jpg",
     url,
     type = "website",
     schema,
     keywords = [
-        "selection wine", "shop selection wine", "rượu vang selection",
-        "rượu vang", "vang pháp", "vang ý", "rượu vang thủ đức",
-        "rượu vang hồ chí minh", "quà tặng rượu vang", "quà tặng doanh nghiệp",
-        "vang chát", "vang ngọt", "cửa hàng rượu vang"
+        // Brand keywords
+        "selection wine", "shop selection wine", "rượu vang selection", "sélection wine", "selection wine vietnam",
+        // Địa phương - ưu tiên cao
+        "rượu vang thủ đức", "rượu vang bình dương", "rượu vang biên hòa",
+        "rượu vang hồ chí minh", "showroom rượu vang thủ đức", "cửa hàng rượu vang thủ đức",
+        "mua rượu vang thủ đức", "đại lý rượu vang bình dương", "rượu vang quận thủ đức",
+        // Loại sản phẩm
+        "rượu vang cao cấp", "rượu vang tuyển chọn", "rượu vang tuyển lựa",
+        "vang pháp", "vang ý", "vang chile", "vang đỏ", "vang trắng", "vang sủi bọt",
+        "vang chát", "vang ngọt", "rượu vang nhập khẩu", "rượu vang chính hãng", "rượu vang ngon",
+        // Dịch vụ
+        "quà tặng rượu vang", "quà tặng doanh nghiệp", "quà tặng sếp",
+        "quà tặng đối tác", "quà tết rượu vang", "hộp quà rượu vang"
     ],
     author = "Sélection",
 }: SEOProps) => {

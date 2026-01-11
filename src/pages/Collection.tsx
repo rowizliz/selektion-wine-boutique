@@ -84,10 +84,15 @@ const Collection = () => {
   return (
     <>
       <SEO
-        title="Bộ Sưu Tập Rượu Vang"
-        description="Khám phá bộ sưu tập hơn 25 loại rượu vang hảo hạng từ Pháp, Ý, Chile và Mỹ. Rượu vang đỏ, trắng và sủi bọt cao cấp."
+        title="Bộ Sưu Tập Rượu Vang Cao Cấp | Vang Pháp, Ý Tuyển Chọn"
+        description="Khám phá hơn 25 loại rượu vang cao cấp tuyển chọn từ Pháp, Ý, Chile. Rượu vang đỏ, trắng, sủi bọt nhập khẩu chính hãng. Giao hàng nhanh Thủ Đức, Bình Dương, Biên Hòa."
         url={canonicalUrl}
         schema={itemListSchema}
+        keywords={[
+          "rượu vang cao cấp", "rượu vang tuyển chọn", "vang pháp nhập khẩu",
+          "vang ý chính hãng", "rượu vang selection", "bộ sưu tập rượu vang",
+          "rượu vang thủ đức", "mua rượu vang hcm"
+        ]}
       />
 
       <Header />
