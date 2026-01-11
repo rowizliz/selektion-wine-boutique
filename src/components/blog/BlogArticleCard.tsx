@@ -23,7 +23,7 @@ const BlogArticleCard = ({ article, variant = "default" }: BlogArticleCardProps)
           {article.cover_image_url ? (
             <img
               src={article.cover_image_url}
-              alt={article.title}
+              alt={`${article.title} - Kiến thức rượu vang Selection Wine`}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           ) : (
@@ -44,9 +44,8 @@ const BlogArticleCard = ({ article, variant = "default" }: BlogArticleCardProps)
 
           {/* Title */}
           <h2
-            className={`font-serif text-background mb-2 line-clamp-2 group-hover:underline underline-offset-4 ${
-              isFeatured ? "text-3xl lg:text-4xl" : "text-xl lg:text-2xl"
-            }`}
+            className={`font-serif text-background mb-2 line-clamp-2 group-hover:underline underline-offset-4 ${isFeatured ? "text-3xl lg:text-4xl" : "text-xl lg:text-2xl"
+              }`}
           >
             {article.title}
           </h2>

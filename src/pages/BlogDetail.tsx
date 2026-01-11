@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+
 import { ArrowLeft, Eye, Calendar, User } from "lucide-react";
+import SEO from "@/components/SEO";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BlogLikeButton from "@/components/blog/BlogLikeButton";
@@ -62,16 +63,33 @@ const BlogDetail = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{article.title} | SÉLECTION Blog</title>
-        <meta name="description" content={article.excerpt || article.title} />
-        <meta property="og:title" content={article.title} />
-        <meta property="og:description" content={article.excerpt || article.title} />
-        {article.cover_image_url && (
-          <meta property="og:image" content={article.cover_image_url} />
-        )}
-        <meta property="og:type" content="article" />
-      </Helmet>
+      <SEO
+        title={`${article.title} | SÉLECTION Blog`}
+        description={article.excerpt || article.title}
+        image={article.cover_image_url || undefined}
+        type="article"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": article.title,
+          "image": article.cover_image_url ? [article.cover_image_url] : [],
+          "datePublished": article.published_at,
+          "dateModified": article.updated_at,
+          "author": {
+            "@type": "Person",
+            "name": article.author?.display_name || "SÉLECTION Wine"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "SÉLECTION Wine Boutique",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://selection.com.vn/favicon.png"
+            }
+          },
+          "description": article.excerpt || article.title
+        }}
+      />
 
       <Header />
 
