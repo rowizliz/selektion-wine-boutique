@@ -69,7 +69,7 @@ const Contact = () => {
                       <h3 className="text-xs font-sans tracking-widest uppercase mb-3">Địa Chỉ</h3>
                       <p className="text-muted-foreground">
                         127/15 Hoàng Diệu 2<br />
-                        Linh Xuân, Thủ Đức
+                        Phường Linh Trung, Thủ Đức
                         <br />
                         TP. Hồ Chí Minh
                       </p>
@@ -154,7 +154,7 @@ const Contact = () => {
         <section className="w-full h-[400px] md:h-[500px] bg-secondary/20">
           <iframe
             title="SÉLECTION Wine Boutique Location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.420663994346!2d106.76971367484646!3d10.85557475773176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175276634c0de6b%3A0xc31413b567b5e43e!2zMTggxJDGsOG7nW5nIHPhu5EgMiwgS3AgNiwgVGjhu6cgxJDhu6ljLCBI4buTIENow60gTWluaCwgVmlldG5hbQ!5e0!3m2!1sen!2s!4v1709282342834!5m2!1sen!2s"
+            src="https://maps.google.com/maps?q=127%2F15%20Ho%C3%A0ng%20Di%E1%BB%87u%202%2C%20Linh%20Trung%2C%20Th%E1%BB%A7%20%C4%90%E1%BB%A9c%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh&t=&z=15&ie=UTF8&iwloc=&output=embed"
             width="100%"
             height="100%"
             style={{ border: 0 }}
