@@ -225,5 +225,361 @@ export const SAMPLE_BLOG_POSTS = [
         status: "published" as const,
         cover_image_url: "https://images.unsplash.com/photo-1559563362-c667ba5f5480?q=80&w=2601&auto=format&fit=crop",
         view_count: 0
+    },
+    {
+        title: "Hướng Dẫn Xây Dựng Hầm Rượu Tại Gia Hoàn Hảo",
+        slug: "huong-dan-xay-dung-ham-ruou-tai-gia-hoan-hao",
+        excerpt: "Bí quyết thiết kế và xây dựng hầm rượu vang tại nhà chuẩn chuyên nghiệp. Từ nhiệt độ, độ ẩm đến cách sắp xếp chai rượu đúng cách để bảo quản rượu vang lâu dài.",
+        content: `<div class="blog-content">
+        <h2>Tại Sao Cần Có Hầm Rượu Riêng?</h2>
+        <p>Với những người đam mê <strong>rượu vang</strong>, việc sở hữu một bộ sưu tập rượu quý là niềm tự hào lớn. Tuy nhiên, rượu vang là thức uống nhạy cảm với môi trường - chỉ một sai lầm nhỏ trong bảo quản có thể phá hủy chai vang đắt tiền. Vì vậy, <strong>hầm rượu tại gia</strong> là giải pháp hoàn hảo.</p>
+
+        <h2>1. Điều Kiện Môi Trường Lý Tưởng</h2>
+        <h3>Nhiệt Độ</h3>
+        <ul>
+            <li><strong>Lý tưởng:</strong> 12-14°C cho bảo quản dài hạn.</li>
+            <li><strong>Tuyệt đối tránh:</strong> Biến động nhiệt đột ngột (hơn 5°C/ngày).</li>
+            <li><strong>Lưu ý:</strong> Nhiệt cao làm rượu "chín" nhanh, mất cân bằng hương vị.</li>
+        </ul>
+
+        <h3>Độ Ẩm</h3>
+        <ul>
+            <li><strong>Lý tưởng:</strong> 60-75%.</li>
+            <li><strong>Quá thấp:</strong> Nút bần khô, co lại, không khí xâm nhập.</li>
+            <li><strong>Quá cao:</strong> Nấm mốc phát triển, hại nhãn chai.</li>
+        </ul>
+
+        <h2>2. Thiết Kế Không Gian Hầm Rượu</h2>
+        <h3>Vị Trí Đặt Hầm</h3>
+        <ul>
+            <li><strong>Tầng hầm:</strong> Lý tưởng nhất vì nhiệt độ ổn định tự nhiên.</li>
+            <li><strong>Góc nhà mát:</strong> Tránh cửa sổ, hướng Tây.</li>
+            <li><strong>Tránh:</strong> Gần bếp, máy giặt, nơi có rung động.</li>
+        </ul>
+
+        <h3>Vật Liệu Xây Dựng</h3>
+        <ul>
+            <li><strong>Tường:</strong> Gạch, đá tự nhiên (giữ nhiệt tốt).</li>
+            <li><strong>Kệ:</strong> Gỗ sồi, gỗ redwood (chống mối mọt, thẩm mỹ cao).</li>
+            <li><strong>Sàn:</strong> Đá, gạch ceramic (dễ vệ sinh, giữ mát).</li>
+        </ul>
+
+        <h2>3. Hệ Thống Làm Mát & Điều Hòa</h2>
+        <p>Đầu tư một máy điều hòa chuyên dụng cho hầm rượu là cần thiết. Các thương hiệu như WhisperKool, CellarPro được tin dùng. Đặc điểm:</p>
+        <ul>
+            <li>Hoạt động êm, ít rung.</li>
+            <li>Duy trì nhiệt độ, độ ẩm ổn định.</li>
+            <li>Tiết kiệm điện so với điều hòa thông thường.</li>
+        </ul>
+
+        <h2>4. Cách Sắp Xếp Chai Rượu</h2>
+        <ul>
+            <li><strong>Nằm ngang:</strong> Giữ nút bần luôn ẩm.</li>
+            <li><strong>Phân loại:</strong> Theo vùng miền, giống nho, năm sản xuất.</li>
+            <li><strong>Rượu uống sớm:</strong> Đặt ở vị trí dễ lấy.</li>
+            <li><strong>Rượu sưu tầm:</strong> Đặt sâu, ít di chuyển.</li>
+        </ul>
+
+        <h2>Mua Rượu Vang Để Sưu Tầm Ở Đâu?</h2>
+        <p><strong>Selection Wine Boutique</strong> tại Thủ Đức cung cấp rượu vang cao cấp cho người sưu tầm:</p>
+        <ul>
+            <li>Grand Cru Bordeaux, Burgundy.</li>
+            <li>Barolo, Amarone từ Ý.</li>
+            <li>Vintage cũ có giá trị lão hóa tốt.</li>
+        </ul>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/wine_cellar_storage_1768166718635.png",
+        view_count: 0
+    },
+    {
+        title: "Nghệ Thuật Kết Hợp Rượu Vang Và Ẩm Thực Việt Nam",
+        slug: "nghe-thuat-ket-hop-ruou-vang-va-am-thuc-viet-nam",
+        excerpt: "Khám phá cách kết hợp rượu vang với các món ăn Việt Nam từ phở, bún chả đến hải sản. Bí quyết food pairing từ chuyên gia để nâng tầm trải nghiệm ẩm thực.",
+        content: `<div class="blog-content">
+        <h2>Rượu Vang Có Hợp Món Việt Không?</h2>
+        <p>Nhiều người nghĩ <strong>rượu vang</strong> chỉ dành cho ẩm thực phương Tây. Thực tế, với sự tinh tế trong lựa chọn, rượu vang hoàn toàn có thể nâng tầm trải nghiệm <strong>ẩm thực Việt Nam</strong>. Bí quyết nằm ở việc cân bằng hương vị.</p>
+
+        <h2>1. Nguyên Tắc Vàng Khi Ghép Rượu - Món Việt</h2>
+        <h3>Cân Bằng Độ Chua</h3>
+        <p>Món Việt thường có vị chua (chanh, me, giấm). Chọn rượu có acid tương đương hoặc cao hơn.</p>
+
+        <h3>Chú Ý Vị Cay</h3>
+        <p>Ớt làm tăng cảm nhận cồn và chát. Cần chọn rượu có độ cồn thấp, vị ngọt nhẹ.</p>
+
+        <h3>Hương Liệu Thảo Mộc</h3>
+        <p>Rau thơm, sả, gừng cần rượu có hương floral hoặc herbal để hòa quyện.</p>
+
+        <h2>2. Gợi Ý Ghép Rượu Với Món Việt Cụ Thể</h2>
+        <h3>Phở Bò</h3>
+        <ul>
+            <li><strong>Gợi ý:</strong> Pinot Noir nhẹ (Burgundy, Oregon).</li>
+            <li><strong>Lý do:</strong> Hương cherry, nấm bổ sung nước dùng đậm đà. Tannin mềm không lấn át thịt bò.</li>
+        </ul>
+
+        <h3>Bún Chả Hà Nội</h3>
+        <ul>
+            <li><strong>Gợi ý:</strong> Beaujolais (Gamay), Rosé khô.</li>
+            <li><strong>Lý do:</strong> Vị trái cây tươi cân bằng thịt nướng mỡ, nước mắm pha.</li>
+        </ul>
+
+        <h3>Chả Giò / Nem Rán</h3>
+        <ul>
+            <li><strong>Gợi ý:</strong> Champagne, Crémant, Prosecco.</li>
+            <li><strong>Lý do:</strong> Bọt khí cắt dầu mỡ, tạo cảm giác sảng khoái.</li>
+        </ul>
+
+        <h3>Hải Sản (Tôm, Cua, Nghêu)</h3>
+        <ul>
+            <li><strong>Gợi ý:</strong> Sauvignon Blanc, Albariño, Muscadet.</li>
+            <li><strong>Lý do:</strong> Acid cao, khoáng chất, hương chanh tăng vị tươi ngon.</li>
+        </ul>
+
+        <h3>Cà Ri Gà / Bò Kho</h3>
+        <ul>
+            <li><strong>Gợi ý:</strong> Gewürztraminer, Riesling bán ngọt.</li>
+            <li><strong>Lý do:</strong> Vị ngọt dịu làm dịu gia vị, hương lychee, hoa hồng hòa quyện.</li>
+        </ul>
+
+        <h2>3. Những Sai Lầm Cần Tránh</h2>
+        <ul>
+            <li><strong>Cabernet Sauvignon đậm với hải sản:</strong> Tannin cao gây vị kim loại khó chịu.</li>
+            <li><strong>Rượu chát với món cay:</strong> Chát + cay = nóng rát, mất ngon.</li>
+            <li><strong>Rượu ngọt với món mặn:</strong> Vị ngọt bị lấn át, mất cân bằng.</li>
+        </ul>
+
+        <h2>Trải Nghiệm Wine Pairing Tại Selection Wine</h2>
+        <p>Ghé <strong>Selection Wine Thủ Đức</strong> để được tư vấn chi tiết về ghép rượu - món Việt phù hợp. Chúng tôi có đội ngũ am hiểu cả rượu vang và ẩm thực địa phương để hướng dẫn bạn.</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/wine_food_pairing_1768166735721.png",
+        view_count: 0
+    },
+    {
+        title: "Khám Phá Vương Quốc Rượu Vang Ý: Từ Tuscany Đến Piedmont",
+        slug: "kham-pha-vuong-quoc-ruou-vang-y-tuscany-piedmont",
+        excerpt: "Tour du lịch rượu vang Ý qua những vùng nổi tiếng: Tuscany với Chianti, Piedmont với Barolo, Veneto với Amarone. Tìm hiểu giống nho, phong cách và cách thưởng thức.",
+        content: `<div class="blog-content">
+        <h2>Tại Sao Rượu Vang Ý Đặc Biệt?</h2>
+        <p><strong>Rượu vang Ý</strong> nổi tiếng với sự đa dạng không đâu sánh được. Với hơn 350 giống nho bản địa và 20 vùng sản xuất rượu, Ý là thiên đường cho những ai muốn khám phá thế giới rượu vang phong phú.</p>
+
+        <h2>1. Tuscany - Trái Tim Rượu Vang Ý</h2>
+        <h3>Chianti</h3>
+        <ul>
+            <li><strong>Giống nho:</strong> Sangiovese.</li>
+            <li><strong>Đặc điểm:</strong> Cherry, mận khô, thảo mộc. Acid cao, tannin vừa.</li>
+            <li><strong>Kết hợp:</strong> Pizza, pasta đỏ, thịt nướng.</li>
+        </ul>
+
+        <h3>Brunello di Montalcino</h3>
+        <ul>
+            <li><strong>Giống nho:</strong> 100% Sangiovese Grosso.</li>
+            <li><strong>Đặc điểm:</strong> Đậm đà, phức tạp, khả năng lão hóa 20-30 năm.</li>
+            <li><strong>Kết hợp:</strong> Thịt bò nướng, thịt cừu.</li>
+        </ul>
+
+        <h3>Super Tuscan</h3>
+        <p>Dòng rượu "nổi loạn" pha trộn Sangiovese với Cabernet Sauvignon, Merlot. Nổi tiếng: Sassicaia, Ornellaia, Tignanello.</p>
+
+        <h2>2. Piedmont - Vùng Đất Vua Chúa</h2>
+        <h3>Barolo</h3>
+        <ul>
+            <li><strong>Giống nho:</strong> Nebbiolo.</li>
+            <li><strong>Biệt danh:</strong> "Vua của rượu vang, rượu vang của Vua".</li>
+            <li><strong>Đặc điểm:</strong> Hương hoa hồng, tar, truffle. Tannin mạnh, cần lão hóa dài.</li>
+            <li><strong>Kết hợp:</strong> Risotto truffle, thịt bê, phô mai aged.</li>
+        </ul>
+
+        <h3>Barbaresco</h3>
+        <ul>
+            <li><strong>Giống nho:</strong> Nebbiolo.</li>
+            <li><strong>Đặc điểm:</strong> "Em gái" của Barolo - mềm mại hơn, uống sớm hơn.</li>
+        </ul>
+
+        <h2>3. Veneto - Xứ Sở Vang Ngọt & Prosecco</h2>
+        <h3>Amarone della Valpolicella</h3>
+        <ul>
+            <li><strong>Phương pháp:</strong> Appassimento - phơi khô nho trước khi ép.</li>
+            <li><strong>Đặc điểm:</strong> Đậm đặc, vị cherry khô, socola, độ cồn cao (15-16%).</li>
+            <li><strong>Kết hợp:</strong> Phô mai mạnh, thịt nướng BBQ.</li>
+        </ul>
+
+        <h3>Prosecco</h3>
+        <ul>
+            <li><strong>Giống nho:</strong> Glera.</li>
+            <li><strong>Đặc điểm:</strong> Sủi bọt tươi mát, hương táo xanh, hoa trắng. Giá phải chăng.</li>
+            <li><strong>Kết hợp:</strong> Khai vị, cocktail, tiệc vui.</li>
+        </ul>
+
+        <h2>Mua Rượu Vang Ý Chính Hãng Tại Thủ Đức</h2>
+        <p><strong>Selection Wine</strong> nhập khẩu trực tiếp các dòng rượu Ý danh tiếng:</p>
+        <ul>
+            <li>Chianti Classico, Brunello di Montalcino từ Tuscany.</li>
+            <li>Barolo, Barbaresco từ Piedmont.</li>
+            <li>Amarone, Prosecco từ Veneto.</li>
+        </ul>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/italian_vineyard_1768166750792.png",
+        view_count: 0
+    },
+    {
+        title: "Gợi Ý Quà Rượu Vang Tết 2026 Sang Trọng & Ý Nghĩa",
+        slug: "goi-y-qua-ruou-vang-tet-2026-sang-trong-y-nghia",
+        excerpt: "Tổng hợp những set quà Tết rượu vang đẹp nhất 2026. Quà biếu sếp, đối tác, người thân với hộp quà rượu vang cao cấp từ Pháp, Ý kết hợp đặc sản Tết.",
+        content: `<div class="blog-content">
+        <h2>Tại Sao Rượu Vang Là Quà Tết Hoàn Hảo?</h2>
+        <p>Trong văn hóa Việt, Tết là dịp sum họp và tri ân. <strong>Rượu vang</strong> không chỉ sang trọng mà còn mang ý nghĩa may mắn (rượu đỏ = đỏ = tài lộc). Một chai vang cao cấp thể hiện sự tôn trọng và chúc phúc cho người nhận.</p>
+
+        <h2>1. Set Quà Tết Rượu Vang Cho Sếp & Đối Tác</h2>
+        <h3>Set Bordeaux Grand Cru</h3>
+        <ul>
+            <li><strong>Bao gồm:</strong> 1 chai Grand Cru Classé + hộp gỗ sơn mài + 2 ly pha lê.</li>
+            <li><strong>Giá:</strong> 3-8 triệu VNĐ.</li>
+            <li><strong>Phù hợp:</strong> Sếp cấp cao, đối tác VIP, đầu tư dài hạn.</li>
+        </ul>
+
+        <h3>Set Wine & Chocolate</h3>
+        <ul>
+            <li><strong>Bao gồm:</strong> 1 chai Vang Pháp/Ý + Socola Bỉ nhập khẩu + hạt macadamia.</li>
+            <li><strong>Giá:</strong> 1.5-3 triệu VNĐ.</li>
+            <li><strong>Phù hợp:</strong> Đối tác, khách hàng thân thiết.</li>
+        </ul>
+
+        <h2>2. Set Quà Tết Cho Gia Đình & Người Thân</h2>
+        <h3>Set Gia Đình Hạnh Phúc</h3>
+        <ul>
+            <li><strong>Bao gồm:</strong> 1 chai Vang Chile/Úc + Mứt Tết + Hạt điều + Rong biển.</li>
+            <li><strong>Giá:</strong> 800k-1.5 triệu VNĐ.</li>
+            <li><strong>Phù hợp:</strong> Gia đình, bạn bè thân.</li>
+        </ul>
+
+        <h3>Set Couple (Cặp Đôi)</h3>
+        <ul>
+            <li><strong>Bao gồm:</strong> 2 chai vang (1 đỏ + 1 trắng/hồng) + Phô mai + Jam.</li>
+            <li><strong>Giá:</strong> 1-2 triệu VNĐ.</li>
+            <li><strong>Phù hợp:</strong> Cặp đôi mới cưới, cha mẹ.</li>
+        </ul>
+
+        <h2>3. Cách Chọn Rượu Vang Theo Người Nhận</h2>
+        <h3>Người Mới Uống Rượu</h3>
+        <ul>
+            <li><strong>Gợi ý:</strong> Vang ngọt nhẹ (Moscato d'Asti), Rosé, hoặc vang trắng dễ uống.</li>
+            <li><strong>Tránh:</strong> Vang đỏ chát đậm (Cabernet Sauvignon, Barolo).</li>
+        </ul>
+
+        <h3>Người Sành Rượu</h3>
+        <ul>
+            <li><strong>Gợi ý:</strong> Vang có nguồn gốc rõ ràng (AOC, DOCG), vintage cũ, dòng hạn chế.</li>
+            <li><strong>Điểm cộng:</strong> Kèm sổ tay ghi chú về nhà sản xuất.</li>
+        </ul>
+
+        <h3>Sếp Nữ</h3>
+        <ul>
+            <li><strong>Gợi ý:</strong> Champagne, Rosé Provence, chai thiết kế đẹp.</li>
+        </ul>
+
+        <h2>4. Dịch Vụ Đặc Biệt Tại Selection Wine</h2>
+        <ul>
+            <li><strong>Thiết kế hộp quà riêng:</strong> In logo công ty, thông điệp chúc Tết.</li>
+            <li><strong>Giao hàng tận nơi:</strong> Toàn TPHCM, Bình Dương, Đồng Nai.</li>
+            <li><strong>Tư vấn miễn phí:</strong> Chọn quà theo ngân sách và đối tượng.</li>
+            <li><strong>Chiết khấu số lượng:</strong> Giảm 5-15% cho đơn hàng doanh nghiệp.</li>
+        </ul>
+
+        <h2>Đặt Quà Tết Sớm - Ưu Đãi Lớn!</h2>
+        <p>Liên hệ <strong>Selection Wine Boutique</strong> ngay để đặt quà Tết 2026:</p>
+        <ul>
+            <li>Địa chỉ: Thủ Đức, TP.HCM</li>
+            <li>Hotline: [Số điện thoại]</li>
+            <li>Ưu đãi đặt sớm trước 15/12: Giảm 10% + quà tặng kèm.</li>
+        </ul>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/tet_wine_gifts_1768166767468.png",
+        view_count: 0
+    },
+    {
+        title: "Hướng Dẫn Tổ Chức Buổi Thử Rượu Vang Tại Nhà Chuyên Nghiệp",
+        slug: "huong-dan-to-chuc-thu-ruou-vang-tai-nha",
+        excerpt: "Bí quyết tổ chức wine tasting party ấn tượng tại nhà. Từ chọn rượu, sắp xếp thứ tự nếm, chuẩn bị snack đến cách ghi chép đánh giá như sommelier chuyên nghiệp.",
+        content: `<div class="blog-content">
+        <h2>Wine Tasting Tại Nhà - Xu Hướng Mới</h2>
+        <p>Thay vì đến nhà hàng đắt tiền, tổ chức buổi <strong>thử rượu vang tại nhà</strong> đang trở thành trào lưu. Đây là cách tuyệt vời để học hỏi, giao lưu và tận hưởng rượu vang với chi phí hợp lý hơn.</p>
+
+        <h2>1. Chuẩn Bị Rượu Vang</h2>
+        <h3>Số Lượng Chai</h3>
+        <ul>
+            <li><strong>4-6 người:</strong> 4-6 chai (mỗi người thử khoảng 50ml/loại).</li>
+            <li><strong>Đa dạng:</strong> Mix vang trắng, hồng, đỏ nhẹ, đỏ đậm.</li>
+        </ul>
+
+        <h3>Chủ Đề Thử Nghiệm</h3>
+        <ul>
+            <li><strong>Theo quốc gia:</strong> Pháp, Ý, Chile, Úc.</li>
+            <li><strong>Theo giống nho:</strong> Cabernet Sauvignon thế giới, Chardonnay các vùng.</li>
+            <li><strong>Theo mức giá:</strong> So sánh vang 300k và 3 triệu.</li>
+            <li><strong>Blind tasting:</strong> Bọc chai, đoán loại rượu (rất vui!).</li>
+        </ul>
+
+        <h2>2. Thứ Tự Nếm Rượu Chuẩn</h2>
+        <ol>
+            <li><strong>Sủi bọt (Sparkling):</strong> Champagne, Prosecco - khai vị.</li>
+            <li><strong>Vang Trắng nhẹ:</strong> Sauvignon Blanc, Pinot Grigio.</li>
+            <li><strong>Vang Trắng đậm:</strong> Chardonnay oaky.</li>
+            <li><strong>Vang Hồng (Rosé):</strong> Chuyển tiếp.</li>
+            <li><strong>Vang Đỏ nhẹ:</strong> Pinot Noir, Beaujolais.</li>
+            <li><strong>Vang Đỏ đậm:</strong> Cabernet Sauvignon, Shiraz, Barolo.</li>
+            <li><strong>Vang Ngọt (nếu có):</strong> Sauternes, Port - kết thúc.</li>
+        </ol>
+        <p><strong>Nguyên tắc:</strong> Từ nhẹ đến đậm, từ khô đến ngọt, từ trẻ đến già.</p>
+
+        <h2>3. Chuẩn Bị Đồ Ăn Kèm</h2>
+        <h3>Palate Cleanser (Làm Sạch Vị Giác)</h3>
+        <ul>
+            <li>Bánh mì baguette không gia vị.</li>
+            <li>Crackers plain.</li>
+            <li>Nước lọc.</li>
+        </ul>
+
+        <h3>Snacks Kết Hợp</h3>
+        <ul>
+            <li><strong>Phô mai:</strong> Brie, Camembert, Manchego, Parmesan.</li>
+            <li><strong>Charcuterie:</strong> Prosciutto, salami, jamón.</li>
+            <li><strong>Trái cây:</strong> Nho, táo, lê, mận.</li>
+            <li><strong>Hạt:</strong> Hạnh nhân, óc chó, hạt điều.</li>
+        </ul>
+
+        <h2>4. Kỹ Thuật Thử Rượu Chuyên Nghiệp</h2>
+        <h3>Nhìn (See)</h3>
+        <p>Nghiêng ly 45°, quan sát màu sắc, độ trong, viền rượu (màu nâu = rượu già).</p>
+
+        <h3>Ngửi (Smell)</h3>
+        <p>Xoay nhẹ ly, hít sâu. Nhận diện các tầng hương: trái cây, hoa, gia vị, gỗ.</p>
+
+        <h3>Nếm (Taste)</h3>
+        <p>Nhấp một ngụm nhỏ, để rượu lan khắp lưỡi. Đánh giá: ngọt, chua, chát (tannin), body, aftertaste.</p>
+
+        <h2>5. Ghi Chép Đánh Giá</h2>
+        <p>Chuẩn bị sổ tay hoặc in sẵn tasting note:</p>
+        <ul>
+            <li>Tên rượu, năm, vùng, giống nho.</li>
+            <li>Màu sắc.</li>
+            <li>Hương thơm (primary, secondary, tertiary).</li>
+            <li>Vị (sweetness, acidity, tannin, alcohol, body).</li>
+            <li>Điểm đánh giá cá nhân (1-10).</li>
+        </ul>
+
+        <h2>Đặt Rượu Cho Buổi Tasting Tại Selection Wine</h2>
+        <p>Liên hệ <strong>Selection Wine Boutique</strong> để được tư vấn:</p>
+        <ul>
+            <li>Set rượu thử theo chủ đề.</li>
+            <li>Phụ kiện: ly rượu, decanter, sổ tasting note.</li>
+            <li>Hướng dẫn tổ chức wine tasting chi tiết.</li>
+        </ul>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/wine_tasting_event_1768166785915.png",
+        view_count: 0
     }
 ];
