@@ -55,9 +55,9 @@ export const useBlogArticles = (categorySlug?: string, limit?: number) => {
       const { data, error } = await query;
 
       if (error) throw error;
-      
+
       // Filter out articles that don't match category (due to left join behavior)
-      const filteredData = categorySlug 
+      const filteredData = categorySlug
         ? data?.filter(article => article.category?.slug === categorySlug)
         : data;
 
@@ -152,13 +152,17 @@ export const useAllArticles = () => {
         .from("blog_articles")
         .select(`
           *,
-          author:user_profiles!blog_articles_author_id_fkey(id, display_name, avatar_url),
           category:blog_categories!blog_articles_category_id_fkey(id, name, slug)
         `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as BlogArticle[];
+
+      // Map data to include author as null (bypasses RLS on user_profiles)
+      return (data || []).map(article => ({
+        ...article,
+        author: null
+      })) as BlogArticle[];
     },
   });
 };
@@ -192,7 +196,7 @@ export const useArticleMutations = () => {
           .insert({ user_id: user.user.id })
           .select("id")
           .single();
-        
+
         if (profileError) throw profileError;
         profile = newProfile;
       }
