@@ -36,14 +36,20 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
       return (
         <div
           className="prose prose-lg max-w-none 
-            prose-headings:font-serif prose-headings:font-normal
-            prose-p:text-foreground/90 prose-p:leading-relaxed
-            prose-a:text-foreground prose-a:underline
-            prose-strong:text-foreground prose-strong:font-medium
-            prose-img:rounded-none
-            prose-ul:list-disc prose-ol:list-decimal
-            prose-li:text-foreground/90
-            prose-table:border-collapse prose-th:border prose-th:p-2 prose-td:border prose-td:p-2
+            prose-headings:font-serif prose-headings:font-normal prose-headings:text-foreground
+            prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pb-3 prose-h2:border-b prose-h2:border-border
+            prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-primary
+            prose-p:text-foreground/85 prose-p:leading-[1.85] prose-p:mb-5 prose-p:text-base
+            prose-a:text-primary prose-a:underline prose-a:underline-offset-2 hover:prose-a:text-primary/80
+            prose-strong:text-foreground prose-strong:font-semibold
+            prose-ul:my-6 prose-ul:list-disc prose-ul:pl-6
+            prose-ol:my-6 prose-ol:list-decimal prose-ol:pl-6
+            prose-li:text-foreground/85 prose-li:mb-2 prose-li:leading-relaxed
+            prose-table:my-8 prose-table:border-collapse prose-table:w-full
+            prose-th:border prose-th:border-border prose-th:bg-muted prose-th:p-3 prose-th:text-left prose-th:font-medium
+            prose-td:border prose-td:border-border prose-td:p-3
+            prose-img:rounded-lg prose-img:my-8
+            prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-muted-foreground
             dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: content }}
         />
