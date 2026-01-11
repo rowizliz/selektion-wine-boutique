@@ -111,7 +111,7 @@ const AdminBlog = () => {
   };
 
   const handleImportSampleData = async () => {
-    if (!confirm("Bạn có muốn import 5 bài viết mẫu vào Nháp không?")) return;
+    if (!confirm("Bạn có muốn import 10 bài viết mẫu vào Nháp không?")) return;
 
     try {
       // Get current user
@@ -121,8 +121,19 @@ const AdminBlog = () => {
         return;
       }
 
-      // Use current user's ID as author_id (same as auth.uid())
-      const authorId = userData.user.id;
+      // Get user profile ID (required for author_id foreign key)
+      const { data: profileData, error: profileError } = await supabase
+        .from("user_profiles")
+        .select("id")
+        .eq("user_id", userData.user.id)
+        .single();
+
+      if (profileError || !profileData) {
+        toast({ title: "Không tìm thấy profile. Vui lòng đăng nhập lại.", variant: "destructive" });
+        return;
+      }
+
+      const authorId = profileData.id;
       const timestamp = Date.now();
       let successCount = 0;
 
