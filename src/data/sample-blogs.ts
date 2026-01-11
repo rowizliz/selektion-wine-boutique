@@ -52,7 +52,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=2070&auto=format&fit=crop",
+        cover_image_url: "/blog-images/wine_selection_tips_1768167708896.png",
         view_count: 0
     },
     {
@@ -107,7 +107,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=2070&auto=format&fit=crop",
+        cover_image_url: "/blog-images/corporate_gift_wine_1768167725836.png",
         view_count: 0
     },
     {
@@ -148,7 +148,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "https://images.unsplash.com/photo-1504279577054-acfeccf8fc52?q=80&w=2070&auto=format&fit=crop",
+        cover_image_url: "/blog-images/french_wine_journey_1768167747650.png",
         view_count: 0
     },
     {
@@ -185,7 +185,7 @@ export const SAMPLE_BLOG_POSTS = [
         </ul>
     </div>`,
         status: "published" as const,
-        cover_image_url: "https://images.unsplash.com/photo-1528629297340-d1d466945dc5?q=80&w=2210&auto=format&fit=crop",
+        cover_image_url: "/blog-images/wine_tasting_guide_1768167764592.png",
         view_count: 0
     },
     {
@@ -223,7 +223,7 @@ export const SAMPLE_BLOG_POSTS = [
         <p>Hãy đến và trải nghiệm không gian văn hóa rượu vang đẳng cấp tại Selection Wine!</p>
     </div>`,
         status: "published" as const,
-        cover_image_url: "https://images.unsplash.com/photo-1559563362-c667ba5f5480?q=80&w=2601&auto=format&fit=crop",
+        cover_image_url: "/blog-images/selection_wine_store_1768167782615.png",
         view_count: 0
     },
     {
