@@ -1,4 +1,5 @@
 // App root component
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,40 +7,53 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "./components/ScrollToTop";
-import AdminRoute from "./components/AdminRoute";
-import CollaboratorRoute from "./components/CollaboratorRoute";
+
+// Critical pages - load immediately
 import Index from "./pages/Index";
 import Collection from "./pages/Collection";
 import WineDetail from "./pages/WineDetail";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Auth from "./pages/Auth";
-import Gifts from "./pages/Gifts";
-import AdminGiftSets from "./pages/AdminGiftSets";
-import NotFound from "./pages/NotFound";
-import Admin from "./pages/Admin";
-import AdminFlavorIcons from "./pages/AdminFlavorIcons";
-import AdminWines from "./pages/AdminWines";
-import AdminImportWines from "./pages/AdminImportWines";
-import AdminBirthdayGifts from "./pages/AdminBirthdayGifts";
-import AdminPersonalizedWine from "./pages/AdminPersonalizedWine";
-import AdminInvitations from "./pages/AdminInvitations";
-import AdminInventory from "./pages/AdminInventory";
-import AdminCollaborators from "./pages/AdminCollaborators";
-import AdminProfileUpdates from "./pages/AdminProfileUpdates";
-import AdminExportData from "./pages/AdminExportData";
-import PersonalizedWineConsultation from "./pages/PersonalizedWineConsultation";
-import CustomerWineRecommendation from "./pages/CustomerWineRecommendation";
-import PublicInvitation from "./pages/PublicInvitation";
-import CollaboratorPortal from "./pages/CollaboratorPortal";
-import Recruitment from "./pages/Recruitment";
-import AdminRecruitment from "./pages/AdminRecruitment";
-import AdminContactMessages from "./pages/AdminContactMessages";
-import Blog from "./pages/Blog";
-import BlogDetail from "./pages/BlogDetail";
-import AdminBlog from "./pages/AdminBlog";
+
+// Lazy load non-critical pages
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Gifts = lazy(() => import("./pages/Gifts"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogDetail = lazy(() => import("./pages/BlogDetail"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Recruitment = lazy(() => import("./pages/Recruitment"));
+const PersonalizedWineConsultation = lazy(() => import("./pages/PersonalizedWineConsultation"));
+const CustomerWineRecommendation = lazy(() => import("./pages/CustomerWineRecommendation"));
+const PublicInvitation = lazy(() => import("./pages/PublicInvitation"));
+
+// Admin pages - lazy load
+const AdminRoute = lazy(() => import("./components/AdminRoute"));
+const CollaboratorRoute = lazy(() => import("./components/CollaboratorRoute"));
+const Admin = lazy(() => import("./pages/Admin"));
+const AdminWines = lazy(() => import("./pages/AdminWines"));
+const AdminGiftSets = lazy(() => import("./pages/AdminGiftSets"));
+const AdminImportWines = lazy(() => import("./pages/AdminImportWines"));
+const AdminFlavorIcons = lazy(() => import("./pages/AdminFlavorIcons"));
+const AdminBirthdayGifts = lazy(() => import("./pages/AdminBirthdayGifts"));
+const AdminPersonalizedWine = lazy(() => import("./pages/AdminPersonalizedWine"));
+const AdminInvitations = lazy(() => import("./pages/AdminInvitations"));
+const AdminInventory = lazy(() => import("./pages/AdminInventory"));
+const AdminCollaborators = lazy(() => import("./pages/AdminCollaborators"));
+const AdminProfileUpdates = lazy(() => import("./pages/AdminProfileUpdates"));
+const AdminExportData = lazy(() => import("./pages/AdminExportData"));
+const AdminRecruitment = lazy(() => import("./pages/AdminRecruitment"));
+const AdminContactMessages = lazy(() => import("./pages/AdminContactMessages"));
+const AdminBlog = lazy(() => import("./pages/AdminBlog"));
+const CollaboratorPortal = lazy(() => import("./pages/CollaboratorPortal"));
 
 const queryClient = new QueryClient();
+
+// Loading fallback
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-pulse text-muted-foreground">Đang tải...</div>
+  </div>
+);
 
 const App = () => (
   <HelmetProvider>
@@ -49,39 +63,47 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/collection" element={<Collection />} />
-            <Route path="/collection/:id" element={<WineDetail />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/gifts" element={<Gifts />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
-            <Route path="/admin/wines" element={<AdminRoute><AdminWines /></AdminRoute>} />
-            <Route path="/admin/gift-sets" element={<AdminRoute><AdminGiftSets /></AdminRoute>} />
-            <Route path="/admin/import-wines" element={<AdminRoute><AdminImportWines /></AdminRoute>} />
-            <Route path="/admin/flavor-icons" element={<AdminRoute><AdminFlavorIcons /></AdminRoute>} />
-            <Route path="/admin/birthday-gifts" element={<AdminRoute><AdminBirthdayGifts /></AdminRoute>} />
-            <Route path="/admin/tu-van" element={<AdminRoute><AdminPersonalizedWine /></AdminRoute>} />
-            <Route path="/admin/invitations" element={<AdminRoute><AdminInvitations /></AdminRoute>} />
-            <Route path="/admin/inventory" element={<AdminRoute><AdminInventory /></AdminRoute>} />
-            <Route path="/admin/collaborators" element={<AdminRoute><AdminCollaborators /></AdminRoute>} />
-            <Route path="/admin/profile-updates" element={<AdminRoute><AdminProfileUpdates /></AdminRoute>} />
-            <Route path="/admin/export-data" element={<AdminRoute><AdminExportData /></AdminRoute>} />
-            <Route path="/tu-van-ca-nhan" element={<PersonalizedWineConsultation />} />
-            <Route path="/tuyen-dung" element={<Recruitment />} />
-            <Route path="/tuvan/:slug" element={<CustomerWineRecommendation />} />
-            <Route path="/thiep/:slug" element={<PublicInvitation />} />
-            <Route path="/ctv" element={<CollaboratorRoute><CollaboratorPortal /></CollaboratorRoute>} />
-            <Route path="/admin/tuyen-dung" element={<AdminRoute><AdminRecruitment /></AdminRoute>} />
-            <Route path="/admin/contact-messages" element={<AdminRoute><AdminContactMessages /></AdminRoute>} />
-            <Route path="/admin/blog" element={<AdminRoute><AdminBlog /></AdminRoute>} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogDetail />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Critical routes - no suspense needed */}
+              <Route path="/" element={<Index />} />
+              <Route path="/collection" element={<Collection />} />
+              <Route path="/collection/:id" element={<WineDetail />} />
+
+              {/* Public routes */}
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/gifts" element={<Gifts />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/tu-van-ca-nhan" element={<PersonalizedWineConsultation />} />
+              <Route path="/tuyen-dung" element={<Recruitment />} />
+              <Route path="/tuvan/:slug" element={<CustomerWineRecommendation />} />
+              <Route path="/thiep/:slug" element={<PublicInvitation />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogDetail />} />
+
+              {/* Admin routes */}
+              <Route path="/admin" element={<Suspense fallback={<PageLoader />}><AdminRoute><Admin /></AdminRoute></Suspense>} />
+              <Route path="/admin/wines" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminWines /></AdminRoute></Suspense>} />
+              <Route path="/admin/gift-sets" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminGiftSets /></AdminRoute></Suspense>} />
+              <Route path="/admin/import-wines" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminImportWines /></AdminRoute></Suspense>} />
+              <Route path="/admin/flavor-icons" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminFlavorIcons /></AdminRoute></Suspense>} />
+              <Route path="/admin/birthday-gifts" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminBirthdayGifts /></AdminRoute></Suspense>} />
+              <Route path="/admin/tu-van" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminPersonalizedWine /></AdminRoute></Suspense>} />
+              <Route path="/admin/invitations" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminInvitations /></AdminRoute></Suspense>} />
+              <Route path="/admin/inventory" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminInventory /></AdminRoute></Suspense>} />
+              <Route path="/admin/collaborators" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminCollaborators /></AdminRoute></Suspense>} />
+              <Route path="/admin/profile-updates" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminProfileUpdates /></AdminRoute></Suspense>} />
+              <Route path="/admin/export-data" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminExportData /></AdminRoute></Suspense>} />
+              <Route path="/admin/tuyen-dung" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminRecruitment /></AdminRoute></Suspense>} />
+              <Route path="/admin/contact-messages" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminContactMessages /></AdminRoute></Suspense>} />
+              <Route path="/admin/blog" element={<Suspense fallback={<PageLoader />}><AdminRoute><AdminBlog /></AdminRoute></Suspense>} />
+              <Route path="/ctv" element={<Suspense fallback={<PageLoader />}><CollaboratorRoute><CollaboratorPortal /></CollaboratorRoute></Suspense>} />
+
+              {/* Catch-all */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
@@ -89,3 +111,4 @@ const App = () => (
 );
 
 export default App;
+
