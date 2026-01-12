@@ -876,6 +876,99 @@ export const SAMPLE_BLOG_POSTS = [
         status: "published" as const,
         cover_image_url: "/blog-images/wine_tasting_hcmc_1768202360689.jpg",
         view_count: 0
+    },
+    // ========== BÀI REVIEW ODFJELL ALIARA 2018 ==========
+    {
+        title: "Review Odfjell Aliara 2018: Kiệt Tác Vang Chile Từ Nhà Làm Rượu Na Uy",
+        slug: "review-odfjell-aliara-2018-kiet-tac-vang-chile-na-uy",
+        excerpt: "Đánh giá chi tiết Odfjell Aliara 2018 - chai vang đỏ biểu tượng từ nhà Odfjell Vineyards. Điểm 4.2/5 Vivino, 94 điểm James Suckling. Khám phá câu chuyện đằng sau chai vang organic huyền thoại.",
+        content: `<div class="blog-content">
+        <h2>Giới Thiệu Odfjell Aliara 2018 - Đỉnh Cao Vang Chile</h2>
+        <p><strong>Odfjell Aliara 2018</strong> không chỉ là một chai rượu vang - đây là biểu tượng cho sự kết hợp hoàn hảo giữa tinh thần Viking Na Uy và terroir phong phú của Chile. Được đánh giá là một trong những chai vang đỏ xuất sắc nhất từ Nam Mỹ, Aliara đại diện cho đỉnh cao sáng tạo và triết lý làm vang bền vững của nhà Odfjell Vineyards.</p>
+        
+        <p>Với điểm số <strong>4.2/5 trên Vivino</strong> (dựa trên hơn 560 đánh giá), <strong>94 điểm từ James Suckling</strong>, <strong>94 điểm Vinous</strong>, và <strong>95 điểm Descorchados</strong>, Odfjell Aliara 2018 xứng đáng là chai vang mà mọi wine collector cần sở hữu.</p>
+
+        <h2>Lịch Sử Nhà Làm Rượu Odfjell Vineyards</h2>
+        <h3>Từ Biển Cả Đến Vườn Nho</h3>
+        <p>Câu chuyện của Odfjell Vineyards bắt đầu từ <strong>Dan Odfjell</strong> - một chủ tàu người Na Uy sinh ra và lớn lên ở Bergen. Năm 1982, trong một chuyến hải trình, ông phát hiện thung lũng Maipo của Chile và ngay lập tức bị mê hoặc bởi vẻ đẹp hùng vĩ của dãy Andes cùng khí hậu khô ráo lý tưởng.</p>
+        
+        <p>Dan quyết định thực hiện giấc mơ làm nông nghiệp của mình tại đây. Ông mua lại một trang trại trái cây và dần chuyển đổi thành vườn nho. Năm 1998, Odfjell Vineyards cho ra mắt vintage đầu tiên, đánh dấu sự khởi đầu của một huyền thoại.</p>
+
+        <h3>Triết Lý "Norwegian Spirit, Chilean Roots"</h3>
+        <p>Ngày nay, nhà Odfjell được điều hành bởi hai con trai của Dan là <strong>Laurence</strong> và <strong>Dan Jr.</strong> Hầm rượu được thiết kế theo phong cách minimalist Scandinavia, phần lớn được xây dựng dưới lòng đất với hệ thống gravity-flow nhẹ nhàng cho nho.</p>
+        
+        <p>Điểm đặc biệt là Odfjell sử dụng <strong>ngựa Fjord của Na Uy</strong> để làm đất trong vườn nho - một nét văn hóa gắn kết với quê hương Viking. Từ năm 2012, toàn bộ vườn nho đạt chứng nhận <strong>organic và biodynamic</strong> từ Ecocert.</p>
+
+        <h2>Thông Tin Kỹ Thuật Chai Rượu</h2>
+        <ul>
+            <li><strong>Tên gọi:</strong> Odfjell Aliara 2018</li>
+            <li><strong>Vùng sản xuất:</strong> Cauquenes, Lontué, Maipo Valley - Chile</li>
+            <li><strong>Blend:</strong> Syrah 28.5%, Carignan 24.5%, Malbec 16%, Carménère 10%, Cabernet Sauvignon 8.5%, Tempranillo 7%, Tannat 5.5%</li>
+            <li><strong>Nồng độ cồn:</strong> 14.5%</li>
+            <li><strong>Ủ gỗ:</strong> 18 tháng trong thùng gỗ sồi Pháp mới 100%</li>
+            <li><strong>Chứng nhận:</strong> Organic (Ecocert) & Vegan</li>
+        </ul>
+
+        <h2>Đánh Giá Màu Sắc & Cảm Quan</h2>
+        <h3>Màu Sắc (Appearance)</h3>
+        <p>Rót ra ly, Aliara 2018 thể hiện một màu <strong>tím violet đậm, gần như đen</strong> ở trung tâm, chuyển dần sang viền đỏ ruby. Độ sánh của rượu vừa phải, cho thấy cấu trúc tannin chắc chắn và tiềm năng tồn trữ lâu dài.</p>
+
+        <h3>Hương Thơm (Nose)</h3>
+        <p>Hương thơm của Aliara vô cùng phức tạp và hấp dẫn. Ngay từ cái ngửi đầu tiên, bạn sẽ cảm nhận được:</p>
+        <ul>
+            <li><strong>Tầng 1:</strong> Trái cây đen mọng - mận chín, mâm xôi đen, blackberry</li>
+            <li><strong>Tầng 2:</strong> Hạt dẻ, chà là, sung khô, hoa nhài và hoa hồng</li>
+            <li><strong>Tầng 3:</strong> Sô cô la đen, cà phê rang, thuốc lá, da thuộc</li>
+            <li><strong>Nền:</strong> Thảo mộc xanh, ô liu đen, tiêu đen, cam thảo</li>
+        </ul>
+
+        <h3>Vị Giác (Palate)</h3>
+        <p>Trên vòm miệng, Odfjell Aliara 2018 thể hiện sự <strong>mạnh mẽ nhưng tinh tế</strong>. Cấu trúc full-body với tannin chín mượt như nhung, không gây khô rát. Độ axit cân đối tuyệt vời, mang lại cảm giác tươi mát dù là vang đậm.</p>
+        
+        <p>Vị sô cô la, cà phê và thuốc lá từ quá trình ủ gỗ sồi Pháp hòa quyện hoàn hảo với trái cây đen. <strong>Hậu vị dài, sâu</strong>, kéo dài trên 45 giây với notes của gia vị và khoáng chất.</p>
+
+        <h2>Điểm Số Từ Các Chuyên Gia</h2>
+        <ul>
+            <li><strong>Vivino:</strong> 4.2/5 (562+ đánh giá người dùng)</li>
+            <li><strong>James Suckling:</strong> 94 điểm</li>
+            <li><strong>Vinous:</strong> 94 điểm</li>
+            <li><strong>Descorchados:</strong> 95 điểm</li>
+            <li><strong>Robert Parker's Wine Advocate:</strong> 90 điểm</li>
+            <li><strong>Giải thưởng:</strong> Huy chương Bạc - Global Organic & Vegan Wine Masters 2023</li>
+        </ul>
+
+        <h2>Gợi Ý Kết Hợp Món Ăn (Food Pairing)</h2>
+        <p>Với cấu trúc đậm đà và phức tạp, Odfjell Aliara 2018 kết hợp tuyệt vời với:</p>
+        <ul>
+            <li><strong>Thịt bò:</strong> Ribeye steak, bò Wellington, bò hầm vang đỏ</li>
+            <li><strong>Thịt cừu:</strong> Cừu nướng rosemary, rack of lamb</li>
+            <li><strong>Phô mai:</strong> Manchego, Pecorino, Gouda trưởng thành</li>
+            <li><strong>Dessert:</strong> Sô cô la đen 70%, bánh chocolate lava</li>
+            <li><strong>Ẩm thực Việt:</strong> Bò nướng lá lốt, sườn nướng BBQ</li>
+        </ul>
+
+        <h2>Hướng Dẫn Phục Vụ & Bảo Quản</h2>
+        <ul>
+            <li><strong>Nhiệt độ phục vụ:</strong> 16-18°C</li>
+            <li><strong>Decant:</strong> Nên decant 1-2 giờ trước khi uống</li>
+            <li><strong>Tiềm năng tồn trữ:</strong> Uống ngay hoặc lưu trữ đến 2030+</li>
+            <li><strong>Ly phù hợp:</strong> Ly Bordeaux hoặc ly vang đỏ lớn</li>
+        </ul>
+
+        <h2>Kết Luận: Có Nên Mua Odfjell Aliara 2018?</h2>
+        <p>Với mức giá <strong>3.850.000đ</strong>, Odfjell Aliara 2018 là một khoản đầu tư xứng đáng cho những ai yêu thích vang cao cấp. Đây không phải chai vang để uống hàng ngày - mà là chai vang cho những <strong>dịp đặc biệt</strong>, những bữa tiệc quan trọng, hoặc để sưu tầm.</p>
+        
+        <p>So với các chai vang cùng phân khúc từ Pháp hay Ý, Aliara mang đến giá trị vượt trội về chất lượng. Sự kết hợp giữa triết lý organic Na Uy và terroir Chile tạo nên một trải nghiệm độc nhất vô nhị.</p>
+
+        <p><strong>Điểm đánh giá Selection Wine:</strong> ★★★★★ (5/5) - Highly Recommended</p>
+
+        <h2>Mua Odfjell Aliara 2018 Chính Hãng</h2>
+        <p>Selection Wine Boutique tự hào là đơn vị nhập khẩu chính hãng <strong>Odfjell Aliara</strong> tại Việt Nam. Chúng tôi cam kết bảo quản chuẩn châu Âu, giao hàng nhanh chóng và tư vấn chuyên nghiệp.</p>
+        <p>Liên hệ ngay: <strong>0906 777 377</strong> hoặc ghé thăm Selection Wine tại TP Thủ Đức.</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/odfjell_wine_tasting_1768204406050.jpg",
+        view_count: 0
     }
 ];
 
