@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Upload, AlertTriangle } from "lucide-react";
+import { Trash2, Upload, AlertTriangle, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { SAMPLE_BLOG_POSTS } from "@/data/sample-blogs";
 import { supabase } from "@/integrations/supabase/client";
+
+const DELETED_DEMOS_KEY = "selection_deleted_demos";
 
 interface ImportDemoDialogProps {
     open: boolean;
@@ -27,13 +29,30 @@ const ImportDemoDialog = ({ open, onOpenChange, onImportComplete }: ImportDemoDi
     const { toast } = useToast();
     const [demoArticles, setDemoArticles] = useState<DemoArticle[]>([]);
     const [isImporting, setIsImporting] = useState(false);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [mode, setMode] = useState<"import" | "delete">("import");
+    const [deletedSlugs, setDeletedSlugs] = useState<string[]>([]);
 
-    // Load demo articles from SAMPLE_BLOG_POSTS
+    // Load deleted demos from localStorage
+    useEffect(() => {
+        const stored = localStorage.getItem(DELETED_DEMOS_KEY);
+        if (stored) {
+            try {
+                setDeletedSlugs(JSON.parse(stored));
+            } catch {
+                setDeletedSlugs([]);
+            }
+        }
+    }, []);
+
+    // Load demo articles
     useEffect(() => {
         if (open) {
+            const availablePosts = SAMPLE_BLOG_POSTS.filter(
+                (post) => !deletedSlugs.includes(post.slug)
+            );
             setDemoArticles(
-                SAMPLE_BLOG_POSTS.map((post) => ({
+                availablePosts.map((post) => ({
                     title: post.title,
                     slug: post.slug,
                     excerpt: post.excerpt,
@@ -41,11 +60,12 @@ const ImportDemoDialog = ({ open, onOpenChange, onImportComplete }: ImportDemoDi
                     selected: false,
                 }))
             );
-            setShowDeleteConfirm(false);
+            setMode("import");
         }
-    }, [open]);
+    }, [open, deletedSlugs]);
 
     const selectedCount = demoArticles.filter((a) => a.selected).length;
+    const deletedCount = deletedSlugs.length;
 
     const handleSelectAll = () => {
         const allSelected = demoArticles.every((a) => a.selected);
@@ -58,6 +78,30 @@ const ImportDemoDialog = ({ open, onOpenChange, onImportComplete }: ImportDemoDi
         );
     };
 
+    const handleDeleteSelected = () => {
+        if (selectedCount === 0) {
+            toast({ title: "Vui lòng chọn ít nhất 1 bài để xóa", variant: "destructive" });
+            return;
+        }
+
+        setIsDeleting(true);
+        const selectedSlugs = demoArticles.filter((a) => a.selected).map((a) => a.slug);
+        const newDeletedSlugs = [...deletedSlugs, ...selectedSlugs];
+
+        localStorage.setItem(DELETED_DEMOS_KEY, JSON.stringify(newDeletedSlugs));
+        setDeletedSlugs(newDeletedSlugs);
+
+        toast({ title: `Đã xóa ${selectedCount} bài demo` });
+        setIsDeleting(false);
+        setMode("import");
+    };
+
+    const handleRestoreAll = () => {
+        localStorage.removeItem(DELETED_DEMOS_KEY);
+        setDeletedSlugs([]);
+        toast({ title: "Đã khôi phục tất cả bài demo" });
+    };
+
     const handleImportSelected = async () => {
         if (selectedCount === 0) {
             toast({ title: "Vui lòng chọn ít nhất 1 bài viết", variant: "destructive" });
@@ -66,14 +110,12 @@ const ImportDemoDialog = ({ open, onOpenChange, onImportComplete }: ImportDemoDi
 
         setIsImporting(true);
         try {
-            // Get current user
             const { data: userData } = await supabase.auth.getUser();
             if (!userData.user) {
                 toast({ title: "Vui lòng đăng nhập", variant: "destructive" });
                 return;
             }
 
-            // Get user profile ID
             const { data: profileData, error: profileError } = await supabase
                 .from("user_profiles")
                 .select("id")
@@ -81,7 +123,7 @@ const ImportDemoDialog = ({ open, onOpenChange, onImportComplete }: ImportDemoDi
                 .single();
 
             if (profileError || !profileData) {
-                toast({ title: "Không tìm thấy profile. Vui lòng đăng nhập lại.", variant: "destructive" });
+                toast({ title: "Không tìm thấy profile.", variant: "destructive" });
                 return;
             }
 
@@ -96,7 +138,6 @@ const ImportDemoDialog = ({ open, onOpenChange, onImportComplete }: ImportDemoDi
 
             for (const post of originalPosts) {
                 const newSlug = `${post.slug}-${timestamp}`;
-
                 const { error } = await supabase.from("blog_articles").insert({
                     title: post.title,
                     slug: newSlug,
@@ -108,23 +149,16 @@ const ImportDemoDialog = ({ open, onOpenChange, onImportComplete }: ImportDemoDi
                     category_id: null,
                     published_at: null,
                 });
-
-                if (!error) {
-                    successCount++;
-                } else {
-                    console.error("Insert error:", error);
-                }
+                if (!error) successCount++;
             }
 
             if (successCount > 0) {
-                toast({ title: `Đã import ${successCount} bài viết vào mục Nháp` });
+                toast({ title: `Đã import ${successCount} bài` });
                 onOpenChange(false);
                 onImportComplete();
-            } else {
-                toast({ title: "Không thể import. Kiểm tra console.", variant: "destructive" });
             }
         } catch (error: any) {
-            toast({ title: "Lỗi import", description: error.message, variant: "destructive" });
+            toast({ title: "Lỗi", description: error.message, variant: "destructive" });
         } finally {
             setIsImporting(false);
         }
@@ -135,87 +169,100 @@ const ImportDemoDialog = ({ open, onOpenChange, onImportComplete }: ImportDemoDi
             <DialogContent className="max-w-2xl max-h-[85vh]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Upload className="h-5 w-5" />
-                        Import Bài Viết Demo
+                        {mode === "import" ? <Upload className="h-5 w-5" /> : <Trash2 className="h-5 w-5 text-destructive" />}
+                        {mode === "import" ? "Import Bài Viết Demo" : "Xóa Bài Demo"}
                     </DialogTitle>
                     <DialogDescription>
-                        Chọn các bài viết demo để import vào mục Nháp. Có {SAMPLE_BLOG_POSTS.length} bài viết sẵn có.
+                        {mode === "import"
+                            ? `Chọn bài demo để import. Còn ${demoArticles.length} bài (đã xóa ${deletedCount}).`
+                            : "Chọn các bài demo để xóa vĩnh viễn khỏi danh sách."}
                     </DialogDescription>
                 </DialogHeader>
 
-                {showDeleteConfirm ? (
-                    <div className="py-8 text-center">
-                        <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold mb-2">Tính năng đang phát triển</h3>
-                        <p className="text-muted-foreground mb-4">
-                            Để xóa vĩnh viễn demo data, bạn cần chỉnh sửa file <code className="bg-muted px-1 rounded">src/data/sample-blogs.ts</code> trực tiếp.
-                        </p>
-                        <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
-                            Quay lại
+                <div className="flex items-center justify-between py-2 border-b">
+                    <div className="flex gap-2">
+                        <Button variant="ghost" size="sm" onClick={handleSelectAll}>
+                            {demoArticles.every((a) => a.selected) && demoArticles.length > 0 ? "Bỏ chọn" : "Chọn tất cả"}
                         </Button>
-                    </div>
-                ) : (
-                    <>
-                        <div className="flex items-center justify-between py-2 border-b">
-                            <Button variant="ghost" size="sm" onClick={handleSelectAll}>
-                                {demoArticles.every((a) => a.selected) ? "Bỏ chọn tất cả" : "Chọn tất cả"}
+                        {deletedCount > 0 && (
+                            <Button variant="ghost" size="sm" onClick={handleRestoreAll} className="text-blue-600">
+                                <RotateCcw className="h-3 w-3 mr-1" />
+                                Khôi phục ({deletedCount})
                             </Button>
-                            <Badge variant="secondary">
-                                Đã chọn: {selectedCount}/{demoArticles.length}
-                            </Badge>
+                        )}
+                    </div>
+                    <Badge variant="secondary">
+                        Đã chọn: {selectedCount}/{demoArticles.length}
+                    </Badge>
+                </div>
+
+                <ScrollArea className="h-[350px] pr-4">
+                    {demoArticles.length === 0 ? (
+                        <div className="py-12 text-center text-muted-foreground">
+                            <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
+                            <p>Không còn bài demo nào.</p>
+                            <Button variant="link" onClick={handleRestoreAll}>Khôi phục tất cả</Button>
                         </div>
-
-                        <ScrollArea className="h-[400px] pr-4">
-                            <div className="space-y-2">
-                                {demoArticles.map((article, index) => (
-                                    <div
-                                        key={article.slug}
-                                        className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${article.selected ? "bg-primary/5 border-primary/30" : "hover:bg-muted/50"
-                                            }`}
-                                        onClick={() => handleToggle(index)}
-                                    >
-                                        <Checkbox
-                                            checked={article.selected}
-                                            onCheckedChange={() => handleToggle(index)}
-                                            className="mt-1"
-                                        />
-                                        <div className="flex-1 min-w-0">
-                                            <h4 className="font-medium text-sm line-clamp-1">{article.title}</h4>
-                                            <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                                                {article.excerpt}
-                                            </p>
-                                        </div>
-                                        {article.cover_image_url && (
-                                            <img
-                                                src={article.cover_image_url}
-                                                alt=""
-                                                className="w-16 h-12 object-cover rounded"
-                                            />
-                                        )}
+                    ) : (
+                        <div className="space-y-2">
+                            {demoArticles.map((article, index) => (
+                                <div
+                                    key={article.slug}
+                                    className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${article.selected
+                                            ? mode === "delete"
+                                                ? "bg-destructive/10 border-destructive/30"
+                                                : "bg-primary/5 border-primary/30"
+                                            : "hover:bg-muted/50"
+                                        }`}
+                                    onClick={() => handleToggle(index)}
+                                >
+                                    <Checkbox checked={article.selected} className="mt-1" />
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="font-medium text-sm line-clamp-1">{article.title}</h4>
+                                        <p className="text-xs text-muted-foreground line-clamp-1 mt-1">{article.excerpt}</p>
                                     </div>
-                                ))}
-                            </div>
-                        </ScrollArea>
+                                    {article.cover_image_url && (
+                                        <img src={article.cover_image_url} alt="" className="w-14 h-10 object-cover rounded" />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </ScrollArea>
 
-                        <DialogFooter className="flex-col sm:flex-row gap-2">
+                <DialogFooter className="flex-col sm:flex-row gap-2">
+                    {mode === "import" ? (
+                        <>
                             <Button
                                 variant="ghost"
                                 className="text-destructive hover:text-destructive"
-                                onClick={() => setShowDeleteConfirm(true)}
+                                onClick={() => setMode("delete")}
+                                disabled={demoArticles.length === 0}
                             >
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                Xóa Demo Data
+                                Xóa Demo
                             </Button>
                             <div className="flex-1" />
-                            <Button variant="outline" onClick={() => onOpenChange(false)}>
-                                Hủy
-                            </Button>
+                            <Button variant="outline" onClick={() => onOpenChange(false)}>Hủy</Button>
                             <Button onClick={handleImportSelected} disabled={isImporting || selectedCount === 0}>
                                 {isImporting ? "Đang import..." : `Import ${selectedCount} bài`}
                             </Button>
-                        </DialogFooter>
-                    </>
-                )}
+                        </>
+                    ) : (
+                        <>
+                            <Button variant="ghost" onClick={() => setMode("import")}>Quay lại</Button>
+                            <div className="flex-1" />
+                            <Button
+                                variant="destructive"
+                                onClick={handleDeleteSelected}
+                                disabled={isDeleting || selectedCount === 0}
+                            >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Xóa {selectedCount} bài
+                            </Button>
+                        </>
+                    )}
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     );
