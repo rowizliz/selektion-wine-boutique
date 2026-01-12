@@ -1,151 +1,167 @@
 import { cn } from "@/lib/utils";
-import { LucideIcon, Cherry, Apple, Citrus, Grape, Flower, Flower2, Leaf, Coffee, Sparkles, TreeDeciduous, Wind, Droplets, Flame, Cookie, Heart, Circle, Banana, TreePine, Mountain, Gem, CloudFog, Candy, Nut } from 'lucide-react';
+import {
+  CherryIcon, StrawberryIcon, RaspberryIcon, GrapeIcon, AppleIcon, CitrusIcon, PlumIcon, PeachIcon, PearIcon, BananaIcon,
+  RoseIcon, FlowerIcon, VioletIcon, BellPepperIcon,
+  LeafIcon, MintIcon,
+  VanillaIcon, PepperIcon, CinnamonIcon,
+  OakIcon, EarthIcon, MushroomIcon,
+  CoffeeIcon, HoneyIcon, CreamIcon, ButterIcon, ChocolateIcon, CheeseIcon,
+  TobaccoIcon, LeatherIcon, SmokeIcon,
+  NutIcon
+} from './CustomFlavorIcons';
+import { Sparkles } from 'lucide-react';
 
 interface FlavorNotesProps {
   notes: string[];
   className?: string;
 }
 
-// Map flavor notes to Vietnamese labels and Lucide icons
-// Supports both English keys AND Vietnamese labels as keys
-const flavorData: Record<string, { label: string; Icon: LucideIcon; iconColor: string; bgColor: string }> = {
+// Wine Folly Style - Simple recognizable icons
+type IconComponent = React.FC<{ className?: string }>;
+const flavorData: Record<string, { label: string; Icon: IconComponent }> = {
   // Red Fruits
-  cherry: { label: "Anh đào", Icon: Cherry, iconColor: "text-red-500", bgColor: "bg-red-50 dark:bg-red-950/40" },
-  "anh đào": { label: "Anh đào", Icon: Cherry, iconColor: "text-red-500", bgColor: "bg-red-50 dark:bg-red-950/40" },
-  strawberry: { label: "Dâu tây", Icon: Cherry, iconColor: "text-red-400", bgColor: "bg-red-50 dark:bg-red-950/40" },
-  "dâu tây": { label: "Dâu tây", Icon: Cherry, iconColor: "text-red-400", bgColor: "bg-red-50 dark:bg-red-950/40" },
-  raspberry: { label: "Mâm xôi", Icon: Cherry, iconColor: "text-pink-500", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
-  "mâm xôi": { label: "Mâm xôi", Icon: Cherry, iconColor: "text-pink-500", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
-  blackberry: { label: "Dâu đen", Icon: Grape, iconColor: "text-purple-700", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  "dâu đen": { label: "Dâu đen", Icon: Grape, iconColor: "text-purple-700", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  berry: { label: "Quả mọng", Icon: Grape, iconColor: "text-purple-500", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  "quả mọng": { label: "Quả mọng", Icon: Grape, iconColor: "text-purple-500", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  plum: { label: "Mận", Icon: Apple, iconColor: "text-purple-600", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  "mận": { label: "Mận", Icon: Apple, iconColor: "text-purple-600", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  cranberry: { label: "Nam việt quất", Icon: Cherry, iconColor: "text-red-600", bgColor: "bg-red-50 dark:bg-red-950/40" },
-  "nam việt quất": { label: "Nam việt quất", Icon: Cherry, iconColor: "text-red-600", bgColor: "bg-red-50 dark:bg-red-950/40" },
-  currant: { label: "Lý chua", Icon: Grape, iconColor: "text-red-700", bgColor: "bg-red-50 dark:bg-red-950/40" },
-  "lý chua": { label: "Lý chua", Icon: Grape, iconColor: "text-red-700", bgColor: "bg-red-50 dark:bg-red-950/40" },
-  "black currant": { label: "Lý chua đen", Icon: Grape, iconColor: "text-purple-800", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  "lý chua đen": { label: "Lý chua đen", Icon: Grape, iconColor: "text-purple-800", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  black: { label: "Quả đen", Icon: Grape, iconColor: "text-purple-900", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  "quả đen": { label: "Quả đen", Icon: Grape, iconColor: "text-purple-900", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
+  cherry: { label: "Anh đào", Icon: CherryIcon },
+  "anh đào": { label: "Anh đào", Icon: CherryIcon },
+  strawberry: { label: "Dâu tây", Icon: StrawberryIcon },
+  "dâu tây": { label: "Dâu tây", Icon: StrawberryIcon },
+  raspberry: { label: "Mâm xôi", Icon: RaspberryIcon },
+  "mâm xôi": { label: "Mâm xôi", Icon: RaspberryIcon },
+  blackberry: { label: "Dâu đen", Icon: GrapeIcon },
+  "dâu đen": { label: "Dâu đen", Icon: GrapeIcon },
+  berry: { label: "Quả mọng", Icon: RaspberryIcon },
+  "quả mọng": { label: "Quả mọng", Icon: RaspberryIcon },
+  plum: { label: "Mận", Icon: PlumIcon },
+  "mận": { label: "Mận", Icon: PlumIcon },
+  cranberry: { label: "Nam việt quất", Icon: CherryIcon },
+  "nam việt quất": { label: "Nam việt quất", Icon: CherryIcon },
+  currant: { label: "Lý chua", Icon: GrapeIcon },
+  "lý chua": { label: "Lý chua", Icon: GrapeIcon },
+  "black currant": { label: "Lý chua đen", Icon: GrapeIcon },
+  "lý chua đen": { label: "Lý chua đen", Icon: GrapeIcon },
+  black: { label: "Quả đen", Icon: GrapeIcon },
+  "quả đen": { label: "Quả đen", Icon: GrapeIcon },
+  nho: { label: "Nho", Icon: GrapeIcon },
+  grape: { label: "Nho", Icon: GrapeIcon },
 
   // Citrus
-  citrus: { label: "Cam quýt", Icon: Citrus, iconColor: "text-yellow-500", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  "cam quýt": { label: "Cam quýt", Icon: Citrus, iconColor: "text-yellow-500", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  orange: { label: "Cam", Icon: Citrus, iconColor: "text-orange-500", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
-  "cam": { label: "Cam", Icon: Citrus, iconColor: "text-orange-500", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
-  tangerine: { label: "Quýt", Icon: Citrus, iconColor: "text-orange-400", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
-  "quýt": { label: "Quýt", Icon: Citrus, iconColor: "text-orange-400", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
-  lemon: { label: "Chanh vàng", Icon: Citrus, iconColor: "text-yellow-400", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  "chanh vàng": { label: "Chanh vàng", Icon: Citrus, iconColor: "text-yellow-400", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  grapefruit: { label: "Bưởi", Icon: Citrus, iconColor: "text-pink-400", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
-  "bưởi": { label: "Bưởi", Icon: Citrus, iconColor: "text-pink-400", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
-  "orange peel": { label: "Vỏ cam", Icon: Citrus, iconColor: "text-orange-600", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
-  "vỏ cam": { label: "Vỏ cam", Icon: Citrus, iconColor: "text-orange-600", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
+  citrus: { label: "Cam quýt", Icon: CitrusIcon },
+  "cam quýt": { label: "Cam quýt", Icon: CitrusIcon },
+  orange: { label: "Cam", Icon: CitrusIcon },
+  cam: { label: "Cam", Icon: CitrusIcon },
+  tangerine: { label: "Quýt", Icon: CitrusIcon },
+  "quýt": { label: "Quýt", Icon: CitrusIcon },
+  lemon: { label: "Chanh vàng", Icon: CitrusIcon },
+  "chanh vàng": { label: "Chanh vàng", Icon: CitrusIcon },
+  grapefruit: { label: "Bưởi", Icon: CitrusIcon },
+  "bưởi": { label: "Bưởi", Icon: CitrusIcon },
+  "orange peel": { label: "Vỏ cam", Icon: CitrusIcon },
+  "vỏ cam": { label: "Vỏ cam", Icon: CitrusIcon },
 
   // Other Fruits
-  apple: { label: "Táo", Icon: Apple, iconColor: "text-green-500", bgColor: "bg-green-50 dark:bg-green-950/40" },
-  "táo": { label: "Táo", Icon: Apple, iconColor: "text-green-500", bgColor: "bg-green-50 dark:bg-green-950/40" },
-  pear: { label: "Lê", Icon: Apple, iconColor: "text-lime-500", bgColor: "bg-lime-50 dark:bg-lime-950/40" },
-  "lê": { label: "Lê", Icon: Apple, iconColor: "text-lime-500", bgColor: "bg-lime-50 dark:bg-lime-950/40" },
-  peach: { label: "Đào", Icon: Apple, iconColor: "text-orange-300", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
-  "đào": { label: "Đào", Icon: Apple, iconColor: "text-orange-300", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
-  tropical: { label: "Nhiệt đới", Icon: TreePine, iconColor: "text-green-400", bgColor: "bg-green-50 dark:bg-green-950/40" },
-  "nhiệt đới": { label: "Nhiệt đới", Icon: TreePine, iconColor: "text-green-400", bgColor: "bg-green-50 dark:bg-green-950/40" },
-  pineapple: { label: "Dứa", Icon: Sparkles, iconColor: "text-yellow-500", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  "dứa": { label: "Dứa", Icon: Sparkles, iconColor: "text-yellow-500", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  banana: { label: "Chuối", Icon: Banana, iconColor: "text-yellow-400", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  "chuối": { label: "Chuối", Icon: Banana, iconColor: "text-yellow-400", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  fig: { label: "Sung", Icon: Apple, iconColor: "text-purple-400", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  "sung": { label: "Sung", Icon: Apple, iconColor: "text-purple-400", bgColor: "bg-purple-50 dark:bg-purple-950/40" },
-  raisin: { label: "Nho khô", Icon: Grape, iconColor: "text-amber-700", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "nho khô": { label: "Nho khô", Icon: Grape, iconColor: "text-amber-700", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
+  apple: { label: "Táo", Icon: AppleIcon },
+  "táo": { label: "Táo", Icon: AppleIcon },
+  pear: { label: "Lê", Icon: PearIcon },
+  "lê": { label: "Lê", Icon: PearIcon },
+  peach: { label: "Đào", Icon: PeachIcon },
+  "đào": { label: "Đào", Icon: PeachIcon },
+  tropical: { label: "Nhiệt đới", Icon: BananaIcon },
+  "nhiệt đới": { label: "Nhiệt đới", Icon: BananaIcon },
+  pineapple: { label: "Dứa", Icon: CitrusIcon },
+  "dứa": { label: "Dứa", Icon: CitrusIcon },
+  banana: { label: "Chuối", Icon: BananaIcon },
+  "chuối": { label: "Chuối", Icon: BananaIcon },
+  fig: { label: "Sung", Icon: PlumIcon },
+  "sung": { label: "Sung", Icon: PlumIcon },
+  raisin: { label: "Nho khô", Icon: GrapeIcon },
+  "nho khô": { label: "Nho khô", Icon: GrapeIcon },
 
   // Floral
-  floral: { label: "Hoa", Icon: Flower2, iconColor: "text-pink-400", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
-  "hoa": { label: "Hoa", Icon: Flower2, iconColor: "text-pink-400", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
-  rose: { label: "Hoa hồng", Icon: Flower2, iconColor: "text-rose-400", bgColor: "bg-rose-50 dark:bg-rose-950/40" },
-  "hoa hồng": { label: "Hoa hồng", Icon: Flower2, iconColor: "text-rose-400", bgColor: "bg-rose-50 dark:bg-rose-950/40" },
-  violet: { label: "Hoa tím", Icon: Flower2, iconColor: "text-violet-500", bgColor: "bg-violet-50 dark:bg-violet-950/40" },
-  "hoa tím": { label: "Hoa tím", Icon: Flower2, iconColor: "text-violet-500", bgColor: "bg-violet-50 dark:bg-violet-950/40" },
-  jasmine: { label: "Hoa nhài", Icon: Flower2, iconColor: "text-white", bgColor: "bg-slate-100 dark:bg-slate-800/40" },
-  "hoa nhài": { label: "Hoa nhài", Icon: Flower2, iconColor: "text-white", bgColor: "bg-slate-100 dark:bg-slate-800/40" },
-  elderflower: { label: "Hoa cơm cháy", Icon: Flower2, iconColor: "text-lime-300", bgColor: "bg-lime-50 dark:bg-lime-950/40" },
-  "hoa cơm cháy": { label: "Hoa cơm cháy", Icon: Flower2, iconColor: "text-lime-300", bgColor: "bg-lime-50 dark:bg-lime-950/40" },
-  potpourri: { label: "Hoa khô", Icon: Flower2, iconColor: "text-pink-300", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
-  "hoa khô": { label: "Hoa khô", Icon: Flower2, iconColor: "text-pink-300", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
+  floral: { label: "Hoa", Icon: FlowerIcon },
+  "hoa": { label: "Hoa", Icon: FlowerIcon },
+  rose: { label: "Hoa hồng", Icon: RoseIcon },
+  "hoa hồng": { label: "Hoa hồng", Icon: RoseIcon },
+  violet: { label: "Hoa tím", Icon: VioletIcon },
+  "hoa tím": { label: "Hoa tím", Icon: VioletIcon },
+  jasmine: { label: "Hoa nhài", Icon: FlowerIcon },
+  "hoa nhài": { label: "Hoa nhài", Icon: FlowerIcon },
+  elderflower: { label: "Hoa cơm cháy", Icon: FlowerIcon },
+  "hoa cơm cháy": { label: "Hoa cơm cháy", Icon: FlowerIcon },
+  potpourri: { label: "Hoa khô", Icon: FlowerIcon },
+  "hoa khô": { label: "Hoa khô", Icon: FlowerIcon },
+  "hoa lan": { label: "Hoa lan", Icon: FlowerIcon },
 
   // Herbal
-  herb: { label: "Thảo mộc", Icon: Leaf, iconColor: "text-green-600", bgColor: "bg-green-50 dark:bg-green-950/40" },
-  "thảo mộc": { label: "Thảo mộc", Icon: Leaf, iconColor: "text-green-600", bgColor: "bg-green-50 dark:bg-green-950/40" },
-  mint: { label: "Bạc hà", Icon: Leaf, iconColor: "text-emerald-400", bgColor: "bg-emerald-50 dark:bg-emerald-950/40" },
-  "bạc hà": { label: "Bạc hà", Icon: Leaf, iconColor: "text-emerald-400", bgColor: "bg-emerald-50 dark:bg-emerald-950/40" },
-  eucalyptus: { label: "Khuynh diệp", Icon: Leaf, iconColor: "text-teal-500", bgColor: "bg-teal-50 dark:bg-teal-950/40" },
-  "khuynh diệp": { label: "Khuynh diệp", Icon: Leaf, iconColor: "text-teal-500", bgColor: "bg-teal-50 dark:bg-teal-950/40" },
-  "bell pepper": { label: "Ớt chuông", Icon: Leaf, iconColor: "text-green-500", bgColor: "bg-green-50 dark:bg-green-950/40" },
-  "ớt chuông": { label: "Ớt chuông", Icon: Leaf, iconColor: "text-green-500", bgColor: "bg-green-50 dark:bg-green-950/40" },
-  sage: { label: "Xô thơm", Icon: Leaf, iconColor: "text-green-400", bgColor: "bg-green-50 dark:bg-green-950/40" },
-  "xô thơm": { label: "Xô thơm", Icon: Leaf, iconColor: "text-green-400", bgColor: "bg-green-50 dark:bg-green-950/40" },
+  herb: { label: "Thảo mộc", Icon: LeafIcon },
+  "thảo mộc": { label: "Thảo mộc", Icon: LeafIcon },
+  mint: { label: "Bạc hà", Icon: MintIcon },
+  "bạc hà": { label: "Bạc hà", Icon: MintIcon },
+  eucalyptus: { label: "Khuynh diệp", Icon: LeafIcon },
+  "khuynh diệp": { label: "Khuynh diệp", Icon: LeafIcon },
+  "bell pepper": { label: "Ớt chuông", Icon: BellPepperIcon },
+  "ớt chuông": { label: "Ớt chuông", Icon: BellPepperIcon },
+  sage: { label: "Xô thơm", Icon: LeafIcon },
+  "xô thơm": { label: "Xô thơm", Icon: LeafIcon },
 
   // Spices
-  spice: { label: "Gia vị", Icon: Flame, iconColor: "text-orange-500", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
-  "gia vị": { label: "Gia vị", Icon: Flame, iconColor: "text-orange-500", bgColor: "bg-orange-50 dark:bg-orange-950/40" },
-  pepper: { label: "Tiêu", Icon: Flame, iconColor: "text-gray-600", bgColor: "bg-gray-50 dark:bg-gray-800/40" },
-  "tiêu": { label: "Tiêu", Icon: Flame, iconColor: "text-gray-600", bgColor: "bg-gray-50 dark:bg-gray-800/40" },
-  cinnamon: { label: "Quế", Icon: Flame, iconColor: "text-amber-600", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "quế": { label: "Quế", Icon: Flame, iconColor: "text-amber-600", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  ginger: { label: "Gừng", Icon: Flame, iconColor: "text-yellow-600", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  "gừng": { label: "Gừng", Icon: Flame, iconColor: "text-yellow-600", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  licorice: { label: "Cam thảo", Icon: Flame, iconColor: "text-amber-800", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "cam thảo": { label: "Cam thảo", Icon: Flame, iconColor: "text-amber-800", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
+  spice: { label: "Gia vị", Icon: PepperIcon },
+  "gia vị": { label: "Gia vị", Icon: PepperIcon },
+  pepper: { label: "Tiêu", Icon: PepperIcon },
+  "tiêu": { label: "Tiêu", Icon: PepperIcon },
+  cinnamon: { label: "Quế", Icon: CinnamonIcon },
+  "quế": { label: "Quế", Icon: CinnamonIcon },
+  ginger: { label: "Gừng", Icon: PepperIcon },
+  "gừng": { label: "Gừng", Icon: PepperIcon },
+  licorice: { label: "Cam thảo", Icon: CinnamonIcon },
+  "cam thảo": { label: "Cam thảo", Icon: CinnamonIcon },
 
   // Wood & Smoke
-  oak: { label: "Gỗ sồi", Icon: TreeDeciduous, iconColor: "text-amber-700", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "gỗ sồi": { label: "Gỗ sồi", Icon: TreeDeciduous, iconColor: "text-amber-700", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  cedar: { label: "Gỗ tuyết tùng", Icon: TreeDeciduous, iconColor: "text-amber-600", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "gỗ tuyết tùng": { label: "Gỗ tuyết tùng", Icon: TreeDeciduous, iconColor: "text-amber-600", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  tobacco: { label: "Thuốc lá", Icon: Leaf, iconColor: "text-amber-800", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "thuốc lá": { label: "Thuốc lá", Icon: Leaf, iconColor: "text-amber-800", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  leather: { label: "Da thuộc", Icon: Sparkles, iconColor: "text-amber-900", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "da thuộc": { label: "Da thuộc", Icon: Sparkles, iconColor: "text-amber-900", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  smoke: { label: "Khói", Icon: CloudFog, iconColor: "text-gray-500", bgColor: "bg-gray-50 dark:bg-gray-800/40" },
-  "khói": { label: "Khói", Icon: CloudFog, iconColor: "text-gray-500", bgColor: "bg-gray-50 dark:bg-gray-800/40" },
+  oak: { label: "Gỗ sồi", Icon: OakIcon },
+  "gỗ sồi": { label: "Gỗ sồi", Icon: OakIcon },
+  cedar: { label: "Gỗ tuyết tùng", Icon: OakIcon },
+  "gỗ tuyết tùng": { label: "Gỗ tuyết tùng", Icon: OakIcon },
+  tobacco: { label: "Thuốc lá", Icon: TobaccoIcon },
+  "thuốc lá": { label: "Thuốc lá", Icon: TobaccoIcon },
+  leather: { label: "Da thuộc", Icon: LeatherIcon },
+  "da thuộc": { label: "Da thuộc", Icon: LeatherIcon },
+  smoke: { label: "Khói", Icon: SmokeIcon },
+  "khói": { label: "Khói", Icon: SmokeIcon },
+  earthy: { label: "Đất", Icon: EarthIcon },
+  "đất": { label: "Đất", Icon: EarthIcon },
+  mineral: { label: "Khoáng chất", Icon: EarthIcon },
+  "khoáng chất": { label: "Khoáng chất", Icon: EarthIcon },
+  mushroom: { label: "Nấm", Icon: MushroomIcon },
+  "nấm": { label: "Nấm", Icon: MushroomIcon },
 
   // Sweet & Rich
-  vanilla: { label: "Vani", Icon: Cookie, iconColor: "text-amber-300", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "vani": { label: "Vani", Icon: Cookie, iconColor: "text-amber-300", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  chocolate: { label: "Sô-cô-la", Icon: Cookie, iconColor: "text-amber-800", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "sô-cô-la": { label: "Sô-cô-la", Icon: Cookie, iconColor: "text-amber-800", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  cocoa: { label: "Ca cao", Icon: Cookie, iconColor: "text-amber-900", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "ca cao": { label: "Ca cao", Icon: Cookie, iconColor: "text-amber-900", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  mocha: { label: "Mocha", Icon: Coffee, iconColor: "text-amber-700", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  coffee: { label: "Cà phê", Icon: Coffee, iconColor: "text-amber-950", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "cà phê": { label: "Cà phê", Icon: Coffee, iconColor: "text-amber-950", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  honey: { label: "Mật ong", Icon: Cookie, iconColor: "text-yellow-500", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  "mật ong": { label: "Mật ong", Icon: Cookie, iconColor: "text-yellow-500", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  butter: { label: "Bơ", Icon: Cookie, iconColor: "text-yellow-300", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  "bơ": { label: "Bơ", Icon: Cookie, iconColor: "text-yellow-300", bgColor: "bg-yellow-50 dark:bg-yellow-950/40" },
-  cream: { label: "Kem", Icon: Cookie, iconColor: "text-amber-100", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "kem": { label: "Kem", Icon: Cookie, iconColor: "text-amber-100", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  caramel: { label: "Caramel", Icon: Cookie, iconColor: "text-amber-500", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  almond: { label: "Hạnh nhân", Icon: Nut, iconColor: "text-amber-600", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "hạnh nhân": { label: "Hạnh nhân", Icon: Nut, iconColor: "text-amber-600", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-
-  // Earthy & Mineral
-  earthy: { label: "Đất", Icon: Mountain, iconColor: "text-stone-600", bgColor: "bg-stone-50 dark:bg-stone-800/40" },
-  "đất": { label: "Đất", Icon: Mountain, iconColor: "text-stone-600", bgColor: "bg-stone-50 dark:bg-stone-800/40" },
-  mineral: { label: "Khoáng chất", Icon: Mountain, iconColor: "text-slate-500", bgColor: "bg-slate-50 dark:bg-slate-800/40" },
-  "khoáng chất": { label: "Khoáng chất", Icon: Mountain, iconColor: "text-slate-500", bgColor: "bg-slate-50 dark:bg-slate-800/40" },
-  musk: { label: "Xạ hương", Icon: Sparkles, iconColor: "text-pink-400", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
-  "xạ hương": { label: "Xạ hương", Icon: Sparkles, iconColor: "text-pink-400", bgColor: "bg-pink-50 dark:bg-pink-950/40" },
+  vanilla: { label: "Vani", Icon: VanillaIcon },
+  "vani": { label: "Vani", Icon: VanillaIcon },
+  chocolate: { label: "Sô-cô-la", Icon: ChocolateIcon },
+  "sô-cô-la": { label: "Sô-cô-la", Icon: ChocolateIcon },
+  cocoa: { label: "Ca cao", Icon: ChocolateIcon },
+  "ca cao": { label: "Ca cao", Icon: ChocolateIcon },
+  mocha: { label: "Mocha", Icon: CoffeeIcon },
+  coffee: { label: "Cà phê", Icon: CoffeeIcon },
+  "cà phê": { label: "Cà phê", Icon: CoffeeIcon },
+  honey: { label: "Mật ong", Icon: HoneyIcon },
+  "mật ong": { label: "Mật ong", Icon: HoneyIcon },
+  butter: { label: "Bơ", Icon: ButterIcon },
+  "bơ": { label: "Bơ", Icon: ButterIcon },
+  cream: { label: "Kem", Icon: CreamIcon },
+  "kem": { label: "Kem", Icon: CreamIcon },
+  caramel: { label: "Caramel", Icon: HoneyIcon },
+  almond: { label: "Hạnh nhân", Icon: NutIcon },
+  "hạnh nhân": { label: "Hạnh nhân", Icon: NutIcon },
 
   // Special
-  cheese: { label: "Phô mai", Icon: Circle, iconColor: "text-amber-200", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  "phô mai": { label: "Phô mai", Icon: Circle, iconColor: "text-amber-200", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
-  moscato: { label: "Moscato", Icon: Grape, iconColor: "text-amber-400", bgColor: "bg-amber-50 dark:bg-amber-950/40" },
+  musk: { label: "Xạ hương", Icon: FlowerIcon },
+  "xạ hương": { label: "Xạ hương", Icon: FlowerIcon },
+  cheese: { label: "Phô mai", Icon: CheeseIcon },
+  "phô mai": { label: "Phô mai", Icon: CheeseIcon },
+  moscato: { label: "Moscato", Icon: GrapeIcon },
 };
+
+// Default icon for unknown flavors
+const DefaultIcon = Sparkles;
 
 const FlavorNotes = ({ notes, className }: FlavorNotesProps) => {
   return (
@@ -154,20 +170,25 @@ const FlavorNotes = ({ notes, className }: FlavorNotesProps) => {
         const noteKey = note.toLowerCase();
         const data = flavorData[noteKey];
         const label = data?.label || note;
-        const IconComponent = data?.Icon || Sparkles;
-        const iconColor = data?.iconColor || "text-muted-foreground";
-        const bgColor = data?.bgColor || "bg-secondary/40";
-        
+        const IconComponent = data?.Icon || DefaultIcon;
+
         return (
           <div
             key={note}
             className={cn(
-              "flex items-center gap-2 px-3 py-2 rounded-full border border-border/30 hover:border-border/50 transition-all hover:scale-105",
-              bgColor
+              "flex items-center gap-2 px-3 py-2 rounded-full",
+              "border border-border/40",
+              "bg-neutral-50 dark:bg-neutral-900/50",
+              "hover:bg-neutral-100 dark:hover:bg-neutral-800/60",
+              "hover:border-border/60",
+              "transition-all duration-200 hover:scale-105",
+              "shadow-sm hover:shadow"
             )}
           >
-            <IconComponent className={cn("w-4 h-4", iconColor)} aria-hidden="true" />
-            <span className="text-xs font-medium text-foreground/80">{label}</span>
+            <IconComponent
+              className="w-5 h-5 text-foreground/80"
+            />
+            <span className="text-xs font-medium text-foreground/90">{label}</span>
           </div>
         );
       })}

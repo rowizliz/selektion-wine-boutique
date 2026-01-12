@@ -58,12 +58,18 @@ const articleStyles = `
   }
   
   .nyt-article .lead {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
     font-size: 1.375rem;
     line-height: 1.7;
     color: hsl(var(--foreground) / 0.95);
     border-left: 3px solid hsl(var(--primary));
     padding-left: 1.25rem;
     margin-bottom: 2rem;
+  }
+  
+  .nyt-article .lead em {
+    font-style: normal;
+    font-weight: 400;
   }
   
   .nyt-article .author-note {
