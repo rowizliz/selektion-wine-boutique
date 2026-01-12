@@ -1,7 +1,10 @@
 // PremiumFlavorIcons.tsx – New cohesive icon set matching Wine Folly outline style
 
 import React from 'react';
-import { IconProps } from '@/components/ui/icons'; // adjust path if needed
+
+interface IconProps {
+  className?: string;
+}
 
 // NOTE: All icons use viewBox="0 0 24 24", stroke="currentColor", strokeWidth="2",
 // strokeLinecap="round", strokeLinejoin="round", and no fill for a clean outline look.
