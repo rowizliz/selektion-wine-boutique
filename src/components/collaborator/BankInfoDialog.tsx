@@ -10,14 +10,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Loader2 } from "lucide-react";
 import { useUpdateCollaboratorBankInfo, uploadQRCode } from "@/hooks/useWithdrawals";
-import type { Collaborator } from "@/hooks/useCollaborators";
+import { useOwnBankingDetails, type CollaboratorProfile } from "@/hooks/useCollaborators";
 
 interface BankInfoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  collaborator: Collaborator;
+  collaborator: CollaboratorProfile;
 }
 
 export function BankInfoDialog({ open, onOpenChange, collaborator }: BankInfoDialogProps) {
@@ -27,16 +27,26 @@ export function BankInfoDialog({ open, onOpenChange, collaborator }: BankInfoDia
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Fetch banking details securely when dialog opens
+  const { data: bankingDetails, isLoading: isLoadingBanking, refetch } = useOwnBankingDetails();
 
-  // Sync state with collaborator prop when dialog opens or collaborator changes
+  // Sync state with banking details when they load
+  useEffect(() => {
+    if (open && bankingDetails) {
+      setBankName(bankingDetails.bank_name || "");
+      setAccountNumber(bankingDetails.bank_account_number || "");
+      setAccountHolder(bankingDetails.bank_account_holder || "");
+      setQrCodeUrl(bankingDetails.qr_code_url || "");
+    }
+  }, [open, bankingDetails]);
+  
+  // Refetch banking details when dialog opens
   useEffect(() => {
     if (open) {
-      setBankName(collaborator.bank_name || "");
-      setAccountNumber(collaborator.bank_account_number || "");
-      setAccountHolder(collaborator.bank_account_holder || "");
-      setQrCodeUrl(collaborator.qr_code_url || "");
+      refetch();
     }
-  }, [open, collaborator]);
+  }, [open, refetch]);
 
   const updateBankInfo = useUpdateCollaboratorBankInfo();
 
@@ -83,6 +93,11 @@ export function BankInfoDialog({ open, onOpenChange, collaborator }: BankInfoDia
         <DialogHeader>
           <DialogTitle>Thông tin ngân hàng</DialogTitle>
         </DialogHeader>
+        {isLoadingBanking ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
         <div className="space-y-4">
           <div>
             <Label>Tên ngân hàng</Label>
@@ -146,6 +161,7 @@ export function BankInfoDialog({ open, onOpenChange, collaborator }: BankInfoDia
             )}
           </div>
         </div>
+        )}
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Hủy

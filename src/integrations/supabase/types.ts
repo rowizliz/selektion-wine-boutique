@@ -1258,6 +1258,32 @@ export type Database = {
           url_slug: string
         }[]
       }
+      get_own_banking_details: {
+        Args: never
+        Returns: {
+          bank_account_holder: string
+          bank_account_number: string
+          bank_name: string
+          id: string
+          qr_code_url: string
+        }[]
+      }
+      get_own_collaborator_safe_profile: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          created_at: string
+          discount_percent: number
+          email: string
+          id: string
+          is_active: boolean
+          name: string
+          phone: string
+          updated_at: string
+          user_id: string
+          wallet_balance: number
+        }[]
+      }
       get_personalized_wine_request_status: {
         Args: { p_tracking_token: string }
         Returns: {

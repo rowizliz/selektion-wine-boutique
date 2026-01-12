@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export interface Collaborator {
+// Base collaborator profile (without sensitive banking data)
+export interface CollaboratorProfile {
   id: string;
   user_id: string | null;
   email: string;
@@ -11,12 +12,25 @@ export interface Collaborator {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  wallet_balance: number;
+  avatar_url: string | null;
+}
+
+// Banking details (fetched separately for security)
+export interface CollaboratorBankingDetails {
+  id: string;
   bank_name: string | null;
   bank_account_number: string | null;
   bank_account_holder: string | null;
   qr_code_url: string | null;
-  wallet_balance: number;
-  avatar_url: string | null;
+}
+
+// Full collaborator (for admin use only)
+export interface Collaborator extends CollaboratorProfile {
+  bank_name: string | null;
+  bank_account_number: string | null;
+  bank_account_holder: string | null;
+  qr_code_url: string | null;
 }
 
 export interface CommissionTier {
@@ -51,7 +65,7 @@ export interface CollaboratorOrderItem {
   quantity: number;
 }
 
-// Get all collaborators (admin)
+// Get all collaborators (admin only - includes banking details)
 export function useCollaborators() {
   return useQuery({
     queryKey: ["collaborators"],
@@ -66,7 +80,7 @@ export function useCollaborators() {
   });
 }
 
-// Get current user's collaborator profile
+// Get current user's collaborator profile (without sensitive banking data)
 export function useCurrentCollaborator() {
   return useQuery({
     queryKey: ["current-collaborator"],
@@ -74,15 +88,33 @@ export function useCurrentCollaborator() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
 
-      const { data, error } = await supabase
-        .from("collaborators")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("is_active", true)
-        .maybeSingle();
+      // Use secure function that excludes banking details
+      const { data, error } = await supabase.rpc("get_own_collaborator_safe_profile");
       
       if (error) throw error;
-      return data as Collaborator | null;
+      
+      // The RPC returns an array, get the first item
+      const profile = Array.isArray(data) ? data[0] : data;
+      return profile as CollaboratorProfile | null;
+    },
+  });
+}
+
+// Get current collaborator's banking details (for profile settings only)
+export function useOwnBankingDetails() {
+  return useQuery({
+    queryKey: ["own-banking-details"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase.rpc("get_own_banking_details");
+      
+      if (error) throw error;
+      
+      // The RPC returns an array, get the first item
+      const bankingDetails = Array.isArray(data) ? data[0] : data;
+      return bankingDetails as CollaboratorBankingDetails | null;
     },
   });
 }

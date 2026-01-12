@@ -23,7 +23,7 @@ import {
     Award
 } from "lucide-react";
 import { toast } from "sonner";
-import { Collaborator } from "@/hooks/useCollaborators";
+import { CollaboratorProfile } from "@/hooks/useCollaborators";
 
 interface CommissionTier {
     id: string;
@@ -33,7 +33,7 @@ interface CommissionTier {
 }
 
 interface CollaboratorDashboardProps {
-    collaborator: Collaborator;
+    collaborator: CollaboratorProfile;
     accumulatedQuantity: number;
     currentCartQuantity: number;
     totalQuantity: number;

@@ -3,10 +3,10 @@ import { User, Settings, FileText, LayoutDashboard, LogOut, ChevronRight, Landma
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Collaborator } from "@/hooks/useCollaborators";
+import { CollaboratorProfile } from "@/hooks/useCollaborators";
 
 interface CollaboratorMenuProps {
-    collaborator: Collaborator;
+    collaborator: CollaboratorProfile;
     onOpenBankInfo: () => void;
     onOpenProfile: () => void;
     onOpenPasswordChange: () => void;
