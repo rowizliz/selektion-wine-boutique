@@ -23,7 +23,7 @@ import {
   useCreateCollaboratorOrder,
   useCommissionTiers,
   useAccumulatedQuantity,
-  Collaborator,
+  CollaboratorProfile,
 } from "@/hooks/useCollaborators";
 import { useWines } from "@/hooks/useWines";
 import { useMyArticles, useArticleMutations, BlogArticle } from "@/hooks/useBlogArticles";

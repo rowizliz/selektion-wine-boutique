@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Settings, Upload, X } from "lucide-react";
+import { Settings, Upload, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Collaborator } from "@/hooks/useCollaborators";
+import { useOwnBankingDetails, type CollaboratorProfile } from "@/hooks/useCollaborators";
 
 interface ProfileSettingsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  collaborator: Collaborator;
+  collaborator: CollaboratorProfile;
 }
 
 interface PendingUpdate {
@@ -53,20 +53,46 @@ export const ProfileSettingsDialog = ({
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const qrInputRef = useRef<HTMLInputElement>(null);
 
+  // Fetch banking details securely
+  const { data: bankingDetails, isLoading: isLoadingBanking, refetch: refetchBanking } = useOwnBankingDetails();
+  
+  // Store original banking values for comparison
+  const [originalBankingValues, setOriginalBankingValues] = useState({
+    bank_name: "",
+    bank_account_number: "",
+    bank_account_holder: "",
+    qr_code_url: "",
+  });
+
   useEffect(() => {
     if (open && collaborator) {
       setName(collaborator.name || "");
       setPhone(collaborator.phone || "");
       setAvatarUrl(collaborator.avatar_url || "");
-      setBankName(collaborator.bank_name || "");
-      setBankAccountNumber(collaborator.bank_account_number || "");
-      setBankAccountHolder(collaborator.bank_account_holder || "");
-      setQrCodeUrl(collaborator.qr_code_url || "");
+      
+      // Refetch banking details when dialog opens
+      refetchBanking();
       
       // Check for pending update requests
       fetchPendingUpdate();
     }
-  }, [open, collaborator]);
+  }, [open, collaborator, refetchBanking]);
+
+  // Set banking values when data loads
+  useEffect(() => {
+    if (bankingDetails) {
+      setBankName(bankingDetails.bank_name || "");
+      setBankAccountNumber(bankingDetails.bank_account_number || "");
+      setBankAccountHolder(bankingDetails.bank_account_holder || "");
+      setQrCodeUrl(bankingDetails.qr_code_url || "");
+      setOriginalBankingValues({
+        bank_name: bankingDetails.bank_name || "",
+        bank_account_number: bankingDetails.bank_account_number || "",
+        bank_account_holder: bankingDetails.bank_account_holder || "",
+        qr_code_url: bankingDetails.qr_code_url || "",
+      });
+    }
+  }, [bankingDetails]);
 
   const fetchPendingUpdate = async () => {
     const { data } = await supabase
@@ -135,10 +161,10 @@ export const ProfileSettingsDialog = ({
       name !== (collaborator.name || "") ||
       phone !== (collaborator.phone || "") ||
       avatarUrl !== (collaborator.avatar_url || "") ||
-      bankName !== (collaborator.bank_name || "") ||
-      bankAccountNumber !== (collaborator.bank_account_number || "") ||
-      bankAccountHolder !== (collaborator.bank_account_holder || "") ||
-      qrCodeUrl !== (collaborator.qr_code_url || "")
+      bankName !== originalBankingValues.bank_name ||
+      bankAccountNumber !== originalBankingValues.bank_account_number ||
+      bankAccountHolder !== originalBankingValues.bank_account_holder ||
+      qrCodeUrl !== originalBankingValues.qr_code_url
     );
   };
 
@@ -157,10 +183,10 @@ export const ProfileSettingsDialog = ({
         requested_name: name !== collaborator.name ? name : null,
         requested_phone: phone !== collaborator.phone ? phone : null,
         requested_avatar_url: avatarUrl !== collaborator.avatar_url ? avatarUrl : null,
-        requested_bank_name: bankName !== collaborator.bank_name ? bankName : null,
-        requested_bank_account_number: bankAccountNumber !== collaborator.bank_account_number ? bankAccountNumber : null,
-        requested_bank_account_holder: bankAccountHolder !== collaborator.bank_account_holder ? bankAccountHolder : null,
-        requested_qr_code_url: qrCodeUrl !== collaborator.qr_code_url ? qrCodeUrl : null,
+        requested_bank_name: bankName !== originalBankingValues.bank_name ? bankName : null,
+        requested_bank_account_number: bankAccountNumber !== originalBankingValues.bank_account_number ? bankAccountNumber : null,
+        requested_bank_account_holder: bankAccountHolder !== originalBankingValues.bank_account_holder ? bankAccountHolder : null,
+        requested_qr_code_url: qrCodeUrl !== originalBankingValues.qr_code_url ? qrCodeUrl : null,
       });
 
     setIsSubmitting(false);

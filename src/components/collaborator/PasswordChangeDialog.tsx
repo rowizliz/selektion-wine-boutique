@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Collaborator } from "@/hooks/useCollaborators";
+import { CollaboratorProfile } from "@/hooks/useCollaborators";
 
 interface PasswordChangeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  collaborator: Collaborator;
+  collaborator: CollaboratorProfile;
 }
 
 interface PasswordRequest {

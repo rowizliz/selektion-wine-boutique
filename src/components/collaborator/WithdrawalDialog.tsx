@@ -11,19 +11,23 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import { useCreateWithdrawal, useCanRequestWithdrawal } from "@/hooks/useWithdrawals";
-import type { Collaborator } from "@/hooks/useCollaborators";
+import { useOwnBankingDetails, type CollaboratorProfile } from "@/hooks/useCollaborators";
 
 interface WithdrawalDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  collaborator: Collaborator;
+  collaborator: CollaboratorProfile;
 }
 
 export function WithdrawalDialog({ open, onOpenChange, collaborator }: WithdrawalDialogProps) {
   const [amount, setAmount] = useState("");
   const createWithdrawal = useCreateWithdrawal();
   const { data: canWithdrawData } = useCanRequestWithdrawal(collaborator.id);
+  const { data: bankingDetails, isLoading: isLoadingBanking } = useOwnBankingDetails();
+
+  const hasBankAccount = !!bankingDetails?.bank_account_number;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN").format(price) + "đ";
@@ -67,7 +71,11 @@ export function WithdrawalDialog({ open, onOpenChange, collaborator }: Withdrawa
           </DialogDescription>
         </DialogHeader>
 
-        {!canRequest && nextAllowedDate ? (
+        {isLoadingBanking ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : !canRequest && nextAllowedDate ? (
           <div className="py-4 text-center">
             <p className="text-muted-foreground">
               Bạn chỉ có thể yêu cầu rút tiền 1 lần/tuần.
@@ -101,7 +109,7 @@ export function WithdrawalDialog({ open, onOpenChange, collaborator }: Withdrawa
               </p>
             </div>
 
-            {!collaborator.bank_account_number && (
+            {!hasBankAccount && (
               <p className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg">
                 ⚠️ Vui lòng cập nhật thông tin ngân hàng trước khi yêu cầu rút tiền.
               </p>
@@ -113,10 +121,10 @@ export function WithdrawalDialog({ open, onOpenChange, collaborator }: Withdrawa
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Đóng
           </Button>
-          {canRequest && (
+          {canRequest && !isLoadingBanking && (
             <Button
               onClick={handleSubmit}
-              disabled={createWithdrawal.isPending || !collaborator.bank_account_number}
+              disabled={createWithdrawal.isPending || !hasBankAccount}
             >
               {createWithdrawal.isPending ? "Đang gửi..." : "Gửi yêu cầu"}
             </Button>
