@@ -13,96 +13,105 @@ interface ArticleContentProps {
 
 // Professional magazine-style CSS
 const articleStyles = `
-  .article-prose {
+  .article-prose, .nyt-article {
     font-family: 'Georgia', 'Times New Roman', serif;
     max-width: 720px;
     margin: 0 auto;
   }
   
-  .article-prose h2 {
+  .article-prose h2, .nyt-article h2 {
     font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
     font-weight: 700;
-    font-size: 1.875rem;
-    line-height: 1.25;
-    margin-top: 3rem;
-    margin-bottom: 1.25rem;
-    color: hsl(var(--foreground));
-    letter-spacing: -0.025em;
-    border-bottom: 2px solid hsl(var(--border));
-    padding-bottom: 0.75rem;
-  }
-  
-  .article-prose h3 {
-    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-    font-weight: 600;
-    font-size: 1.375rem;
-    line-height: 1.35;
+    font-size: 1.75rem;
+    line-height: 1.3;
     margin-top: 2.5rem;
     margin-bottom: 1rem;
     color: hsl(var(--foreground));
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
   
-  .article-prose h4 {
+  .article-prose h3, .nyt-article h3 {
     font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
     font-weight: 600;
-    font-size: 1.125rem;
+    font-size: 1.25rem;
+    line-height: 1.35;
     margin-top: 2rem;
     margin-bottom: 0.75rem;
     color: hsl(var(--foreground));
   }
   
-  .article-prose p {
+  .article-prose p, .nyt-article p {
     font-size: 1.1875rem;
-    line-height: 1.8;
+    line-height: 1.85;
     margin-bottom: 1.5rem;
-    color: hsl(var(--foreground) / 0.88);
+    color: hsl(var(--foreground) / 0.9);
   }
   
-  .article-prose p:first-of-type {
-    font-size: 1.25rem;
+  .nyt-article .lead {
+    font-size: 1.375rem;
+    line-height: 1.7;
+    color: hsl(var(--foreground) / 0.95);
+    border-left: 3px solid hsl(var(--primary));
+    padding-left: 1.25rem;
+    margin-bottom: 2rem;
   }
   
-  .article-prose strong, .article-prose b {
+  .nyt-article .author-note {
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.95rem;
+    background: hsl(var(--muted));
+    padding: 1rem 1.25rem;
+    border-radius: 6px;
+    margin-top: 2rem;
+  }
+  
+  .article-prose strong, .article-prose b,
+  .nyt-article strong, .nyt-article b {
     font-weight: 700;
     color: hsl(var(--foreground));
   }
   
-  .article-prose ul, .article-prose ol {
-    margin: 1.75rem 0;
+  .article-prose em, .nyt-article em {
+    font-style: italic;
+  }
+  
+  .article-prose ul, .article-prose ol,
+  .nyt-article ul, .nyt-article ol {
+    margin: 1.5rem 0;
     padding-left: 0;
     list-style: none;
   }
   
-  .article-prose ul li, .article-prose ol li {
+  .article-prose ul li, .article-prose ol li,
+  .nyt-article ul li, .nyt-article ol li {
     font-size: 1.125rem;
     line-height: 1.75;
-    margin-bottom: 0.875rem;
-    color: hsl(var(--foreground) / 0.88);
+    margin-bottom: 0.75rem;
+    color: hsl(var(--foreground) / 0.9);
     padding-left: 1.75rem;
     position: relative;
   }
   
-  .article-prose ul li::before {
+  .article-prose ul li::before, .nyt-article ul li::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 0.65em;
+    top: 0.6em;
     width: 6px;
     height: 6px;
     background: hsl(var(--primary));
     border-radius: 50%;
   }
   
-  .article-prose ol {
+  .article-prose ol, .nyt-article ol {
     counter-reset: ol-counter;
   }
   
-  .article-prose ol li {
+  .article-prose ol li, .nyt-article ol li {
     counter-increment: ol-counter;
   }
   
-  .article-prose ol li::before {
+  .article-prose ol li::before, .nyt-article ol li::before {
     content: counter(ol-counter) ".";
     position: absolute;
     left: 0;
@@ -111,79 +120,45 @@ const articleStyles = `
     font-family: ui-sans-serif, system-ui, sans-serif;
   }
   
-  .article-prose a {
+  .article-prose a, .nyt-article a {
     color: hsl(var(--primary));
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: opacity 0.2s;
   }
   
-  .article-prose a:hover {
+  .article-prose a:hover, .nyt-article a:hover {
     opacity: 0.7;
   }
   
-  .article-prose blockquote {
-    margin: 2.5rem 0;
-    padding: 1.5rem 2rem;
+  .article-prose blockquote, .nyt-article blockquote {
+    margin: 2rem 0;
+    padding: 1.25rem 1.5rem;
     border-left: 4px solid hsl(var(--primary));
-    background: hsl(var(--muted) / 0.5);
+    background: hsl(var(--muted) / 0.4);
     font-style: italic;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     line-height: 1.7;
   }
   
-  .article-prose table {
-    width: 100%;
-    margin: 2rem 0;
-    border-collapse: collapse;
-    font-family: ui-sans-serif, system-ui, sans-serif;
-    font-size: 0.95rem;
-  }
-  
-  .article-prose th, .article-prose td {
-    padding: 0.875rem 1rem;
-    border: 1px solid hsl(var(--border));
-    text-align: left;
-  }
-  
-  .article-prose th {
-    background: hsl(var(--muted));
-    font-weight: 600;
-    color: hsl(var(--foreground));
-  }
-  
-  .article-prose img {
-    max-width: 100%;
-    height: auto;
-    margin: 2.5rem auto;
-    border-radius: 8px;
-    display: block;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  }
-  
-  .article-prose hr {
+  .article-prose hr, .nyt-article hr {
     border: none;
     border-top: 1px solid hsl(var(--border));
-    margin: 3rem 0;
+    margin: 2.5rem 0;
   }
   
-  .article-prose .blog-content {
-    all: unset;
+  .article-prose img, .nyt-article img {
+    max-width: 100%;
+    height: auto;
+    margin: 2rem auto;
+    border-radius: 6px;
     display: block;
   }
   
-  /* Info box style */
-  .article-prose .info-box {
-    background: hsl(var(--muted));
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin: 2rem 0;
-  }
-  
-  /* Rating stars */
-  .article-prose .rating {
-    font-size: 1.5rem;
-    color: #f59e0b;
+  .article-prose .blog-content,
+  .nyt-article .blog-content {
+    all: unset;
+    display: block;
   }
 `;
 
