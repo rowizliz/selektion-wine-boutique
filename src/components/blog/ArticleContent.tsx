@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import { ContentBlock } from "./BlockEditor";
 import {
   Carousel,
@@ -6,6 +7,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+
+// DOMPurify configuration for safe HTML rendering
+const DOMPURIFY_CONFIG = {
+  ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'u', 's', 'b', 'i', 'blockquote', 'ul', 'ol', 'li', 'a', 'img', 'br', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'figure', 'figcaption'],
+  ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel', 'width', 'height'],
+  ALLOW_DATA_ATTR: false,
+  FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form', 'input', 'textarea', 'button'],
+  FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'onchange', 'onsubmit']
+};
 
 interface ArticleContentProps {
   content: string;
@@ -184,15 +194,15 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
     const hasHTMLTags = /<(div|p|h[1-6]|ul|ol|li|strong|em|a|table|img|blockquote|br|span)[^>]*>/i.test(content);
 
     if (hasHTMLTags) {
-      // Clean up the content - remove outer blog-content div if exists
-      let cleanContent = content;
+      // Sanitize HTML content to prevent XSS attacks
+      const sanitizedContent = DOMPurify.sanitize(content, DOMPURIFY_CONFIG);
 
       return (
         <>
           <style>{articleStyles}</style>
           <div
             className="article-prose"
-            dangerouslySetInnerHTML={{ __html: cleanContent }}
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
         </>
       );
@@ -222,10 +232,12 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
             const hasHTML = /<[^>]+>/.test(block.content);
 
             if (hasHTML) {
+              // Sanitize HTML content to prevent XSS attacks
+              const sanitizedBlockContent = DOMPurify.sanitize(block.content, DOMPURIFY_CONFIG);
               return (
                 <div
                   key={index}
-                  dangerouslySetInnerHTML={{ __html: block.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizedBlockContent }}
                 />
               );
             }
