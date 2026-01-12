@@ -280,11 +280,11 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
                     {block.images.map((img, imgIndex) => (
                       <CarouselItem key={imgIndex}>
                         <figure>
-                          <div className="overflow-hidden flex items-center justify-center bg-muted/30 rounded-lg">
+                          <div className="aspect-square overflow-hidden flex items-center justify-center bg-muted/30 rounded-lg">
                             <img
                               src={img.url}
                               alt={img.caption || ""}
-                              className="w-full h-auto object-contain"
+                              className="w-full h-full object-contain"
                             />
                           </div>
                           {img.caption && (
