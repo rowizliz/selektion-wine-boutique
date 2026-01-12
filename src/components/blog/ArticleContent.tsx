@@ -284,7 +284,7 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
                             <img
                               src={img.url}
                               alt={img.caption || ""}
-                              className="w-full h-full object-contain"
+                              className="!h-full !w-full !m-0 object-contain"
                             />
                           </div>
                           {img.caption && (
