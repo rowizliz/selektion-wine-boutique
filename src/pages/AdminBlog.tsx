@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Plus, Pencil, Trash2, Check, X, Eye, FolderOpen, FileEdit } from "lucide-react";
 import ArticleFormDialog from "@/components/blog/ArticleFormDialog";
+import ImportDemoDialog from "@/components/blog/ImportDemoDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -29,7 +30,6 @@ import { useBlogCategories, useAdminBlogCategories, BlogCategory } from "@/hooks
 import { useAllArticles, useArticleMutations, BlogArticle } from "@/hooks/useBlogArticles";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { SAMPLE_BLOG_POSTS } from "@/data/sample-blogs";
 import { supabase } from "@/integrations/supabase/client";
 
 const AdminBlog = () => {
@@ -47,6 +47,7 @@ const AdminBlog = () => {
   const { updateArticle, deleteArticle, createArticle } = useArticleMutations();
   const [articleDialog, setArticleDialog] = useState<{ open: boolean; article?: BlogArticle; action?: "approve" | "reject" }>({ open: false });
   const [adminNotes, setAdminNotes] = useState("");
+  const [importDemoOpen, setImportDemoOpen] = useState(false);
   const [articleFormDialog, setArticleFormDialog] = useState<{ open: boolean; article?: BlogArticle }>({ open: false });
 
   // Filter articles by status
@@ -110,66 +111,6 @@ const AdminBlog = () => {
     }
   };
 
-  const handleImportSampleData = async () => {
-    if (!confirm("Bạn có muốn import 10 bài viết mẫu vào Nháp không?")) return;
-
-    try {
-      // Get current user
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        toast({ title: "Vui lòng đăng nhập", variant: "destructive" });
-        return;
-      }
-
-      // Get user profile ID (required for author_id foreign key)
-      const { data: profileData, error: profileError } = await supabase
-        .from("user_profiles")
-        .select("id")
-        .eq("user_id", userData.user.id)
-        .single();
-
-      if (profileError || !profileData) {
-        toast({ title: "Không tìm thấy profile. Vui lòng đăng nhập lại.", variant: "destructive" });
-        return;
-      }
-
-      const authorId = profileData.id;
-      const timestamp = Date.now();
-      let successCount = 0;
-
-      for (const post of SAMPLE_BLOG_POSTS) {
-        const newSlug = `${post.slug}-${timestamp}`;
-
-        const { error } = await supabase.from("blog_articles").insert({
-          title: post.title,
-          slug: newSlug,
-          excerpt: post.excerpt,
-          content: post.content,
-          cover_image_url: post.cover_image_url,
-          status: "draft",
-          author_id: authorId,
-          category_id: null,
-          published_at: null
-        });
-
-        if (error) {
-          console.error("Insert error:", error);
-        } else {
-          successCount++;
-        }
-      }
-
-      if (successCount > 0) {
-        toast({ title: `Đã import ${successCount} bài viết vào mục Nháp` });
-        window.location.reload();
-      } else {
-        toast({ title: "Không thể import. Kiểm tra console.", variant: "destructive" });
-      }
-
-    } catch (error: any) {
-      toast({ title: "Lỗi import", description: error.message, variant: "destructive" });
-    }
-  };
 
   // Article handlers
   const handleApprove = async (article: BlogArticle) => {
@@ -343,7 +284,7 @@ const AdminBlog = () => {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-lg font-sans">Bài Viết</CardTitle>
                   <div className="flex gap-2">
-                    <Button variant="outline" onClick={handleImportSampleData}>
+                    <Button variant="outline" onClick={() => setImportDemoOpen(true)}>
                       <FolderOpen className="h-4 w-4 mr-2" />
                       Import Demo
                     </Button>
@@ -550,6 +491,13 @@ const AdminBlog = () => {
         onOpenChange={(open) => setArticleFormDialog({ open })}
         article={articleFormDialog.article}
         isAdmin={true}
+      />
+
+      {/* Import Demo Dialog */}
+      <ImportDemoDialog
+        open={importDemoOpen}
+        onOpenChange={setImportDemoOpen}
+        onImportComplete={() => window.location.reload()}
       />
     </>
   );
