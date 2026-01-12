@@ -280,11 +280,11 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
                     {block.images.map((img, imgIndex) => (
                       <CarouselItem key={imgIndex}>
                         <figure>
-                          <div className="aspect-[4/3] overflow-hidden flex items-center justify-center bg-muted/30 rounded-lg">
+                          <div className="overflow-hidden flex items-center justify-center bg-muted/30 rounded-lg">
                             <img
                               src={img.url}
                               alt={img.caption || ""}
-                              className="max-w-full max-h-full object-contain"
+                              className="w-full h-auto object-contain"
                             />
                           </div>
                           {img.caption && (
@@ -303,9 +303,6 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
                     </>
                   )}
                 </Carousel>
-                <div className="text-center text-xs text-muted-foreground mt-3 font-sans">
-                  {block.images.length} ảnh
-                </div>
               </div>
             );
           }
