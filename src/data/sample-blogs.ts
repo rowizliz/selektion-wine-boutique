@@ -581,5 +581,301 @@ export const SAMPLE_BLOG_POSTS = [
         status: "published" as const,
         cover_image_url: "/blog-images/wine_tasting_event_1768166785915.jpg",
         view_count: 0
+    },
+    // ========== 10 BÀI VIẾT SEO MỚI ==========
+    {
+        title: "Cửa Hàng Rượu Vang Thủ Đức Uy Tín - Selection Wine Boutique",
+        slug: "cua-hang-ruou-vang-thu-duc-uy-tin-selection-wine",
+        excerpt: "Tìm kiếm cửa hàng rượu vang Thủ Đức chất lượng? Selection Wine Boutique là địa chỉ mua rượu vang nhập khẩu chính hãng hàng đầu tại TP Thủ Đức với đa dạng vang Pháp, Ý, Chile.",
+        content: `<div class="blog-content">
+        <h2>Selection Wine - Cửa Hàng Rượu Vang Thủ Đức Đẳng Cấp</h2>
+        <p>Nếu bạn đang tìm <strong>cửa hàng rượu vang Thủ Đức</strong> uy tín, Selection Wine Boutique chính là điểm đến lý tưởng. Tọa lạc tại trung tâm TP Thủ Đức, chúng tôi tự hào mang đến bộ sưu tập <strong>rượu vang nhập khẩu</strong> đa dạng từ các vùng nổi tiếng thế giới.</p>
+        
+        <h2>Tại Sao Chọn Mua Rượu Vang Tại Thủ Đức?</h2>
+        <ul>
+            <li><strong>Vị trí thuận tiện:</strong> Dễ dàng di chuyển từ Quận 2, Quận 9, Bình Thạnh.</li>
+            <li><strong>Kho hàng phong phú:</strong> Hơn 200 loại vang từ Pháp, Ý, Úc, Chile, Argentina.</li>
+            <li><strong>Giá cả cạnh tranh:</strong> Nhập trực tiếp, không qua trung gian.</li>
+            <li><strong>Tư vấn chuyên nghiệp:</strong> Đội ngũ Sommelier giàu kinh nghiệm.</li>
+        </ul>
+
+        <h2>Các Dòng Vang Bán Chạy Tại Selection Wine Thủ Đức</h2>
+        <ul>
+            <li>Vang Pháp Bordeaux: Château Margaux, Mouton Rothschild</li>
+            <li>Vang Ý Tuscany: Brunello di Montalcino, Chianti Classico</li>
+            <li>Vang Chile: Concha y Toro, Santa Rita</li>
+            <li>Champagne: Moët & Chandon, Veuve Clicquot</li>
+        </ul>
+
+        <h2>Địa Chỉ & Liên Hệ</h2>
+        <p>Ghé ngay <strong>Selection Wine Boutique Thủ Đức</strong> để trải nghiệm không gian mua sắm đẳng cấp và được tư vấn miễn phí. Hotline: 0906 777 377</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/wine_shop_thu_duc_1768202161689.jpg",
+        view_count: 0
+    },
+    {
+        title: "Rượu Vang Pháp Nhập Khẩu Chính Hãng - Bordeaux, Burgundy, Champagne",
+        slug: "ruou-vang-phap-nhap-khau-chinh-hang-bordeaux-burgundy",
+        excerpt: "Khám phá bộ sưu tập rượu vang Pháp cao cấp: Bordeaux, Burgundy, Champagne. Nhập khẩu chính hãng, bảo quản chuẩn châu Âu tại Selection Wine Sài Gòn.",
+        content: `<div class="blog-content">
+        <h2>Vang Pháp - Đỉnh Cao Nghệ Thuật Rượu Vang Thế Giới</h2>
+        <p><strong>Rượu vang Pháp</strong> từ lâu đã được xem là chuẩn mực vàng của ngành công nghiệp rượu vang toàn cầu. Với hàng nghìn năm lịch sử, các vùng sản xuất vang Pháp như Bordeaux, Burgundy, và Champagne đã tạo nên những chai vang huyền thoại.</p>
+        
+        <h2>Các Vùng Vang Pháp Nổi Tiếng</h2>
+        <h3>1. Bordeaux - Vương Quốc Vang Đỏ</h3>
+        <p>Bordeaux nổi tiếng với các blend từ Cabernet Sauvignon, Merlot. Các château như Margaux, Latour, Lafite là biểu tượng của sự sang trọng.</p>
+        
+        <h3>2. Burgundy - Xứ Sở Pinot Noir</h3>
+        <p>Nếu bạn yêu thích vang đỏ tinh tế, Burgundy với giống nho Pinot Noir sẽ làm bạn say đắm.</p>
+        
+        <h3>3. Champagne - Vùng Đất Sủi Bọt</h3>
+        <p>Champagne - thức uống không thể thiếu trong mọi dịp lễ hội.</p>
+
+        <h2>Mua Vang Pháp Chính Hãng Ở Đâu Tại Sài Gòn?</h2>
+        <p>Selection Wine nhập khẩu trực tiếp <strong>rượu vang Pháp</strong> từ các nhà sản xuất uy tín, đảm bảo 100% chính hãng với giá tốt nhất thị trường.</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/french_wine_bordeaux_1768202185572.jpg",
+        view_count: 0
+    },
+    {
+        title: "Quà Tặng Rượu Vang Cao Cấp - Set Quà Doanh Nghiệp & Cá Nhân",
+        slug: "qua-tang-ruou-vang-cao-cap-set-qua-doanh-nghiep",
+        excerpt: "Gợi ý set quà tặng rượu vang sang trọng cho doanh nghiệp, đối tác, sếp. Đóng hộp quà đẹp, in logo thương hiệu, giao hàng toàn quốc.",
+        content: `<div class="blog-content">
+        <h2>Quà Tặng Rượu Vang - Lựa Chọn Sang Trọng Cho Mọi Dịp</h2>
+        <p><strong>Quà tặng rượu vang</strong> luôn là lựa chọn hàng đầu cho các dịp quan trọng như Tết, sinh nhật, kỷ niệm, hay tri ân đối tác doanh nghiệp. Một chai vang đẹp không chỉ thể hiện sự tinh tế mà còn là cách gửi gắm lời chúc tốt đẹp.</p>
+        
+        <h2>Các Set Quà Tặng Rượu Vang Phổ Biến</h2>
+        <ul>
+            <li><strong>Set Đơn:</strong> 1 chai vang + hộp gỗ sang trọng (từ 500.000đ)</li>
+            <li><strong>Set Đôi:</strong> 2 chai vang Pháp + phụ kiện rượu (từ 1.200.000đ)</li>
+            <li><strong>Set Premium:</strong> Champagne + vang đỏ + chocolate (từ 2.500.000đ)</li>
+            <li><strong>Set VIP:</strong> Vang Grand Cru + hộp da cao cấp (từ 5.000.000đ)</li>
+        </ul>
+
+        <h2>Dịch Vụ Quà Tặng Doanh Nghiệp</h2>
+        <p>Selection Wine cung cấp dịch vụ <strong>quà tặng doanh nghiệp</strong> trọn gói:</p>
+        <ul>
+            <li>In logo thương hiệu lên hộp quà</li>
+            <li>Thiết kế thiệp chúc riêng</li>
+            <li>Giao hàng đến từng địa chỉ người nhận</li>
+            <li>Chiết khấu đặc biệt cho đơn hàng sỉ</li>
+        </ul>
+
+        <h2>Đặt Quà Tặng Rượu Vang Online</h2>
+        <p>Liên hệ Selection Wine Hotline: 0906 777 377 để được tư vấn và đặt quà nhanh chóng.</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/wine_gift_corporate_1768202204668.jpg",
+        view_count: 0
+    },
+    {
+        title: "Rượu Vang Sài Gòn - Văn Hóa Thưởng Thức Vang Tại TP.HCM",
+        slug: "ruou-vang-sai-gon-van-hoa-thuong-thuc-vang-tphcm",
+        excerpt: "Khám phá văn hóa rượu vang Sài Gòn đang phát triển mạnh mẽ. Từ wine bar sang trọng đến cửa hàng vang boutique, Sài Gòn đang trở thành thiên đường cho wine lover.",
+        content: `<div class="blog-content">
+        <h2>Sài Gòn - Thủ Đô Rượu Vang Của Việt Nam</h2>
+        <p><strong>Rượu vang Sài Gòn</strong> đang trở thành xu hướng với sự phát triển mạnh mẽ của các wine bar, nhà hàng Âu và cửa hàng vang cao cấp. Người Sài Gòn ngày càng tinh tế trong việc thưởng thức và lựa chọn rượu vang.</p>
+        
+        <h2>Xu Hướng Tiêu Dùng Vang Tại Sài Gòn</h2>
+        <ul>
+            <li><strong>Vang Pháp và Ý:</strong> Vẫn là lựa chọn hàng đầu cho các dịp quan trọng</li>
+            <li><strong>Vang Chile, Argentina:</strong> Phổ biến cho tiêu dùng hàng ngày</li>
+            <li><strong>Champagne & Sparkling:</strong> Phát triển mạnh trong giới trẻ</li>
+            <li><strong>Vang Organic:</strong> Xu hướng mới cho những ai quan tâm sức khỏe</li>
+        </ul>
+
+        <h2>Các Địa Điểm Thưởng Thức Vang Nổi Tiếng Sài Gòn</h2>
+        <p>Từ rooftop wine bar với view thành phố đến các nhà hàng fine dining, Sài Gòn có không thiếu những địa điểm tuyệt vời để thưởng thức rượu vang.</p>
+
+        <h2>Mua Rượu Vang Chính Hãng Tại Sài Gòn</h2>
+        <p>Selection Wine Boutique - cửa hàng <strong>rượu vang Sài Gòn</strong> uy tín với hơn 200 loại vang nhập khẩu từ các vùng nổi tiếng thế giới.</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/saigon_wine_scene_1768202224022.jpg",
+        view_count: 0
+    },
+    {
+        title: "Giao Rượu Vang Nhanh - Ship Vang Tận Nơi Trong 2 Giờ Tại TPHCM",
+        slug: "giao-ruou-vang-nhanh-ship-vang-tan-noi-2-gio-tphcm",
+        excerpt: "Dịch vụ giao rượu vang nhanh trong 2 giờ tại TP.HCM. Đặt online, thanh toán tiện lợi, nhận vang tận cửa. Giao hàng cả ngày lễ, cuối tuần.",
+        content: `<div class="blog-content">
+        <h2>Đặt Rượu Vang Online - Giao Tận Nơi Siêu Tốc</h2>
+        <p>Bạn cần <strong>rượu vang gần đây</strong> cho bữa tiệc tối nay? Selection Wine cung cấp dịch vụ giao vang nhanh trong vòng 2 giờ tại nội thành TP.HCM.</p>
+        
+        <h2>Ưu Điểm Dịch Vụ Giao Vang Tận Nơi</h2>
+        <ul>
+            <li><strong>Nhanh chóng:</strong> Giao trong 2 giờ nội thành</li>
+            <li><strong>An toàn:</strong> Đóng gói cẩn thận, bảo quản lạnh</li>
+            <li><strong>Tiện lợi:</strong> Thanh toán COD, chuyển khoản, thẻ</li>
+            <li><strong>Linh hoạt:</strong> Giao cả ngày lễ, cuối tuần, tối muộn</li>
+        </ul>
+
+        <h2>Cách Đặt Rượu Vang Online</h2>
+        <ol>
+            <li>Gọi Hotline: 0906 777 377</li>
+            <li>Nhắn tin Zalo để được tư vấn</li>
+            <li>Inbox Facebook Selection Wine</li>
+            <li>Truy cập website selection.com.vn</li>
+        </ol>
+
+        <h2>Phí Giao Hàng</h2>
+        <ul>
+            <li>Miễn phí giao với đơn từ 1.000.000đ nội thành</li>
+            <li>Phí ship 30.000đ cho đơn dưới 1 triệu</li>
+            <li>Giao toàn quốc qua chuyển phát nhanh</li>
+        </ul>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/wine_delivery_service_1768202243522.jpg",
+        view_count: 0
+    },
+    {
+        title: "Văn Hóa Rượu Vang Hồ Chí Minh - Từ Truyền Thống Đến Hiện Đại",
+        slug: "van-hoa-ruou-vang-ho-chi-minh-truyen-thong-hien-dai",
+        excerpt: "Tìm hiểu sự phát triển văn hóa rượu vang Hồ Chí Minh qua các thập kỷ. Từ thức uống xa xỉ đến phổ biến trong đời sống người dân thành phố.",
+        content: `<div class="blog-content">
+        <h2>Lịch Sử Rượu Vang Tại Hồ Chí Minh</h2>
+        <p><strong>Rượu vang Hồ Chí Minh</strong> có lịch sử gắn liền với thời Pháp thuộc, khi những chai vang Bordeaux đầu tiên được mang đến Sài Gòn. Qua thời gian, văn hóa thưởng thức vang đã thấm sâu vào đời sống người dân.</p>
+        
+        <h2>Sự Bùng Nổ Thị Trường Vang Những Năm Gần Đây</h2>
+        <ul>
+            <li>Số lượng wine bar tăng gấp 3 lần trong 5 năm</li>
+            <li>Lượng nhập khẩu vang tăng trưởng 15-20%/năm</li>
+            <li>Giới trẻ quan tâm nhiều hơn đến vang chất lượng</li>
+            <li>Các khóa học về rượu vang ngày càng phổ biến</li>
+        </ul>
+
+        <h2>Các Sự Kiện Vang Lớn Tại TP.HCM</h2>
+        <p>Hàng năm, TP.HCM tổ chức nhiều sự kiện wine tasting, hội chợ rượu vang quốc tế thu hút hàng nghìn wine lover.</p>
+
+        <h2>Mua Rượu Vang Chất Lượng Tại Hồ Chí Minh</h2>
+        <p>Selection Wine Boutique - địa chỉ tin cậy để mua <strong>rượu vang Hồ Chí Minh</strong> chính hãng với đội ngũ tư vấn chuyên nghiệp.</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/hcmc_wine_culture_1768202277221.jpg",
+        view_count: 0
+    },
+    {
+        title: "Tìm Cửa Hàng Rượu Vang Gần Đây? - Địa Chỉ Mua Vang Uy Tín",
+        slug: "tim-cua-hang-ruou-vang-gan-day-dia-chi-mua-vang-uy-tin",
+        excerpt: "Hướng dẫn tìm cửa hàng rượu vang gần đây uy tín. Các tiêu chí chọn shop vang chất lượng và danh sách cửa hàng vang đáng tin cậy tại TPHCM.",
+        content: `<div class="blog-content">
+        <h2>Làm Sao Tìm Cửa Hàng Rượu Vang Gần Đây Uy Tín?</h2>
+        <p>Khi tìm kiếm "<strong>cửa hàng rượu vang gần đây</strong>", bạn cần chú ý một số tiêu chí quan trọng để đảm bảo mua được vang chính hãng, chất lượng.</p>
+        
+        <h2>Tiêu Chí Đánh Giá Cửa Hàng Vang Uy Tín</h2>
+        <ul>
+            <li><strong>Nguồn gốc rõ ràng:</strong> Có giấy tờ nhập khẩu, hóa đơn xuất xứ</li>
+            <li><strong>Bảo quản đúng cách:</strong> Tủ mát, kho lạnh chuyên dụng</li>
+            <li><strong>Đội ngũ chuyên nghiệp:</strong> Nhân viên am hiểu về vang</li>
+            <li><strong>Đánh giá tốt:</strong> Review 4-5 sao trên Google, Facebook</li>
+            <li><strong>Chính sách đổi trả:</strong> Đổi trả nếu sản phẩm lỗi</li>
+        </ul>
+
+        <h2>Selection Wine - Cửa Hàng Vang Đáng Tin Cậy</h2>
+        <p>Selection Wine Boutique đáp ứng tất cả tiêu chí trên, là địa chỉ mua vang hàng đầu tại TP Thủ Đức và khu vực lân cận.</p>
+
+        <h2>Tìm Đường Đến Selection Wine</h2>
+        <p>Địa chỉ: TP Thủ Đức, TP.HCM. Mở cửa: 9h-21h hàng ngày. Hotline: 0906 777 377</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/wine_store_nearby_1768202298933.jpg",
+        view_count: 0
+    },
+    {
+        title: "Các Vùng Vang Pháp Nổi Tiếng - Bordeaux, Burgundy, Rhône, Loire",
+        slug: "cac-vung-vang-phap-noi-tieng-bordeaux-burgundy-rhone",
+        excerpt: "Tổng hợp chi tiết các vùng sản xuất rượu vang Pháp nổi tiếng nhất: Bordeaux, Burgundy, Champagne, Rhône Valley, Loire Valley. Đặc điểm và dòng vang tiêu biểu.",
+        content: `<div class="blog-content">
+        <h2>Pháp - Quê Hương Của Rượu Vang Đẳng Cấp</h2>
+        <p>Nước Pháp có hơn 10 vùng sản xuất <strong>vang Pháp</strong> lớn, mỗi vùng mang đặc trưng riêng về terroir, giống nho và phong cách làm rượu.</p>
+        
+        <h2>1. Bordeaux - Vùng Vang Lớn Nhất Pháp</h2>
+        <p>Nổi tiếng với các château và blend Cabernet-Merlot. Các tiểu vùng: Médoc, Saint-Émilion, Pomerol, Graves.</p>
+        
+        <h2>2. Burgundy (Bourgogne)</h2>
+        <p>Vùng đất của Pinot Noir và Chardonnay tinh tế nhất thế giới. Grand Cru Burgundy là giấc mơ của mọi wine collector.</p>
+        
+        <h2>3. Champagne</h2>
+        <p>Vùng duy nhất được phép sản xuất Champagne chính hiệu với phương pháp méthode champenoise.</p>
+        
+        <h2>4. Rhône Valley</h2>
+        <p>Vang đậm đà từ Syrah (phía Bắc) và Grenache blend (phía Nam). Châteauneuf-du-Pape là dòng vang nổi tiếng nhất.</p>
+        
+        <h2>5. Loire Valley</h2>
+        <p>Thiên đường vang trắng với Sauvignon Blanc, Chenin Blanc tươi mát.</p>
+
+        <h2>Mua Vang Pháp Chính Hãng</h2>
+        <p>Selection Wine nhập khẩu trực tiếp từ các vùng vang Pháp với giá tốt nhất. Liên hệ ngay: 0906 777 377</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/french_wine_regions_1768202324171.jpg",
+        view_count: 0
+    },
+    {
+        title: "Quà Tặng Rượu Vang Đám Cưới - Gợi Ý Món Quà Ý Nghĩa Cho Cô Dâu Chú Rể",
+        slug: "qua-tang-ruou-vang-dam-cuoi-goi-y-y-nghia-co-dau-chu-re",
+        excerpt: "Tổng hợp các ý tưởng quà tặng rượu vang đám cưới sang trọng, ý nghĩa. Từ Champagne khai tiệc đến bộ sưu tập vang cho cặp đôi mới cưới.",
+        content: `<div class="blog-content">
+        <h2>Rượu Vang - Món Quà Cưới Sang Trọng & Ý Nghĩa</h2>
+        <p><strong>Quà tặng rượu vang đám cưới</strong> mang ý nghĩa chúc phúc cho hạnh phúc lâu dài của cặp đôi. Vang tượng trưng cho sự ngọt ngào, mặn mà như tình yêu.</p>
+        
+        <h2>Top Lựa Chọn Vang Làm Quà Cưới</h2>
+        <ul>
+            <li><strong>Champagne:</strong> Moët & Chandon, Veuve Clicquot - khai hội chúc mừng</li>
+            <li><strong>Vang đỏ Bordeaux:</strong> Château - biểu tượng sang trọng</li>
+            <li><strong>Set cặp vang:</strong> 1 đỏ + 1 trắng - yin & yang hoàn hảo</li>
+            <li><strong>Vang vintage năm cưới:</strong> Ý nghĩa đặc biệt để lưu giữ</li>
+        </ul>
+
+        <h2>Cách Đóng Gói Quà Vang Đám Cưới</h2>
+        <ul>
+            <li>Hộp gỗ cao cấp khắc tên cô dâu chú rể</li>
+            <li>Ruy băng màu hồng hoặc vàng sang trọng</li>
+            <li>Thiệp chúc mừng viết tay</li>
+            <li>Kèm ly pha lê hoặc decanter</li>
+        </ul>
+
+        <h2>Đặt Quà Cưới Rượu Vang Tại Selection Wine</h2>
+        <p>Selection Wine cung cấp dịch vụ tư vấn và đóng gói <strong>quà cưới rượu vang</strong> trọn gói. Liên hệ: 0906 777 377</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/wine_wedding_gift_1768202342624.jpg",
+        view_count: 0
+    },
+    {
+        title: "Sự Kiện Thử Rượu Vang Tại TPHCM - Lịch Wine Tasting 2026",
+        slug: "su-kien-thu-ruou-vang-tphcm-lich-wine-tasting-2026",
+        excerpt: "Cập nhật lịch các buổi thử rượu vang, wine tasting event tại TP.HCM năm 2026. Từ masterclass chuyên sâu đến buổi tasting thân mật.",
+        content: `<div class="blog-content">
+        <h2>Wine Tasting - Cách Tuyệt Vời Để Khám Phá Rượu Vang</h2>
+        <p>Tham gia các buổi <strong>thử rượu vang TPHCM</strong> là cơ hội tuyệt vời để mở rộng kiến thức, gặp gỡ những wine lover khác và khám phá những chai vang mới.</p>
+        
+        <h2>Các Loại Event Wine Tasting</h2>
+        <ul>
+            <li><strong>Masterclass:</strong> Học sâu về một vùng vang hoặc giống nho</li>
+            <li><strong>Blind Tasting:</strong> Thử thách nhận diện vang mù</li>
+            <li><strong>Food & Wine Pairing:</strong> Kết hợp vang với ẩm thực</li>
+            <li><strong>New Release Tasting:</strong> Giới thiệu các dòng vang mới</li>
+        </ul>
+
+        <h2>Sự Kiện Tại Selection Wine</h2>
+        <p>Selection Wine định kỳ tổ chức các buổi wine tasting miễn phí và có phí cho các wine lover:</p>
+        <ul>
+            <li>Tasting Vang Pháp hàng tháng</li>
+            <li>Workshop Vang & Phô Mai</li>
+            <li>Masterclass với Sommelier</li>
+        </ul>
+
+        <h2>Đăng Ký Tham Gia</h2>
+        <p>Follow Facebook Selection Wine để cập nhật lịch sự kiện. Đăng ký: 0906 777 377 hoặc inbox fanpage.</p>
+    </div>`,
+        status: "published" as const,
+        cover_image_url: "/blog-images/wine_tasting_hcmc_1768202360689.jpg",
+        view_count: 0
     }
 ];
+
