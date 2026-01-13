@@ -12,8 +12,8 @@ import ProductBlockRenderer from "./ProductBlockRenderer";
 
 // DOMPurify configuration for safe HTML rendering
 const DOMPURIFY_CONFIG = {
-  ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'u', 's', 'b', 'i', 'blockquote', 'ul', 'ol', 'li', 'a', 'img', 'br', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'figure', 'figcaption'],
-  ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel', 'width', 'height'],
+  ALLOWED_TAGS: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'em', 'u', 's', 'b', 'i', 'blockquote', 'ul', 'ol', 'li', 'a', 'img', 'br', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'figure', 'figcaption', 'font'],
+  ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel', 'width', 'height', 'size', 'face', 'color', 'style'],
   ALLOW_DATA_ATTR: false,
   FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form', 'input', 'textarea', 'button'],
   FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'onchange', 'onsubmit']
@@ -177,6 +177,20 @@ const articleStyles = `
   .nyt-article .blog-content {
     all: unset;
     display: block;
+  }
+  
+  /* Font size support (from execCommand fontSize) */
+  .article-prose font[size="1"], .nyt-article font[size="1"] { font-size: 0.625rem; }
+  .article-prose font[size="2"], .nyt-article font[size="2"] { font-size: 0.75rem; }
+  .article-prose font[size="3"], .nyt-article font[size="3"] { font-size: 1rem; }
+  .article-prose font[size="4"], .nyt-article font[size="4"] { font-size: 1.25rem; }
+  .article-prose font[size="5"], .nyt-article font[size="5"] { font-size: 1.5rem; }
+  .article-prose font[size="6"], .nyt-article font[size="6"] { font-size: 2rem; }
+  .article-prose font[size="7"], .nyt-article font[size="7"] { font-size: 2.5rem; }
+  
+  /* Font family support */
+  .article-prose font[face], .nyt-article font[face] {
+    font-family: inherit;
   }
 `;
 
