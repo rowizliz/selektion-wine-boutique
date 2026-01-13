@@ -1,10 +1,11 @@
 import { useState, useRef } from "react";
-import { Plus, Type, Image, Images, Trash2, GripVertical, Upload, X } from "lucide-react";
+import { Plus, Type, Image, Images, Trash2, GripVertical, Upload, X, Wine, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import ProductSelectDialog from "./ProductSelectDialog";
+import RichTextEditor from "./RichTextEditor";
 
 export interface TextBlock {
   type: "text";
@@ -22,7 +23,21 @@ export interface GalleryBlock {
   images: Array<{ url: string; caption?: string }>;
 }
 
-export type ContentBlock = TextBlock | ImageBlock | GalleryBlock;
+export interface ProductBlock {
+  type: "product";
+  productId: string;
+  productName: string;
+  productImage?: string;
+  productPrice?: string;
+}
+
+export interface YouTubeBlock {
+  type: "youtube";
+  videoId: string;
+  videoUrl: string;
+}
+
+export type ContentBlock = TextBlock | ImageBlock | GalleryBlock | ProductBlock | YouTubeBlock;
 
 interface BlockEditorProps {
   blocks: ContentBlock[];
@@ -35,6 +50,9 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pendingBlockType, setPendingBlockType] = useState<"image" | "gallery" | null>(null);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [productDialogOpen, setProductDialogOpen] = useState(false);
+  const [youtubeDialogOpen, setYoutubeDialogOpen] = useState(false);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
 
   const addBlock = (type: "text" | "image" | "gallery") => {
     if (type === "text") {
@@ -123,7 +141,7 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
             newImages.push({ url, caption: "" });
           }
         }
-        
+
         const newBlocks = [...blocks];
         if (newBlocks[blockIndex].type === "gallery") {
           (newBlocks[blockIndex] as GalleryBlock).images.push(...newImages);
@@ -146,7 +164,7 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     if (dragIndex === null || dragIndex === index) return;
-    
+
     const newBlocks = [...blocks];
     const draggedBlock = newBlocks[dragIndex];
     newBlocks.splice(dragIndex, 1);
@@ -179,15 +197,14 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
           onDragStart={() => handleDragStart(index)}
           onDragOver={(e) => handleDragOver(e, index)}
           onDragEnd={handleDragEnd}
-          className={`relative border border-border rounded-sm p-4 bg-card ${
-            dragIndex === index ? "opacity-50" : ""
-          }`}
+          className={`relative border border-border rounded-sm p-4 bg-card ${dragIndex === index ? "opacity-50" : ""
+            }`}
         >
           {/* Block Header */}
           <div className="flex items-center gap-2 mb-3">
             <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
             <span className="text-xs text-muted-foreground uppercase tracking-wider">
-              {block.type === "text" ? "Văn bản" : block.type === "image" ? "Hình ảnh" : "Slide ảnh"}
+              {block.type === "text" ? "Văn bản" : block.type === "image" ? "Hình ảnh" : block.type === "gallery" ? "Slide ảnh" : block.type === "product" ? "Sản phẩm" : "Video YouTube"}
             </span>
             <div className="flex-1" />
             <Button
@@ -203,11 +220,10 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
 
           {/* Text Block */}
           {block.type === "text" && (
-            <Textarea
+            <RichTextEditor
               value={block.content}
-              onChange={(e) => updateTextBlock(index, e.target.value)}
+              onChange={(content) => updateTextBlock(index, content)}
               placeholder="Nhập nội dung văn bản..."
-              rows={4}
             />
           )}
 
@@ -259,7 +275,7 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
                     />
                   </div>
                 ))}
-                
+
                 {/* Add more images button */}
                 <label className="aspect-square border-2 border-dashed border-border rounded-sm flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-muted/50 transition-colors">
                   <input
@@ -280,6 +296,45 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
                   )}
                 </label>
               </div>
+            </div>
+          )}
+
+          {/* Product Block */}
+          {block.type === "product" && (
+            <div className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg">
+              {block.productImage ? (
+                <img
+                  src={block.productImage}
+                  alt={block.productName}
+                  className="w-16 h-16 object-contain rounded bg-white"
+                />
+              ) : (
+                <div className="w-16 h-16 bg-muted rounded flex items-center justify-center">
+                  <Wine className="h-6 w-6 text-muted-foreground" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <h4 className="font-medium text-sm truncate">{block.productName}</h4>
+                {block.productPrice && (
+                  <p className="text-sm font-semibold text-primary mt-1">{block.productPrice}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* YouTube Block */}
+          {block.type === "youtube" && (
+            <div className="space-y-3">
+              <div className="relative aspect-video bg-black rounded-sm overflow-hidden">
+                <iframe
+                  src={`https://www.youtube.com/embed/${block.videoId}`}
+                  title="YouTube video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground truncate">{block.videoUrl}</p>
             </div>
           )}
         </div>
@@ -318,7 +373,112 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
           <Images className="h-4 w-4" />
           Thêm Slide Ảnh
         </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setProductDialogOpen(true)}
+          className="gap-2"
+        >
+          <Wine className="h-4 w-4" />
+          Thêm Sản Phẩm
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setYoutubeDialogOpen(true)}
+          className="gap-2"
+        >
+          <Youtube className="h-4 w-4" />
+          Thêm Video YouTube
+        </Button>
       </div>
+
+      {/* Product Select Dialog */}
+      <ProductSelectDialog
+        open={productDialogOpen}
+        onOpenChange={setProductDialogOpen}
+        onSelect={(product) => {
+          onChange([...blocks, {
+            type: "product",
+            productId: product.productId,
+            productName: product.productName,
+            productImage: product.productImage,
+            productPrice: product.productPrice,
+          }]);
+        }}
+      />
+
+      {/* YouTube URL Dialog */}
+      {youtubeDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4 shadow-xl">
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+              <Youtube className="h-5 w-5 text-red-600" />
+              Thêm Video YouTube
+            </h3>
+            <Input
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+              placeholder="Dán link YouTube vào đây... (vd: https://youtube.com/watch?v=xxxxx)"
+              className="mb-4"
+            />
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setYoutubeDialogOpen(false);
+                  setYoutubeUrl("");
+                }}
+              >
+                Hủy
+              </Button>
+              <Button
+                type="button"
+                onClick={() => {
+                  // Extract video ID from YouTube URL
+                  const url = youtubeUrl.trim();
+                  let videoId = "";
+
+                  // Handle various YouTube URL formats
+                  const patterns = [
+                    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/,
+                    /^([a-zA-Z0-9_-]{11})$/ // Just the video ID
+                  ];
+
+                  for (const pattern of patterns) {
+                    const match = url.match(pattern);
+                    if (match) {
+                      videoId = match[1];
+                      break;
+                    }
+                  }
+
+                  if (videoId) {
+                    onChange([...blocks, {
+                      type: "youtube",
+                      videoId,
+                      videoUrl: url,
+                    }]);
+                    setYoutubeDialogOpen(false);
+                    setYoutubeUrl("");
+                  } else {
+                    toast({
+                      title: "Link không hợp lệ",
+                      description: "Vui lòng nhập link YouTube hợp lệ",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+              >
+                Thêm Video
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
