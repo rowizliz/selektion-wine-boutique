@@ -187,11 +187,6 @@ const articleStyles = `
   .article-prose font[size="5"], .nyt-article font[size="5"] { font-size: 1.5rem; }
   .article-prose font[size="6"], .nyt-article font[size="6"] { font-size: 2rem; }
   .article-prose font[size="7"], .nyt-article font[size="7"] { font-size: 2.5rem; }
-  
-  /* Font family support */
-  .article-prose font[face], .nyt-article font[face] {
-    font-family: inherit;
-  }
 `;
 
 const ArticleContent = ({ content }: ArticleContentProps) => {
