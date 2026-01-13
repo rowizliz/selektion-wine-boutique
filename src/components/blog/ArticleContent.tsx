@@ -1,5 +1,4 @@
 import DOMPurify from 'dompurify';
-import { Link } from 'react-router-dom';
 import { ContentBlock } from "./BlockEditor";
 import {
   Carousel,
@@ -9,6 +8,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Wine } from "lucide-react";
+import ProductBlockRenderer from "./ProductBlockRenderer";
 
 // DOMPurify configuration for safe HTML rendering
 const DOMPURIFY_CONFIG = {
@@ -311,33 +311,13 @@ const ArticleContent = ({ content }: ArticleContentProps) => {
 
           if (block.type === "product") {
             return (
-              <div key={index} className="my-8 not-prose">
-                <Link
-                  to={`/collection/${block.productId}`}
-                  className="flex gap-4 items-center p-4 border border-border rounded-lg bg-card hover:bg-muted/50 transition-colors group"
-                >
-                  {block.productImage ? (
-                    <img
-                      src={block.productImage}
-                      alt={block.productName}
-                      className="w-20 h-20 object-contain rounded bg-white flex-shrink-0"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 bg-muted rounded flex items-center justify-center flex-shrink-0">
-                      <Wine className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-serif text-lg group-hover:text-primary transition-colors truncate">
-                      {block.productName}
-                    </h4>
-                    {block.productPrice && (
-                      <p className="text-primary font-semibold mt-1">{block.productPrice}</p>
-                    )}
-                    <p className="text-sm text-muted-foreground mt-1">Xem chi tiết rượu vang →</p>
-                  </div>
-                </Link>
-              </div>
+              <ProductBlockRenderer
+                key={index}
+                productId={block.productId}
+                fallbackName={block.productName}
+                fallbackImage={block.productImage}
+                fallbackPrice={block.productPrice}
+              />
             );
           }
 

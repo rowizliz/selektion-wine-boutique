@@ -19,6 +19,11 @@ interface ProductSelectDialogProps {
         productName: string;
         productImage?: string;
         productPrice?: string;
+        productOrigin?: string;
+        productGrapes?: string;
+        productDescription?: string;
+        productTastingNotes?: string;
+        productFlavorNotes?: string[];
     }) => void;
 }
 
@@ -36,6 +41,11 @@ const ProductSelectDialog = ({ open, onOpenChange, onSelect }: ProductSelectDial
             productName: wine.name,
             productImage: wine.image_url || undefined,
             productPrice: wine.price,
+            productOrigin: wine.origin,
+            productGrapes: wine.grapes,
+            productDescription: wine.description,
+            productTastingNotes: wine.tasting_notes || undefined,
+            productFlavorNotes: wine.flavor_notes || undefined,
         });
         onOpenChange(false);
         setSearchTerm("");
@@ -47,7 +57,7 @@ const ProductSelectDialog = ({ open, onOpenChange, onSelect }: ProductSelectDial
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <Wine className="h-5 w-5" />
-                        Chọn sản phẩm
+                        Chọn sản phẩm rượu vang
                     </DialogTitle>
                 </DialogHeader>
 
@@ -88,22 +98,27 @@ const ProductSelectDialog = ({ open, onOpenChange, onSelect }: ProductSelectDial
                                 <button
                                     key={wine.id}
                                     onClick={() => handleSelect(wine)}
-                                    className="w-full flex items-center gap-4 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors text-left"
+                                    className="w-full flex items-start gap-4 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors text-left"
                                 >
                                     {wine.image_url ? (
                                         <img
                                             src={wine.image_url}
                                             alt={wine.name}
-                                            className="w-16 h-16 object-contain rounded bg-muted"
+                                            className="w-20 h-20 object-contain rounded bg-muted flex-shrink-0"
                                         />
                                     ) : (
-                                        <div className="w-16 h-16 bg-muted rounded flex items-center justify-center">
-                                            <Wine className="h-6 w-6 text-muted-foreground" />
+                                        <div className="w-20 h-20 bg-muted rounded flex items-center justify-center flex-shrink-0">
+                                            <Wine className="h-8 w-8 text-muted-foreground" />
                                         </div>
                                     )}
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="font-medium text-sm truncate">{wine.name}</h4>
-                                        <p className="text-xs text-muted-foreground truncate">{wine.origin}</p>
+                                        <h4 className="font-medium text-sm">{wine.name}</h4>
+                                        <p className="text-xs text-muted-foreground mt-0.5">{wine.origin} • {wine.grapes}</p>
+                                        {wine.flavor_notes && wine.flavor_notes.length > 0 && (
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                🍷 {wine.flavor_notes.slice(0, 3).join(", ")}
+                                            </p>
+                                        )}
                                         <p className="text-sm font-semibold text-primary mt-1">{wine.price}</p>
                                     </div>
                                 </button>

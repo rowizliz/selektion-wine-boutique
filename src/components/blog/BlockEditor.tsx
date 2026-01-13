@@ -29,6 +29,11 @@ export interface ProductBlock {
   productName: string;
   productImage?: string;
   productPrice?: string;
+  productOrigin?: string;
+  productGrapes?: string;
+  productDescription?: string;
+  productTastingNotes?: string;
+  productFlavorNotes?: string[];
 }
 
 export interface YouTubeBlock {
@@ -315,6 +320,12 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
               )}
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium text-sm truncate">{block.productName}</h4>
+                {block.productOrigin && (
+                  <p className="text-xs text-muted-foreground mt-0.5">{block.productOrigin}</p>
+                )}
+                {block.productFlavorNotes && block.productFlavorNotes.length > 0 && (
+                  <p className="text-xs text-muted-foreground">🍷 {block.productFlavorNotes.slice(0, 3).join(", ")}</p>
+                )}
                 {block.productPrice && (
                   <p className="text-sm font-semibold text-primary mt-1">{block.productPrice}</p>
                 )}
@@ -406,6 +417,11 @@ const BlockEditor = ({ blocks, onChange }: BlockEditorProps) => {
             productName: product.productName,
             productImage: product.productImage,
             productPrice: product.productPrice,
+            productOrigin: product.productOrigin,
+            productGrapes: product.productGrapes,
+            productDescription: product.productDescription,
+            productTastingNotes: product.productTastingNotes,
+            productFlavorNotes: product.productFlavorNotes,
           }]);
         }}
       />
