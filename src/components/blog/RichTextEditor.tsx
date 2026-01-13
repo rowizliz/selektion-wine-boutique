@@ -1,12 +1,11 @@
-import { useState, useRef, useCallback } from "react";
-import { Bold, Italic, Heading2, Heading3, Type, ChevronDown, AlignLeft, List, ListOrdered, Minus } from "lucide-react";
+import { useRef, useCallback, useEffect } from "react";
+import { Bold, Italic, Heading2, Heading3, ChevronDown, List, ListOrdered, Minus, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-    DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 interface RichTextEditorProps {
@@ -16,144 +15,95 @@ interface RichTextEditorProps {
 }
 
 const FONTS = [
-    { name: "Mặc định", value: "inherit" },
-    { name: "Georgia (Serif)", value: "'Georgia', serif" },
-    { name: "Inter (Sans)", value: "'Inter', sans-serif" },
-    { name: "Times New Roman", value: "'Times New Roman', serif" },
-    { name: "Arial", value: "Arial, sans-serif" },
+    { name: "Mặc định", value: "" },
+    { name: "Georgia", value: "Georgia" },
+    { name: "Times New Roman", value: "Times New Roman" },
+    { name: "Arial", value: "Arial" },
+    { name: "Verdana", value: "Verdana" },
+];
+
+const FONT_SIZES = [
+    { name: "Rất nhỏ", value: "1" },
+    { name: "Nhỏ", value: "2" },
+    { name: "Bình thường", value: "3" },
+    { name: "Lớn", value: "4" },
+    { name: "Rất lớn", value: "5" },
+    { name: "Cực lớn", value: "6" },
 ];
 
 const RichTextEditor = ({ value, onChange, placeholder }: RichTextEditorProps) => {
     const editorRef = useRef<HTMLDivElement>(null);
-    const [isFocused, setIsFocused] = useState(false);
-    const [currentFont, setCurrentFont] = useState(FONTS[0]);
 
-    // Insert HTML tag around selected text
-    const wrapSelection = useCallback((tag: string, attributes?: string) => {
-        const selection = window.getSelection();
-        if (!selection || selection.rangeCount === 0) return;
-
-        const range = selection.getRangeAt(0);
-        const selectedText = range.toString();
-
-        if (!selectedText) {
-            document.execCommand("insertHTML", false, attributes
-                ? `<${tag} ${attributes}>Text</${tag}>`
-                : `<${tag}>Text</${tag}>`
-            );
-        } else {
-            document.execCommand("insertHTML", false, attributes
-                ? `<${tag} ${attributes}>${selectedText}</${tag}>`
-                : `<${tag}>${selectedText}</${tag}>`
-            );
+    // Focus editor and restore selection
+    const focusEditor = useCallback(() => {
+        if (editorRef.current) {
+            editorRef.current.focus();
         }
+    }, []);
 
+    // Execute formatting command on selected text
+    const execCommand = useCallback((command: string, value: string | undefined = undefined) => {
+        focusEditor();
+        document.execCommand(command, false, value);
+        // Trigger onChange after formatting
+        if (editorRef.current) {
+            onChange(editorRef.current.innerHTML);
+        }
+    }, [focusEditor, onChange]);
+
+    // Handle input
+    const handleInput = useCallback(() => {
         if (editorRef.current) {
             onChange(editorRef.current.innerHTML);
         }
     }, [onChange]);
 
-    // Execute formatting command
-    const handleFormat = useCallback((format: string, extra?: string) => {
-        switch (format) {
-            case "bold":
-                document.execCommand("bold", false);
-                break;
-            case "italic":
-                document.execCommand("italic", false);
-                break;
-            case "h2":
-                wrapSelection("h2");
-                break;
-            case "h3":
-                wrapSelection("h3");
-                break;
-            case "small":
-                wrapSelection("span", 'style="font-size: 0.875rem"');
-                break;
-            case "large":
-                wrapSelection("span", 'style="font-size: 1.25rem"');
-                break;
-            case "paragraph":
-                document.execCommand("insertParagraph", false);
-                break;
-            case "insertUnorderedList":
-                document.execCommand("insertUnorderedList", false);
-                break;
-            case "insertOrderedList":
-                document.execCommand("insertOrderedList", false);
-                break;
-            case "insertHorizontalRule":
-                document.execCommand("insertHorizontalRule", false);
-                break;
-            case "font":
-                if (extra) {
-                    const font = FONTS.find(f => f.value === extra);
-                    if (font) {
-                        setCurrentFont(font);
-                        if (editorRef.current) {
-                            editorRef.current.style.fontFamily = extra;
-                        }
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-
-        if (editorRef.current && format !== "font") {
-            onChange(editorRef.current.innerHTML);
-        }
-    }, [onChange, wrapSelection]);
-
-    const handleInput = () => {
+    // Handle paste - strip formatting but keep line breaks
+    const handlePaste = useCallback((e: React.ClipboardEvent) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData("text/plain");
+        // Convert line breaks to <br> tags
+        const html = text.replace(/\n/g, '<br>');
+        document.execCommand("insertHTML", false, html);
         if (editorRef.current) {
             onChange(editorRef.current.innerHTML);
         }
-    };
+    }, [onChange]);
 
-    const handlePaste = (e: React.ClipboardEvent) => {
-        e.preventDefault();
-        const text = e.clipboardData.getData("text/plain");
-        // Keep line breaks when pasting
-        const html = text.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
-        document.execCommand("insertHTML", false, `<p>${html}</p>`);
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        // Enter creates new paragraph
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            document.execCommand("insertParagraph", false);
-            if (editorRef.current) {
-                onChange(editorRef.current.innerHTML);
+    // Set initial content
+    useEffect(() => {
+        if (editorRef.current && value && editorRef.current.innerHTML !== value) {
+            // Only set if different to avoid cursor jumping
+            const currentContent = editorRef.current.innerHTML;
+            if (currentContent !== value && !editorRef.current.matches(':focus')) {
+                editorRef.current.innerHTML = value;
             }
         }
-    };
+    }, [value]);
 
     return (
-        <div className="space-y-0">
+        <div className="border border-border rounded-md overflow-hidden bg-background">
             {/* Formatting Toolbar */}
-            <div className="flex flex-wrap items-center gap-1 p-2 bg-muted/50 rounded-t-md border border-border border-b-0">
-                {/* Font Selector */}
+            <div className="flex flex-wrap items-center gap-0.5 p-1.5 bg-muted/50 border-b border-border">
+                {/* Font Family */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-8 gap-1 px-2 text-xs min-w-[100px] justify-between"
+                            className="h-8 px-2 text-xs gap-1"
                         >
-                            <span className="truncate">{currentFont.name}</span>
-                            <ChevronDown className="h-3 w-3 flex-shrink-0" />
+                            Font
+                            <ChevronDown className="h-3 w-3" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
                         {FONTS.map((font) => (
                             <DropdownMenuItem
-                                key={font.value}
-                                onClick={() => handleFormat("font", font.value)}
-                                style={{ fontFamily: font.value }}
+                                key={font.name}
+                                onClick={() => execCommand("fontName", font.value || "inherit")}
+                                style={{ fontFamily: font.value || "inherit" }}
                             >
                                 {font.name}
                             </DropdownMenuItem>
@@ -161,37 +111,66 @@ const RichTextEditor = ({ value, onChange, placeholder }: RichTextEditorProps) =
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-                <div className="w-px h-5 bg-border mx-1" />
+                {/* Font Size */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 px-2 text-xs gap-1"
+                        >
+                            <Type className="h-3.5 w-3.5" />
+                            <ChevronDown className="h-3 w-3" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                        {FONT_SIZES.map((size) => (
+                            <DropdownMenuItem
+                                key={size.value}
+                                onClick={() => execCommand("fontSize", size.value)}
+                            >
+                                {size.name}
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
 
+                <div className="w-px h-5 bg-border mx-0.5" />
+
+                {/* Bold */}
                 <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    onClick={() => handleFormat("bold")}
+                    onClick={() => execCommand("bold")}
                     title="Đậm (Ctrl+B)"
                 >
                     <Bold className="h-4 w-4" />
                 </Button>
+
+                {/* Italic */}
                 <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    onClick={() => handleFormat("italic")}
+                    onClick={() => execCommand("italic")}
                     title="Nghiêng (Ctrl+I)"
                 >
                     <Italic className="h-4 w-4" />
                 </Button>
 
-                <div className="w-px h-5 bg-border mx-1" />
+                <div className="w-px h-5 bg-border mx-0.5" />
 
+                {/* Headings */}
                 <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    onClick={() => handleFormat("h2")}
+                    onClick={() => execCommand("formatBlock", "<h2>")}
                     title="Tiêu đề lớn"
                 >
                     <Heading2 className="h-4 w-4" />
@@ -201,42 +180,13 @@ const RichTextEditor = ({ value, onChange, placeholder }: RichTextEditorProps) =
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    onClick={() => handleFormat("h3")}
+                    onClick={() => execCommand("formatBlock", "<h3>")}
                     title="Tiêu đề vừa"
                 >
                     <Heading3 className="h-4 w-4" />
                 </Button>
 
-                <div className="w-px h-5 bg-border mx-1" />
-
-                {/* Font Size Dropdown */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 gap-1 px-2"
-                            title="Cỡ chữ"
-                        >
-                            <Type className="h-4 w-4" />
-                            <ChevronDown className="h-3 w-3" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                        <DropdownMenuItem onClick={() => handleFormat("small")}>
-                            <span className="text-sm">Chữ nhỏ</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleFormat("normal")}>
-                            <span>Chữ thường</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleFormat("large")}>
-                            <span className="text-lg">Chữ lớn</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
-                <div className="w-px h-5 bg-border mx-1" />
+                <div className="w-px h-5 bg-border mx-0.5" />
 
                 {/* Lists */}
                 <Button
@@ -244,7 +194,7 @@ const RichTextEditor = ({ value, onChange, placeholder }: RichTextEditorProps) =
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    onClick={() => handleFormat("insertUnorderedList")}
+                    onClick={() => execCommand("insertUnorderedList")}
                     title="Danh sách"
                 >
                     <List className="h-4 w-4" />
@@ -254,17 +204,19 @@ const RichTextEditor = ({ value, onChange, placeholder }: RichTextEditorProps) =
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    onClick={() => handleFormat("insertOrderedList")}
-                    title="Danh sách đánh số"
+                    onClick={() => execCommand("insertOrderedList")}
+                    title="Danh sách có số"
                 >
                     <ListOrdered className="h-4 w-4" />
                 </Button>
+
+                {/* Horizontal Line */}
                 <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
-                    onClick={() => handleFormat("insertHorizontalRule")}
+                    onClick={() => execCommand("insertHorizontalRule")}
                     title="Đường kẻ ngang"
                 >
                     <Minus className="h-4 w-4" />
@@ -277,52 +229,39 @@ const RichTextEditor = ({ value, onChange, placeholder }: RichTextEditorProps) =
                 contentEditable
                 suppressContentEditableWarning
                 onInput={handleInput}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
                 onPaste={handlePaste}
-                onKeyDown={handleKeyDown}
-                className={`min-h-[200px] p-4 border rounded-b-md bg-background text-foreground focus:outline-none ${isFocused ? "border-primary ring-1 ring-primary" : "border-border"
-                    }`}
-                dangerouslySetInnerHTML={{ __html: value || "" }}
+                className="min-h-[200px] max-h-[400px] overflow-y-auto p-4 text-foreground focus:outline-none"
                 data-placeholder={placeholder}
-                style={{
-                    wordBreak: "break-word",
-                    fontFamily: currentFont.value,
-                }}
             />
 
-            {/* Editor Styles */}
+            {/* Styles */}
             <style>{`
+                [contenteditable] {
+                    line-height: 1.7;
+                }
                 [contenteditable]:empty:before {
                     content: attr(data-placeholder);
                     color: hsl(var(--muted-foreground));
                     pointer-events: none;
-                    display: block;
                 }
-                [contenteditable] {
-                    line-height: 1.8;
-                }
-                [contenteditable] p {
-                    margin-bottom: 1rem;
-                    min-height: 1.5em;
+                [contenteditable] p,
+                [contenteditable] div {
+                    margin-bottom: 0.75rem;
                 }
                 [contenteditable] h2 {
                     font-size: 1.5rem;
                     font-weight: 700;
-                    margin-top: 1.5rem;
-                    margin-bottom: 0.75rem;
-                    line-height: 1.3;
+                    margin: 1.25rem 0 0.5rem 0;
                 }
                 [contenteditable] h3 {
                     font-size: 1.25rem;
                     font-weight: 600;
-                    margin-top: 1.25rem;
-                    margin-bottom: 0.5rem;
-                    line-height: 1.4;
+                    margin: 1rem 0 0.5rem 0;
                 }
-                [contenteditable] ul, [contenteditable] ol {
+                [contenteditable] ul,
+                [contenteditable] ol {
                     padding-left: 1.5rem;
-                    margin-bottom: 1rem;
+                    margin-bottom: 0.75rem;
                 }
                 [contenteditable] li {
                     margin-bottom: 0.25rem;
@@ -330,8 +269,14 @@ const RichTextEditor = ({ value, onChange, placeholder }: RichTextEditorProps) =
                 [contenteditable] hr {
                     border: none;
                     border-top: 1px solid hsl(var(--border));
-                    margin: 1.5rem 0;
+                    margin: 1rem 0;
                 }
+                [contenteditable] font[size="1"] { font-size: 0.625rem; }
+                [contenteditable] font[size="2"] { font-size: 0.75rem; }
+                [contenteditable] font[size="3"] { font-size: 1rem; }
+                [contenteditable] font[size="4"] { font-size: 1.125rem; }
+                [contenteditable] font[size="5"] { font-size: 1.5rem; }
+                [contenteditable] font[size="6"] { font-size: 2rem; }
             `}</style>
         </div>
     );
