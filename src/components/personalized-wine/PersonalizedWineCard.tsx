@@ -14,13 +14,6 @@ const PersonalizedWineCard = () => {
         {/* Background layers */}
         <div className="absolute inset-0 bg-gradient-to-br from-foreground/[0.02] via-foreground/[0.04] to-foreground/[0.08]" />
         
-        {/* Golden corner glow */}
-        <div className="absolute -top-20 -right-20 w-60 h-60 bg-gradient-radial from-amber-400/10 via-amber-500/5 to-transparent blur-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-1000" />
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-radial from-amber-300/8 via-amber-400/3 to-transparent blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-1000" />
-        
-        {/* Subtle vignette */}
-        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-foreground/5 pointer-events-none" />
-        
         {/* Decorative pattern */}
         <div className="absolute inset-0 opacity-[0.015]">
           <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
