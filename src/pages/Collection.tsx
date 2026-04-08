@@ -150,12 +150,7 @@ const Collection = () => {
                   return (
                     <div
                       key={wine.id}
-                      className={`opacity-0 animate-slide-up transition-all duration-500 ease-out group relative ${hasHover && !isHovered
-                        ? 'lg:opacity-[0.15] lg:blur-[2px] lg:scale-[0.98]'
-                        : isHovered
-                          ? 'lg:opacity-100 lg:scale-[1.02] lg:z-10'
-                          : ''
-                        }`}
+                      className="opacity-0 animate-slide-up transition-all duration-500 ease-out group relative"
                       style={{
                         animationDelay: `${Math.min(index * 0.05, 0.5)}s`,
                         animationFillMode: 'forwards',
